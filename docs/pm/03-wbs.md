@@ -43,12 +43,13 @@ Convenciones: los WP de software los ejecuta `/pm-ejecutar`. Los WP **físicos**
 - Dependencias: ninguna
 - Criterios de aceptación:
   - CA-1.1.1 [S]: `telemetria` exige `ts` (entero, ms), `robot_id`, `x_cm`, `y_cm`, `velocidad_cm_s`, `estado`, `peso_kg` y `distancia_obstaculo_cm`; `evento` exige `ts`, `robot_id`, `tipo` ∈ {LIFT_OK, SOBREPESO, OBSTACULO, DROP_OK, ERROR} , `id_evento` (texto único) e `id_tarima` — Evidencia: tests/aceptacion/test_wp_1_1.py
-  - CA-1.1.2 [S]: `orden` exige `ts`, `id_orden` y `tipo` ∈ {INICIAR, CANCELAR, PARO}; INICIAR exige además `ruta` e `id_tarima`; `orden_ack` exige `id_orden` y `resultado` ∈ {aceptada, rechazada}; `conexion` admite EN_LINEA y FUERA_DE_LINEA — Evidencia: tests/aceptacion/test_wp_1_1.py
+  - CA-1.1.2 [S]: `orden` exige `ts`, `id_orden` y `tipo` ∈ {INICIAR, CANCELAR, PARO}; INICIAR exige además `ruta` e `id_tarima`; `orden_ack` exige `id_orden` y `resultado` ∈ {aceptada, rechazada}; `conexion` exige `ts`, `robot_id` y `estado` ∈ {EN_LINEA, FUERA_DE_LINEA} — Evidencia: tests/aceptacion/test_wp_1_1.py
   - CA-1.1.3 [S]: un mensaje sin `ts` o con `tipo` desconocido es inválido contra el esquema — Evidencia: tests/aceptacion/test_wp_1_1.py
   - CA-1.1.4 [S]: `estados.json` contiene exactamente los estados de robot (INACTIVO, EN_MISION, ELEVANDO, EN_RUTA, DEPOSITANDO, DETENIDO_OBSTACULO, ERROR) y de tarima (EN_PISO, EN_TRANSITO, UBICADA_DESTINO, BLOQUEADA_SOBREPESO) — Evidencia: tests/aceptacion/test_wp_1_1.py
-  - CA-1.1.5 [S]: `esquema.sql` crea en un SQLite vacío `tarimas` (con `ubicacion_nodo`), `historial_movimientos` (con `id_evento` único, `ruta_ejecutada`, `peso_medido_kg`, `latencia_red_ms`) y `registro_rechazos_seguridad`, con claves foráneas a `tarimas` — Evidencia: tests/aceptacion/test_wp_1_1.py
+  - CA-1.1.5 [S]: `esquema.sql` crea en un SQLite vacío `tarimas` (con `ubicacion_nodo`), `historial_movimientos` (con `id_evento` único, `ruta_ejecutada`, `peso_medido_kg`, `latencia_red_ms`) y `registro_rechazos_seguridad`, con las columnas de `importado/KOLEO_Documentacion_General.md` §10.2 (en `historial_movimientos`, además `id_evento`) y claves foráneas a `tarimas` — Evidencia: tests/aceptacion/test_wp_1_1.py
   - CA-1.1.6 [S]: `mqtt.md` define los temas `koleo/robot1/telemetria`, `evento`, `orden`, `orden/ack` y `conexion` con publicador, QoS, retención de `conexion` y su testamento — Evidencia: inspección de contratos/mqtt.md
   - CA-1.1.7 [S]: `esp32.md` y el esquema definen, para el ESP32, los temas `koleo/robot1/esp32/cmd`, `resp`, `sensores`, `evento` y `conexion`; los comandos LIFT, MOVE, STOP y DROP con `id_cmd`; las respuestas con código (`LIFT_OK`, `OVERWEIGHT`, `SCALE_FAIL`, `NO_LOAD`, `OBSTACULO_CERCANO`) y el tiempo de espera de 1 s; un `esp32_cmd` sin `id_cmd` es inválido — Evidencia: tests/aceptacion/test_wp_1_1.py e inspección de contratos/esp32.md
+  - CA-1.1.8 [S]: `esp32_cmd` exige `ts`, `id_cmd` (texto) y `cmd` ∈ {LIFT, MOVE, STOP, DROP}, con `id_tarima`, `pwm_izq`, `pwm_der`, `x_cm` e `y_cm` opcionales; `esp32_resp` exige `ts`, `id_cmd`, `resultado` ∈ {ACK, ERR} y `codigo`; `esp32_sensores` exige `ts`, `peso_kg`, `distancia_obstaculo_cm`, `enc_izq` y `enc_der`; `esp32_evento` exige `ts` y `codigo` ∈ {LIFT_OK, OVERWEIGHT, SCALE_FAIL, NO_LOAD, OBSTACULO_CERCANO, DROP_OK}, con `id_tarima` y `peso_kg` opcionales; el `evento` DROP_OK exige además `peso_kg`, `x_cm`, `y_cm`, `ruta`, `origen_x_cm` y `origen_y_cm`, y el SOBREPESO exige `peso_kg` — Evidencia: tests/aceptacion/test_wp_1_1.py
 
 ### WP-1.2 — Robot simulado
 - Riesgo: bajo
@@ -71,7 +72,7 @@ Convenciones: los WP de software los ejecuta `/pm-ejecutar`. Los WP **físicos**
 - Tipo: entregable
 - Entregable: servicio Python que recibe mensajes MQTT, los guarda en SQLite con el esquema canónico y los expone por una API REST
 - Alcance de archivos: backend/**
-- Interfaz: `backend.koleo.ingesta.procesar_mensaje(conn: sqlite3.Connection, topic: str, payload: dict, recibido_ms: int) -> None`; `backend.koleo.api.crear_app(db_path: str, publicador=None) -> flask.Flask` con `GET /api/tarimas`, `/api/historial`, `/api/rechazos`, `/api/robots`, `/api/indicadores`; `backend/koleo/suscriptor.py` (cliente MQTT que llama a `procesar_mensaje`)
+- Interfaz: `backend.koleo.ingesta.procesar_mensaje(conn: sqlite3.Connection, topic: str, payload: dict, recibido_ms: int) -> None`; `backend.koleo.api.crear_app(db_path: str, publicador=None) -> flask.Flask` con `GET /api/tarimas`, `/api/historial`, `/api/rechazos`, `/api/robots`, `/api/indicadores`; `backend/koleo/suscriptor.py` (cliente MQTT que llama a `procesar_mensaje`); `procesar_mensaje` crea la tarima en `tarimas` (estado EN_PISO) si el evento se refiere a una que no existe, y un mensaje de `koleo/robot1/orden/ack` actualiza el estado de la orden correspondiente
 - Trazabilidad: REQ-F-008, REQ-F-011, REQ-F-017, REQ-NF-003
 - Dependencias: WP-1.1, WP-1.2
 - Criterios de aceptación:
@@ -164,7 +165,7 @@ Convenciones: los WP de software los ejecuta `/pm-ejecutar`. Los WP **físicos**
 - Tipo: entregable
 - Entregable: cliente Python que envía comandos al ESP32 por MQTT y espera su respuesta, y firmware del ESP32 con Wi-Fi y MQTT que los atiende, con paro por pérdida de comandos o de red
 - Alcance de archivos: pi/enlace.py, firmware/.gitignore, firmware/esp32/src/main.cpp, firmware/esp32/src/red_mqtt.*, firmware/esp32/src/secrets.example.h, docs/pm/evidencia/hw/WP-3.2/**
-- Interfaz: `pi.enlace.EnlaceESP32(cliente, timeout_s: float = 1.0)` con `enviar(cmd: dict) -> dict` (publica en `koleo/robot1/esp32/cmd` y devuelve la respuesta de `esp32/resp` con el mismo `id_cmd`, o lanza `TimeoutError`), `lift(id_tarima)`, `move(izq, der)`, `stop()`, `drop(id_tarima, x_cm, y_cm)`; `cliente` es un objeto con `publicar(topic, payload)` y `esperar_respuesta(id_cmd, timeout_s)` (se inyecta uno falso en pruebas)
+- Interfaz: `pi.enlace.EnlaceESP32(cliente, timeout_s: float = 1.0)` con `enviar(cmd: dict) -> dict` (publica en `koleo/robot1/esp32/cmd` y devuelve la respuesta de `esp32/resp` con el mismo `id_cmd`, o lanza `TimeoutError`), `lift(id_tarima)`, `move(izq, der)`, `stop()`, `drop(id_tarima, x_cm, y_cm)`; `cliente` es un objeto con `publicar(topic, payload)` y `esperar_respuesta(id_cmd, timeout_s)` (lanza `TimeoutError` si no hay respuesta; se inyecta uno falso en pruebas)
 - Trazabilidad: REQ-F-005, REQ-NF-006
 - Dependencias: WP-1.1, WP-3.1
 - Criterios de aceptación:
@@ -193,7 +194,7 @@ Convenciones: los WP de software los ejecuta `/pm-ejecutar`. Los WP **físicos**
 - Tipo: entregable
 - Entregable: proceso en la Pi que consolida los mensajes del ESP32 en los temas del contrato, publica telemetría y atiende órdenes con acuse
 - Alcance de archivos: pi/puente_mqtt.py, pi/ordenes.py, docs/pm/evidencia/hw/WP-4.1/**
-- Interfaz: `pi.puente_mqtt.consolidar_esp32(topic: str, payload: dict, contexto: dict, ts_ms: int) -> list[tuple[str, dict]]` (recibe un mensaje de `koleo/robot1/esp32/*` y devuelve mensajes de `telemetria`, `evento` o `conexion` del contrato); `pi.ordenes.procesar_orden(payload: dict, estado_robot: str, vistas: set) -> dict` (devuelve el `orden_ack`)
+- Interfaz: `pi.puente_mqtt.consolidar_esp32(topic: str, payload: dict, contexto: dict, ts_ms: int) -> list[tuple[str, dict]]` (recibe un mensaje de `koleo/robot1/esp32/*` y devuelve mensajes de `telemetria`, `evento` o `conexion` del contrato; `contexto` trae `robot_id`, `id_tarima`, `x_cm`, `y_cm`, `velocidad_cm_s`, `estado`, `peso_kg` y `distancia_obstaculo_cm`); `pi.ordenes.procesar_orden(payload: dict, estado_robot: str, vistas: set) -> dict` (devuelve el `orden_ack`)
 - Trazabilidad: REQ-F-009, REQ-F-013, REQ-F-008
 - Dependencias: WP-1.1, WP-1.3, WP-3.2
 - Criterios de aceptación:
@@ -224,7 +225,7 @@ Convenciones: los WP de software los ejecuta `/pm-ejecutar`. Los WP **físicos**
 - Tipo: entregable
 - Entregable: mapa 5×6, planificador A* y orquestación de la misión sobre el enlace de comandos por MQTT
 - Alcance de archivos: pi/mapa.py, pi/planificador.py, pi/mision.py
-- Interfaz: `pi.mapa.MAPA`, `pi.mapa.RUTAS`; `pi.planificador.PlanificadorAStar(mapa).planificar(inicio, meta) -> list[tuple[int, int]] | None`; `pi.mision.celda_a_cm(fila, col) -> tuple[float, float]`; `pi.mision.ejecutar_mision(ruta: str, id_tarima: str, enlace, odometria) -> dict`
+- Interfaz: `pi.mapa.MAPA`, `pi.mapa.RUTAS`; `pi.planificador.PlanificadorAStar(mapa).planificar(inicio, meta) -> list[tuple[int, int]] | None`; `pi.mision.celda_a_cm(fila, col) -> tuple[float, float]`; `pi.mision.ejecutar_mision(ruta: str, id_tarima: str, enlace, odometria) -> dict` con la clave `estado` ∈ {`completada`, `rechazada`, `error`}
 - Trazabilidad: REQ-F-006, REQ-F-007, REQ-F-002
 - Dependencias: WP-3.2, WP-4.2, WP-4.4
 - Criterios de aceptación:
@@ -232,8 +233,8 @@ Convenciones: los WP de software los ejecuta `/pm-ejecutar`. Los WP **físicos**
   - CA-4.3.2 [S]: una meta en obstáculo (0,3) devuelve `None`; con inicio igual a meta devuelve solo esa celda — Evidencia: tests/aceptacion/test_wp_4_3.py
   - CA-4.3.3 [S]: `celda_a_cm(4, 5)` = (150, 120) — Evidencia: tests/aceptacion/test_wp_4_3.py
   - CA-4.3.4 [S]: con un enlace falso, `ejecutar_mision("RUTA_1", "TAR-101", ...)` envía `LIFT`, luego movimientos y `DROP` con las coordenadas del destino — Evidencia: tests/aceptacion/test_wp_4_3.py
-  - CA-4.3.5 [S]: si `LIFT` responde `ERR:OVERWEIGHT` o `ERR:SCALE_FAIL`, no se envía `MOVE` ni `DROP` y el resultado indica rechazo — Evidencia: tests/aceptacion/test_wp_4_3.py
-  - CA-4.3.6 [S]: si el enlace lanza `TimeoutError`, la misión se aborta con `STOP` y el resultado indica error — Evidencia: tests/aceptacion/test_wp_4_3.py
+  - CA-4.3.5 [S]: si `LIFT` responde `{"resultado": "ERR", "codigo": "OVERWEIGHT"}` o con código `SCALE_FAIL`, no se envía `MOVE` ni `DROP` y el `estado` del resultado es `rechazada` — Evidencia: tests/aceptacion/test_wp_4_3.py
+  - CA-4.3.6 [S]: si el enlace lanza `TimeoutError`, la misión se aborta con `STOP` y el `estado` del resultado es `error` — Evidencia: tests/aceptacion/test_wp_4_3.py
 
 ### WP-4.4 — Lectura QR
 - Riesgo: medio
@@ -270,7 +271,7 @@ Convenciones: los WP de software los ejecuta `/pm-ejecutar`. Los WP **físicos**
 - Tipo: entregable
 - Entregable: endpoints de órdenes y de registro de tarimas, y los módulos Control y Gestión logística del tablero
 - Alcance de archivos: ui/src/control/**, ui/src/logistica/**, backend/koleo/ordenes.py, backend/koleo/api.py, docs/pm/evidencia/WP-5.2/**
-- Interfaz: `POST /api/ordenes` (`{tipo, ruta?, id_tarima?}` → 202 `{id_orden}`, publica con el `publicador` inyectado en `crear_app`); `GET /api/ordenes/<id>`; `POST /api/tarimas` (`{id_tarima, peso_kg, descripcion}`)
+- Interfaz: `POST /api/ordenes` (`{tipo, ruta?, id_tarima?}` → 202 `{id_orden}`, publica con el `publicador` (una función `publicador(topic: str, payload: dict)`) inyectado en `crear_app`); `GET /api/ordenes/<id>`; `POST /api/tarimas` (`{id_tarima, peso_kg, descripcion}`)
 - Trazabilidad: REQ-F-013, REQ-F-014
 - Dependencias: WP-1.3, WP-5.1
 - Criterios de aceptación:
