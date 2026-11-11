@@ -1,9 +1,20 @@
 {
   "nivel": "Estándar",
   "max_iteraciones": 3,
-  "comando_aceptacion": "python -m pytest tests/aceptacion -q",
-  "comando_caracterizacion": "python -m pytest tests/caracterizacion -q",
-  "comandos_lectura_extra": ["python -m pytest"],
-  "rutas_descartables": ["prototipos/"],
-  "auditor_sombra": {"activo": false, "riesgos": ["bajo", "medio"]}
+  "comando_aceptacion": ".venv\\Scripts\\python.exe -m pytest tests/aceptacion -q",
+  "comando_caracterizacion": ".venv\\Scripts\\python.exe -m pytest tests/caracterizacion -q",
+  "comandos_lectura_extra": [
+    ".venv\\Scripts\\python.exe -m pytest",
+    "python -m pytest"
+  ],
+  "rutas_descartables": [
+    "prototipos/"
+  ],
+  "auditor_sombra": {
+    "activo": false,
+    "riesgos": [
+      "bajo",
+      "medio"
+    ]
+  }
 }
