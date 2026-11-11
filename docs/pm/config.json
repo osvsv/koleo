@@ -1,0 +1,9 @@
+{
+  "nivel": "Estándar",
+  "max_iteraciones": 3,
+  "comando_aceptacion": "python -m pytest tests/aceptacion -q",
+  "comando_caracterizacion": "python -m pytest tests/caracterizacion -q",
+  "comandos_lectura_extra": ["python -m pytest"],
+  "rutas_descartables": ["prototipos/"],
+  "auditor_sombra": {"activo": false, "riesgos": ["bajo", "medio"]}
+}
