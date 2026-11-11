@@ -1,22 +1,33 @@
 # Registro de supuestos
 
+Actualizado en G1 (2026-11-11). Estados: Pendiente · Confirmado · Corregido. Ordenado por Dependientes.
+
 | ID | Supuesto | Afecta a | Dependientes | Estado | Validado en |
 | --- | --- | --- | --- | --- | --- |
-| SUP-016 | La asignación de dueños por subsistema (Álvaro mecánica, Miranda electrónica, Leo firmware, Elías Pi, Osvaldo datos y tablero) y las horas disponibles por persona alcanzan para las 3 semanas; ambas cosas están sin confirmar | WP-1.1, WP-1.2, WP-1.3, WP-2.1, WP-2.2, WP-2.3, WP-2.4, WP-3.1, WP-3.2, WP-3.3, WP-4.1, WP-4.2, WP-4.3, WP-4.4, WP-5.1, WP-5.2, WP-6.1, WP-6.2, WP-6.3 | 19 | Pendiente | — |
-| SUP-008 | El hardware del BOM del 11-nov está disponible y los WP físicos los ejecutan personas, con evidencia guardada (DP-09) | WP-2.1, WP-2.2, WP-2.3, WP-2.4, WP-3.1, WP-3.3, WP-6.1, WP-6.2, WP-6.3 | 9 | Pendiente | — |
-| SUP-007 | El lenguaje de backend, Pi y simulador es Python, con pytest; las versiones de paquetes se fijan en el primer WP que las use | WP-1.2, WP-1.3, WP-3.2, WP-4.1, WP-4.2, WP-4.3, WP-4.4, WP-5.2 | 8 | Pendiente | — |
-| SUP-006 | Backend en Flask con SQLite; broker Mosquitto (dónde corre, Pi o laptop, está por definir) | REQ-F-008, REQ-F-011, WP-1.3, WP-4.1, WP-5.1, WP-5.2 | 6 | Pendiente | — |
-| SUP-001 | La Raspberry Pi cuenta como "microcontrolador en red" para el Reto IoT; el ESP32 no se conecta por Wi-Fi | REQ-F-009, REQ-F-011, REQ-NF-006, WP-1.3, WP-4.1 | 5 | Pendiente | — |
-| SUP-005 | El HC-SR04 es el sensor de paro; RPLIDAR y Google Coral quedan fuera (DP-11) | REQ-F-004, REQ-F-006, WP-2.4, WP-3.3, WP-4.3 | 5 | Pendiente | — |
-| SUP-009 | Mapa 5×6, celdas de 30 cm, rutas RUTA_1..3 de la Documentación General §8, piso liso | REQ-F-006, REQ-NF-001, WP-4.2, WP-4.3, WP-6.2 | 5 | Pendiente | — |
-| SUP-010 | El límite de 10 kg es inclusivo: 10.0 kg se acepta y 10.1 kg se rechaza | REQ-F-001, REQ-F-002, WP-1.2, WP-3.1, WP-6.1 | 5 | Pendiente | — |
+| SUP-016 | El trabajo se reparte por tareas, sin dueños por subsistema (todos pueden trabajar en todo); la capacidad es de 4 a 6 h por semana por persona (≈ 60 a 90 h de equipo hasta el 2-dic), menor que la supuesta y insuficiente para el plan completo sin recortes | WP-1.1, WP-1.2, WP-1.3, WP-2.1, WP-2.2, WP-2.3, WP-2.4, WP-3.1, WP-3.2, WP-3.3, WP-4.1, WP-4.2, WP-4.3, WP-4.4, WP-5.1, WP-5.2, WP-6.1, WP-6.2, WP-6.3 | 19 | Corregido | G1 V-01 y V-02 (Osvaldo, 2026-11-11) |
+| SUP-008 | El hardware del BOM del 11-nov está completo y en poder del equipo | WP-2.1, WP-2.2, WP-2.3, WP-2.4, WP-3.1, WP-3.3, WP-6.1, WP-6.2, WP-6.3 | 9 | Confirmado | G1 V-03 (Osvaldo, 2026-11-11) |
+| SUP-019 | Los WP físicos los ejecutan personas, con evidencia guardada que el auditor inspecciona (DP-09) | WP-2.1, WP-2.2, WP-2.3, WP-2.4, WP-3.1, WP-3.3, WP-6.1, WP-6.2, WP-6.3 | 9 | Pendiente | — |
+| SUP-007 | El lenguaje de backend, Pi y simulador es Python | WP-1.2, WP-1.3, WP-3.2, WP-4.1, WP-4.2, WP-4.3, WP-4.4, WP-5.2 | 8 | Confirmado | G1 V-04 (Osvaldo, 2026-11-11) |
+| SUP-020 | pytest es el framework de pruebas; las versiones de los paquetes se fijan en el primer WP que los use | WP-1.2, WP-1.3, WP-3.2, WP-4.1, WP-4.2, WP-4.3, WP-4.4, WP-5.2 | 8 | Pendiente | — |
+| SUP-006 | El backend es Flask con SQLite y corre en la Pi o en una laptop (por definir) | REQ-F-008, REQ-F-011, WP-1.3, WP-4.1, WP-5.1, WP-5.2 | 6 | Pendiente | — |
+| SUP-001 | El ESP32 y la Pi se conectan ambos a la red por Wi-Fi; no hay UART entre ellos; los comandos y datos del ESP32 viajan por MQTT y la Pi los consolida hacia los temas del contrato | REQ-F-005, REQ-F-009, REQ-NF-006, WP-1.1, WP-3.2, WP-4.1 | 6 | Confirmado | G1 V-06 (Osvaldo, 2026-11-11) |
+| SUP-010 | El límite de sobrepeso es 10 kg, inclusivo (10.0 se acepta), y se verifica con peso simulado, sin cargar físicamente más de 100 g | REQ-F-001, REQ-F-002, REQ-NF-009, WP-1.2, WP-3.1, WP-6.1 | 6 | Corregido | G1 V-11 y aclaración (Osvaldo, 2026-11-11) |
+| SUP-005 | El HC-SR04 es el sensor de paro; RPLIDAR y Google Coral quedan fuera (DP-11) | REQ-F-004, REQ-F-006, WP-2.4, WP-3.3, WP-4.3 | 5 | Confirmado | G1 V-07 (Osvaldo, 2026-11-11) |
+| SUP-009 | El mapa 5×6, las celdas de 30 cm y las tres rutas son de referencia, no criterio de evaluación; piso liso | REQ-F-006, REQ-NF-001, WP-4.2, WP-4.3, WP-6.2 | 5 | Corregido | G1 V-10 (Osvaldo, 2026-11-11) |
 | SUP-012 | La telemetría se publica a 2 Hz en los cinco temas `koleo/robot1/*` del plan importado | REQ-F-009, WP-1.1, WP-1.2, WP-4.1, WP-5.1 | 5 | Pendiente | — |
-| SUP-002 | El profesor acepta las metas <15 s y <10 cm que decidió Osvaldo | REQ-NF-001, REQ-NF-002, WP-6.1, WP-6.2 | 4 | Pendiente | — |
-| SUP-013 | Los estados unificados del plan importado (robot y tarima) son los correctos | REQ-F-010, WP-1.1, WP-1.3, WP-5.1 | 4 | Pendiente | — |
-| SUP-003 | El umbral de paro es 15 cm con respuesta <200 ms (la presentación decía 12 cm, el plan importado 15 cm) | REQ-F-004, WP-3.3, WP-6.1 | 3 | Pendiente | — |
-| SUP-011 | La latencia se mide desde que la celda detecta la tarima suelta hasta que la fila queda en la BD | REQ-NF-003, WP-1.3, WP-6.1 | 3 | Pendiente | — |
-| SUP-014 | Sin QR legible o con formato distinto de `TAR-NNN`, la misión no inicia | REQ-F-007, WP-4.4, WP-4.3 | 3 | Pendiente | — |
+| SUP-002 | Las metas oficiales son <15 s y <10 cm, con carga de demostración de 100 g | REQ-NF-001, REQ-NF-002, WP-6.1, WP-6.2 | 4 | Confirmado | G1 V-17 (Osvaldo, 2026-11-11) |
+| SUP-013 | Los siete estados del robot del plan importado (INACTIVO, EN_MISION, ELEVANDO, EN_RUTA, DEPOSITANDO, DETENIDO_OBSTACULO, ERROR) son los correctos | REQ-F-010, WP-1.1, WP-1.3, WP-5.1 | 4 | Pendiente | — |
+| SUP-023 | Una tarima queda UBICADA_DESTINO tras depositarse y EN_PISO cuando solo está registrada | REQ-F-008, REQ-F-010, WP-1.1, WP-1.3 | 4 | Confirmado | G1 V-14 (Osvaldo, 2026-11-11) |
+| SUP-024 | El broker Mosquitto corre en la Raspberry Pi | WP-1.3, WP-3.2, WP-4.1, WP-5.1 | 4 | Confirmado | G1 V-05 (Osvaldo, 2026-11-11) |
+| SUP-003 | El umbral de paro por obstáculo es 15 cm | REQ-F-004, WP-3.3, WP-6.1 | 3 | Confirmado | G1 V-09 (Osvaldo, 2026-11-11) |
+| SUP-011 | La latencia se mide desde que la celda detecta que la tarima se soltó hasta que la fila queda en la BD | REQ-NF-003, WP-1.3, WP-6.1 | 3 | Confirmado | G1 V-15 (Osvaldo, 2026-11-11) |
+| SUP-014 | Sin QR legible, la misión no inicia; el formato `TAR-NNN` es un criterio adicional del modelo | REQ-F-007, WP-4.4, WP-4.3 | 3 | Confirmado | G1 V-16 (Osvaldo, 2026-11-11), solo el comportamiento sin lectura |
 | SUP-015 | El tablero se actualiza por consulta cada 1 s y no por WebSocket | REQ-F-012, WP-5.1, WP-5.2 | 3 | Pendiente | — |
-| SUP-018 | Los cierres de incremento son 20-nov, 27-nov y 30-nov/1-dic (DP-12) | Incrementos 1, 2 y 3 | 3 | Pendiente | — |
-| SUP-004 | Fusible de 10 A en la línea de la batería y sin paro de emergencia físico (DP-10) | REQ-NF-005, WP-2.3 | 2 | Pendiente | — |
+| SUP-018 | Solo la entrega final tiene fecha (tentativa 2-dic); no hay revisiones parciales del profesor y los cierres de incremento son internos | Incrementos 1, 2 y 3 | 3 | Corregido | G1 V-19 (Osvaldo, 2026-11-11) |
+| SUP-022 | La respuesta de paro ante un obstáculo es menor a 200 ms | REQ-NF-011, WP-3.3, WP-6.1 | 3 | Pendiente | — |
+| SUP-027 | Un modo de peso simulado (`PESO_SIM`, solo con la bandera `KOLEO_PRUEBAS`) permite probar el rechazo por sobrepeso sin masas reales | REQ-F-002, WP-3.1, WP-6.1 | 3 | Pendiente | — |
+| SUP-004 | Fusible de 10 A en la línea de la batería y sin paro de emergencia físico (DP-10); decisión abierta | REQ-NF-005, WP-2.3 | 2 | Pendiente | G1 V-08 quedó pendiente (Osvaldo, 2026-11-11) |
 | SUP-017 | La reductora da 515 pulsos por vuelta y la rueda mide 65 mm | REQ-F-006, WP-4.2 | 2 | Pendiente | — |
+| SUP-025 | El ESP32 sigue alimentado por un cable USB desde la Pi, solo como energía (sin datos) | WP-2.3, WP-3.2 | 2 | Pendiente | — |
+| SUP-026 | "Sin carga" es una lectura válida menor a 0.03 kg; la báscula se calibra con pesas de 0.1, 0.5 y 1 kg con error < 0.05 kg | REQ-F-016, WP-3.1 | 2 | Pendiente | — |
+| SUP-028 | Si falta tiempo, el orden de recorte es WP-5.2 (control y gestión), WP-4.4 (QR) y rutas 2 y 3 | WP-5.2, WP-4.4 | 2 | Pendiente | — |
