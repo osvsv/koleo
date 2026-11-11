@@ -1,0 +1,4 @@
+# Bloqueos
+
+| WP | Motivo |
+| --- | --- |

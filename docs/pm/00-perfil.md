@@ -69,13 +69,13 @@ Las de Estándar: procedencia y registro de supuestos; tabla de decisiones del p
 
 ## Incrementos
 
-Los WP se detallan en `03-wbs.md`; esta es la intención por incremento (IDs provisionales).
+IDs definitivos de `03-wbs.md` (la tabla del borrador aprobado en G0 usaba IDs provisionales; el cambio es solo de numeración y agrupación: el QR pasó a WP-4.4, los indicadores se fundieron en WP-5.1 y las pruebas VAL se separaron en WP-6.1 a 6.3).
 
 | Incremento | WP que lo cierran | Demo |
 | --- | --- | --- |
 | Inc. 1 — contratos, ensamble y esqueleto (cierre vie 20-nov) | WP-1.1 contratos; WP-1.2 robot simulado; WP-1.3 backend (MQTT → SQLite → API); WP-2.1 chasis y tracción; WP-2.2 elevación; WP-2.3 energía y energizado seguro; WP-3.1 báscula con fallo seguro | Robot simulado completa 2 traslados y 1 rechazo en la BD (VAL-08); robot armado energizado levanta sin carga |
-| Inc. 2 — robot real y seguridad (cierre vie 27-nov) | WP-2.4 sensores montados; WP-3.2 UART Pi–ESP32; WP-3.3 parada continua por obstáculo; WP-4.1 puente MQTT real; WP-4.2 avance por encoders; WP-5.1 tablero: flotilla y monitoreo; VAL-01, VAL-02, VAL-05, VAL-07 | Elevación de 10 kg, rechazo de 11.8 kg, paro por obstáculo y latencia, con evidencia |
-| Inc. 3 — navegación, interfaz y validación (cierre 30-nov/1-dic) | WP-4.3 rutas y QR; WP-5.2 tablero: control y logística; WP-5.3 ≥5 indicadores; WP-6.1 VAL-03, 04, 06; WP-6.2 ensayo y reporte | Tres rutas, error de llegada, 3 minutos y demo completa grabada |
+| Inc. 2 — robot real y seguridad (cierre vie 27-nov) | WP-2.4 sensores montados; WP-3.2 UART Pi–ESP32; WP-3.3 parada continua por obstáculo; WP-4.1 puente MQTT real; WP-4.2 avance por encoders; WP-5.1 tablero: flotilla, monitoreo e indicadores; WP-6.1 VAL-01, 02, 05 y 07 | Elevación de 10 kg, rechazo de 11.8 kg, paro por obstáculo y latencia, con evidencia |
+| Inc. 3 — navegación, interfaz y validación (cierre 30-nov/1-dic) | WP-4.3 A* y misión; WP-4.4 QR; WP-5.2 tablero: control y logística; WP-6.2 VAL-03, 04 y 06; WP-6.3 ensayo y reporte | Tres rutas, error de llegada, 3 minutos y demo completa grabada |
 
 ## Decisiones del perfil
 
