@@ -25,7 +25,7 @@ Campos: `ts`, `id_cmd` (texto, obligatorio; un comando sin `id_cmd` es inválido
 Códigos de `esp32_resp.codigo`: `LIFT_OK`, `OVERWEIGHT`, `SCALE_FAIL`, `NO_LOAD`, `OBSTACULO_CERCANO`, y los de acuse `MOVE_OK`, `STOP_OK`, `DROP_OK`. `resultado` es `ACK` si se ejecutó y `ERR` si no. La respuesta repite el `id_cmd` del comando.
 
 ## Tiempo de espera
-La Pi espera la respuesta con el mismo `id_cmd` **1 s** (1000 ms). Sin respuesta en ese plazo, considera el comando fallido y puede reintentar con el mismo `id_cmd` una vez; el ESP32 no repite la acción si recibe un `id_cmd` ya atendido, solo reenvía la respuesta. Tras el segundo fallo la Pi pasa el robot a `ERROR`.
+La Pi espera la respuesta con el mismo `id_cmd` **1 s** (1000 ms). Sin respuesta con el mismo `id_cmd` en ese plazo, el comando se reporta como error (`TimeoutError` en la Pi), la Pi intenta enviar `STOP` y la misión no continúa. No hay reintento del comando: el error se reporta a 1 s. Si llega una respuesta tardía, se ignora. Si el ESP32 recibe un `id_cmd` ya atendido, no repite la acción y solo reenvía la respuesta.
 
 ## Sensores y eventos
 - `esp32/sensores`: `ts`, `peso_kg`, `distancia_obstaculo_cm`, `enc_izq`, `enc_der` (enteros, cuentas de encoder). Periódico.
