@@ -1,0 +1,126 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "koleo/contratos/mensajes.schema.json",
+  "title": "Contrato de mensajes MQTT de KOLEO",
+  "description": "Todos los mensajes son JSON con 'ts' (entero, milisegundos desde epoch Unix UTC). Tema -> $defs: telemetria, evento, orden, orden/ack (orden_ack), conexion, esp32/cmd (esp32_cmd), esp32/resp (esp32_resp), esp32/sensores (esp32_sensores), esp32/evento (esp32_evento), esp32/conexion (conexion).",
+  "$defs": {
+    "ts": {"type": "integer", "description": "Marca de tiempo en milisegundos desde epoch Unix."},
+    "texto": {"type": "string", "minLength": 1},
+    "estado_robot": {"enum": ["INACTIVO", "EN_MISION", "ELEVANDO", "EN_RUTA", "DEPOSITANDO", "DETENIDO_OBSTACULO", "ERROR"]},
+    "telemetria": {
+      "type": "object",
+      "required": ["ts", "robot_id", "x_cm", "y_cm", "velocidad_cm_s", "estado", "peso_kg", "distancia_obstaculo_cm"],
+      "properties": {
+        "ts": {"$ref": "#/$defs/ts"},
+        "robot_id": {"$ref": "#/$defs/texto"},
+        "x_cm": {"type": "number"},
+        "y_cm": {"type": "number"},
+        "velocidad_cm_s": {"type": "number"},
+        "estado": {"$ref": "#/$defs/estado_robot"},
+        "peso_kg": {"type": "number"},
+        "distancia_obstaculo_cm": {"type": "number"}
+      }
+    },
+    "evento": {
+      "type": "object",
+      "required": ["ts", "robot_id", "tipo", "id_evento", "id_tarima"],
+      "properties": {
+        "ts": {"$ref": "#/$defs/ts"},
+        "robot_id": {"$ref": "#/$defs/texto"},
+        "tipo": {"enum": ["LIFT_OK", "SOBREPESO", "OBSTACULO", "DROP_OK", "ERROR"]},
+        "id_evento": {"$ref": "#/$defs/texto", "description": "Identificador único de la entrega o evento; un reenvío repite el mismo id."},
+        "id_tarima": {"$ref": "#/$defs/texto"},
+        "peso_kg": {"type": "number"},
+        "x_cm": {"type": "number"},
+        "y_cm": {"type": "number"},
+        "ruta": {"$ref": "#/$defs/texto"},
+        "origen_x_cm": {"type": "number"},
+        "origen_y_cm": {"type": "number"},
+        "detalle": {"type": "string"}
+      },
+      "allOf": [
+        {"if": {"properties": {"tipo": {"const": "DROP_OK"}}, "required": ["tipo"]},
+         "then": {"required": ["peso_kg", "x_cm", "y_cm", "ruta", "origen_x_cm", "origen_y_cm"]}},
+        {"if": {"properties": {"tipo": {"const": "SOBREPESO"}}, "required": ["tipo"]},
+         "then": {"required": ["peso_kg"]}}
+      ]
+    },
+    "orden": {
+      "type": "object",
+      "required": ["ts", "id_orden", "tipo"],
+      "properties": {
+        "ts": {"$ref": "#/$defs/ts"},
+        "id_orden": {"$ref": "#/$defs/texto"},
+        "tipo": {"enum": ["INICIAR", "CANCELAR", "PARO"]},
+        "ruta": {"$ref": "#/$defs/texto"},
+        "id_tarima": {"$ref": "#/$defs/texto"}
+      },
+      "if": {"properties": {"tipo": {"const": "INICIAR"}}, "required": ["tipo"]},
+      "then": {"required": ["ruta", "id_tarima"]}
+    },
+    "orden_ack": {
+      "type": "object",
+      "required": ["ts", "id_orden", "resultado"],
+      "properties": {
+        "ts": {"$ref": "#/$defs/ts"},
+        "id_orden": {"$ref": "#/$defs/texto"},
+        "resultado": {"enum": ["aceptada", "rechazada"]},
+        "motivo": {"type": "string"}
+      }
+    },
+    "conexion": {
+      "type": "object",
+      "required": ["ts", "robot_id", "estado"],
+      "properties": {
+        "ts": {"$ref": "#/$defs/ts"},
+        "robot_id": {"$ref": "#/$defs/texto"},
+        "estado": {"enum": ["EN_LINEA", "FUERA_DE_LINEA"]}
+      }
+    },
+    "esp32_cmd": {
+      "type": "object",
+      "required": ["ts", "id_cmd", "cmd"],
+      "properties": {
+        "ts": {"$ref": "#/$defs/ts"},
+        "id_cmd": {"$ref": "#/$defs/texto"},
+        "cmd": {"enum": ["LIFT", "MOVE", "STOP", "DROP"]},
+        "id_tarima": {"$ref": "#/$defs/texto"},
+        "pwm_izq": {"type": "number"},
+        "pwm_der": {"type": "number"},
+        "x_cm": {"type": "number"},
+        "y_cm": {"type": "number"}
+      }
+    },
+    "esp32_resp": {
+      "type": "object",
+      "required": ["ts", "id_cmd", "resultado", "codigo"],
+      "properties": {
+        "ts": {"$ref": "#/$defs/ts"},
+        "id_cmd": {"$ref": "#/$defs/texto"},
+        "resultado": {"enum": ["ACK", "ERR"]},
+        "codigo": {"$ref": "#/$defs/texto", "description": "LIFT_OK, OVERWEIGHT, SCALE_FAIL, NO_LOAD, OBSTACULO_CERCANO u otro código documentado en esp32.md."}
+      }
+    },
+    "esp32_sensores": {
+      "type": "object",
+      "required": ["ts", "peso_kg", "distancia_obstaculo_cm", "enc_izq", "enc_der"],
+      "properties": {
+        "ts": {"$ref": "#/$defs/ts"},
+        "peso_kg": {"type": "number"},
+        "distancia_obstaculo_cm": {"type": "number"},
+        "enc_izq": {"type": "integer"},
+        "enc_der": {"type": "integer"}
+      }
+    },
+    "esp32_evento": {
+      "type": "object",
+      "required": ["ts", "codigo"],
+      "properties": {
+        "ts": {"$ref": "#/$defs/ts"},
+        "codigo": {"enum": ["LIFT_OK", "OVERWEIGHT", "SCALE_FAIL", "NO_LOAD", "OBSTACULO_CERCANO", "DROP_OK"]},
+        "id_tarima": {"$ref": "#/$defs/texto"},
+        "peso_kg": {"type": "number"}
+      }
+    }
+  }
+}
