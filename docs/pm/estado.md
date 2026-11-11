@@ -1,6 +1,6 @@
 # Estado del proyecto
 
-> Archivo generado por gen_estado.py el 2026-11-11T14:03 sobre el commit 52d9ece. No editar a mano.
+> Archivo generado por gen_estado.py el 2026-11-11T14:16 sobre el commit 92ff22d. No editar a mano.
 
 ## Gates
 
@@ -13,7 +13,7 @@
 
 | WP | Nombre | Riesgo | Tipo | Estado | Iteraciones | Último dictamen | Informe |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| WP-1.1 | Contratos MQTT, comandos del ESP32, estados y SQL | medio | entregable | Pendiente | 0 | — | — |
+| WP-1.1 | Contratos MQTT, comandos del ESP32, estados y SQL | medio | entregable | En corrección | 1 | NO CONFORME | docs/pm/auditorias/WP-1.1_it1.md |
 | WP-1.2 | Robot simulado | bajo | entregable | Pendiente | 0 | — | — |
 | WP-1.3 | Backend de persistencia y Web API | alto | entregable | Pendiente | 0 | — | — |
 | WP-2.1 | Chasis y tracción | medio | integracion | Pendiente | 0 | — | — |
@@ -35,4 +35,4 @@
 
 ## Resumen
 
-Pendiente: 19
+En corrección: 1, Pendiente: 18
