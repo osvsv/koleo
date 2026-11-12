@@ -78,3 +78,24 @@ def test_ca_1_2_5_telemetria_cada_500_ms_o_menos(ruta, peso):
     assert len(ts) >= 2
     for a, b in zip(ts, ts[1:]):
         assert abs(b - a) <= 500, (a, b)
+
+
+# CA-1.2.7 [D]: meta (fila, columna) -> x_cm = columna*30, y_cm = fila*30.
+# RUTA_2 usa un peso <= 10.0 kg porque con 11.80 es sobrepeso (CA-1.2.2).
+@pytest.mark.parametrize(
+    "ruta,peso,tarima,fila,columna",
+    [
+        ("RUTA_1", 8.45, "TAR-101", 4, 5),
+        ("RUTA_2", 8.0, "TAR-102", 2, 3),
+        ("RUTA_3", 6.20, "TAR-103", 3, 4),
+    ],
+)
+def test_ca_1_2_7_meta_y_tarima_de_cada_ruta(ruta, peso, tarima, fila, columna):
+    """CA-1.2.7: DROP_OK final de la tarima en x_cm=columna*30, y_cm=fila*30."""
+    todos = eventos_de(_mision(ruta, peso))
+    assert todos, "la misión no tiene eventos"
+    drop = todos[-1]
+    assert drop["tipo"] == "DROP_OK"
+    assert drop["id_tarima"] == tarima
+    assert drop["x_cm"] == columna * 30
+    assert drop["y_cm"] == fila * 30

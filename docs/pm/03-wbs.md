@@ -1,5 +1,5 @@
 # WBS — KOLEO
-Versión: 1.1 (G1, respuestas de Osvaldo aplicadas)
+Versión: 1.2 (G1, respuestas de Osvaldo aplicadas; CC-002)
 
 Convenciones: los WP de software los ejecuta `/pm-ejecutar`. Los WP **físicos** (tipo `integracion`) los hacen personas; su evidencia va a `docs/pm/evidencia/hw/<WP>/` y el auditor la inspecciona (DP-09). Los WP de firmware combinan código (lo escribe el ejecutor) y pruebas de banco (las aportan personas). Los criterios llevan procedencia [S] salvo los marcados [D] por DP-04.
 
@@ -66,6 +66,7 @@ Convenciones: los WP de software los ejecuta `/pm-ejecutar`. Los WP **físicos**
   - CA-1.2.4 [S]: una ruta desconocida lanza `ValueError` — Evidencia: tests/aceptacion/test_wp_1_2.py
   - CA-1.2.5 [S]: mensajes de telemetría consecutivos distan ≤ 500 ms en `ts` — Evidencia: tests/aceptacion/test_wp_1_2.py
   - CA-1.2.6 [S]: con `--broker`, los mensajes aparecen en `mosquitto_sub -t 'koleo/#'` — Evidencia: docs/pm/evidencia/WP-1.2/captura_mosquitto.txt
+  - CA-1.2.7 [D]: las rutas del simulador tienen por meta (fila, columna) y tarima: RUTA_1→(4, 5), TAR-101; RUTA_2→(2, 3), TAR-102; RUTA_3→(3, 4), TAR-103, con x_cm = columna×30 e y_cm = fila×30 (RUTA_1 termina en 150, 120) — Evidencia: tests/aceptacion/test_wp_1_2.py
 
 ### WP-1.3 — Backend de persistencia y Web API
 - Riesgo: alto
