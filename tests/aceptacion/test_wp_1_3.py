@@ -1,4 +1,4 @@
-"""WP-1.3 — Backend de persistencia y Web API (CA-1.3.1 a CA-1.3.8; CA-1.3.9 requiere broker y no se prueba).
+"""WP-1.3 — Backend de persistencia y Web API (CA-1.3.1 a CA-1.3.8 y CA-1.3.10 a CA-1.3.12; CA-1.3.9 requiere broker y no se prueba).
 
 `procesar_mensaje` crea la tarima (EN_PISO) si no existe, por eso no se siembra.
 """
@@ -67,6 +67,17 @@ def test_ca_1_3_2_latencia_es_recibido_menos_ts(entorno, delta):
     _procesar(conn, TEMA_EVENTO, _drop("EV-B"), TS0 + delta)
     (fila,) = filas(conn, "historial_movimientos")
     assert fila["latencia_red_ms"] == delta >= 0
+
+
+def test_ca_1_3_2_latencia_negativa_se_guarda_y_avisa(entorno, caplog):
+    """CA-1.3.2 (CC-003): recibido_ms < ts se guarda sin recortar y se registra un aviso."""
+    conn, _ = entorno
+    caplog.set_level(logging.DEBUG)
+    _procesar(conn, TEMA_EVENTO, _drop("EV-B2"), TS0 - 50)
+    (fila,) = filas(conn, "historial_movimientos")
+    assert fila["latencia_red_ms"] == -50
+    assert any(r.levelno >= logging.WARNING for r in caplog.records), \
+        "una latencia negativa debe registrar un aviso en el log"
 
 
 def test_ca_1_3_3_sobrepeso_registra_rechazo_y_bloquea(entorno):
@@ -166,3 +177,76 @@ def test_ca_1_3_8_indicadores_claves(entorno):
     for clave in ("ocupacion", "posicion_robot", "tiempo_ciclo_s", "peso_kg",
                   "precision_cm", "alertas"):
         assert clave in datos, clave
+
+
+CLAVES_INDICADORES = ("ocupacion", "posicion_robot", "tiempo_ciclo_s", "peso_kg",
+                      "precision_cm", "alertas")
+
+
+def test_ca_1_3_10_drop_ok_guarda_ruta_y_deja_ubicacion_nodo_nula(entorno):
+    """CA-1.3.10 [D]. `ubicacion_nodo` existe solo en `tarimas` (no en historial)."""
+    conn, _ = entorno
+    _procesar(conn, TEMA_EVENTO, _drop("EV-H"), TS0 + 10)
+    (h,) = filas(conn, "historial_movimientos")
+    assert h["ruta_ejecutada"] == "RUTA_1"
+    assert _tarima_bd(conn, "TAR-101")["ubicacion_nodo"] is None
+
+
+def test_ca_1_3_11_indicadores_con_bd_vacia(entorno):
+    """CA-1.3.11 [D]: BD vacía -> 200, seis claves, valores nulos o vacíos."""
+    _, db = entorno
+    resp = _api(db).get("/api/indicadores")
+    assert resp.status_code == 200
+    datos = resp.get_json()
+    for clave in CLAVES_INDICADORES:
+        assert clave in datos, clave
+    assert datos["ocupacion"] == 0
+    for clave in ("posicion_robot", "tiempo_ciclo_s", "peso_kg", "precision_cm", "alertas"):
+        assert datos[clave] in (None, [], {}), f"{clave} debe ser nulo o vacío"
+
+
+def test_ca_1_3_11_indicadores_tras_mision_ruta_1(entorno):
+    """CA-1.3.11 [D]: misión RUTA_1 (8.45 kg) procesada."""
+    from simulador.robot_falso import generar_mision
+    conn, db = entorno
+    mision = generar_mision("RUTA_1", 8.45)
+    for tema, payload in mision:
+        _procesar(conn, tema, copy.deepcopy(payload), payload["ts"] + 5)
+    ts_lift = next(p["ts"] for _, p in mision if p.get("tipo") == "LIFT_OK")
+    ts_drop = next(p["ts"] for _, p in mision if p.get("tipo") == "DROP_OK")
+    ultima = [p for t, p in mision if t.endswith("/telemetria")][-1]
+
+    resp = _api(db).get("/api/indicadores")
+    assert resp.status_code == 200
+    datos = resp.get_json()
+    assert datos["ocupacion"] == pytest.approx(1.0)
+    assert tiene_numero(datos["posicion_robot"], ultima["x_cm"])
+    assert tiene_numero(datos["posicion_robot"], ultima["y_cm"])
+    assert datos["peso_kg"] == pytest.approx(8.45)
+    assert datos["precision_cm"] == pytest.approx(0.0)
+    assert datos["tiempo_ciclo_s"] == pytest.approx((ts_drop - ts_lift) / 1000)
+
+
+def _telemetria(ts=TS0 - 500, x=30.0, y=60.0):
+    return {"ts": ts, "robot_id": "robot1", "x_cm": x, "y_cm": y,
+            "velocidad_cm_s": 20.0, "estado": "EN_RUTA", "peso_kg": 0.0,
+            "distancia_obstaculo_cm": 120.0}
+
+
+def test_ca_1_3_12_rechazo_toma_coordenadas_de_ultima_telemetria(entorno):
+    """CA-1.3.12 [D]"""
+    conn, _ = entorno
+    _procesar(conn, "koleo/robot1/telemetria", _telemetria(ts=TS0 - 1000, x=0.0, y=0.0), TS0 - 995)
+    _procesar(conn, "koleo/robot1/telemetria", _telemetria(), TS0 - 495)
+    _procesar(conn, TEMA_EVENTO, _sobrepeso(), TS0 + 10)
+    (r,) = filas(conn, "registro_rechazos_seguridad")
+    assert r["coord_x_cm"] == pytest.approx(30.0)
+    assert r["coord_y_cm"] == pytest.approx(60.0)
+
+
+def test_ca_1_3_12_rechazo_sin_telemetria_previa_deja_coordenadas_nulas(entorno):
+    """CA-1.3.12 [D]"""
+    conn, _ = entorno
+    _procesar(conn, TEMA_EVENTO, _sobrepeso(), TS0 + 10)
+    (r,) = filas(conn, "registro_rechazos_seguridad")
+    assert r["coord_x_cm"] is None and r["coord_y_cm"] is None

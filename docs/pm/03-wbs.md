@@ -1,5 +1,5 @@
 # WBS — KOLEO
-Versión: 1.2 (G1, respuestas de Osvaldo aplicadas; CC-002)
+Versión: 1.3 (G1, respuestas de Osvaldo aplicadas; CC-002, CC-003)
 
 Convenciones: los WP de software los ejecuta `/pm-ejecutar`. Los WP **físicos** (tipo `integracion`) los hacen personas; su evidencia va a `docs/pm/evidencia/hw/<WP>/` y el auditor la inspecciona (DP-09). Los WP de firmware combinan código (lo escribe el ejecutor) y pruebas de banco (las aportan personas). Los criterios llevan procedencia [S] salvo los marcados [D] por DP-04.
 
@@ -73,12 +73,12 @@ Convenciones: los WP de software los ejecuta `/pm-ejecutar`. Los WP **físicos**
 - Tipo: entregable
 - Entregable: servicio Python que recibe mensajes MQTT, los guarda en SQLite con el esquema canónico y los expone por una API REST
 - Alcance de archivos: backend/**
-- Interfaz: `backend.koleo.ingesta.procesar_mensaje(conn: sqlite3.Connection, topic: str, payload: dict, recibido_ms: int) -> None`; `backend.koleo.api.crear_app(db_path: str, publicador=None) -> flask.Flask` con `GET /api/tarimas`, `/api/historial`, `/api/rechazos`, `/api/robots`, `/api/indicadores`; `backend/koleo/suscriptor.py` (cliente MQTT que llama a `procesar_mensaje`); `procesar_mensaje` crea la tarima en `tarimas` (estado EN_PISO) si el evento se refiere a una que no existe, y un mensaje de `koleo/robot1/orden/ack` actualiza el estado de la orden correspondiente
+- Interfaz: `backend.koleo.ingesta.procesar_mensaje(conn: sqlite3.Connection, topic: str, payload: dict, recibido_ms: int) -> None`; `backend.koleo.api.crear_app(db_path: str, publicador=None) -> flask.Flask` con `GET /api/tarimas`, `/api/historial`, `/api/rechazos`, `/api/robots`, `/api/indicadores`; `backend/koleo/suscriptor.py` (cliente MQTT que llama a `procesar_mensaje`); `procesar_mensaje` crea la tarima en `tarimas` (estado EN_PISO) si el evento se refiere a una que no existe, y un mensaje de `koleo/robot1/orden/ack` actualiza el estado de la orden correspondiente. [D] (CC-003) El backend crea por su cuenta, con `CREATE TABLE IF NOT EXISTS` y sin modificar `contratos/esquema.sql`, las tablas auxiliares `robots` (última conexión y telemetría por robot), `ordenes` (estado de cada orden) y `eventos_vistos` (descarta reenvíos QoS 1 de SOBREPESO y LIFT_OK); `POST /api/ordenes` y `POST /api/tarimas` no pertenecen a este WP sino a WP-5.2
 - Trazabilidad: REQ-F-008, REQ-F-011, REQ-F-017, REQ-NF-003
 - Dependencias: WP-1.1, WP-1.2
 - Criterios de aceptación:
   - CA-1.3.1 [S]: un evento DROP_OK de TAR-101 (8.45 kg, destino 150, 120) deja la tarima UBICADA_DESTINO en esas coordenadas y crea una fila en `historial_movimientos` — Evidencia: tests/aceptacion/test_wp_1_3.py
-  - CA-1.3.2 [S]: `latencia_red_ms` de esa fila es `recibido_ms − ts` del evento y es ≥ 0 — Evidencia: tests/aceptacion/test_wp_1_3.py
+  - CA-1.3.2 [S]: `latencia_red_ms` de esa fila es `recibido_ms − ts` del evento y es ≥ 0 cuando `recibido_ms ≥ ts`; si resulta negativa (relojes desfasados) se guarda tal cual, sin recortarla, y se registra un aviso en el log (CC-003) — Evidencia: tests/aceptacion/test_wp_1_3.py
   - CA-1.3.3 [S]: un evento SOBREPESO de TAR-102 (11.80 kg) crea una fila en `registro_rechazos_seguridad` con ese peso, deja la tarima BLOQUEADA_SOBREPESO y no crea fila de historial — Evidencia: tests/aceptacion/test_wp_1_3.py
   - CA-1.3.4 [S]: con la salida de `generar_mision` para TAR-101 (RUTA_1), TAR-102 (RUTA_2, 11.80 kg) y TAR-103 (RUTA_3), queda 2 filas de historial y 1 de rechazo (VAL-08) — Evidencia: tests/aceptacion/test_wp_1_3.py
   - CA-1.3.5 [S]: un mensaje inválido (sin `ts` o `tipo` desconocido) se descarta, no cambia la BD y se registra en el log — Evidencia: tests/aceptacion/test_wp_1_3.py
@@ -86,6 +86,9 @@ Convenciones: los WP de software los ejecuta `/pm-ejecutar`. Los WP **físicos**
   - CA-1.3.7 [S]: `GET /api/tarimas` devuelve id, estado y coordenadas; `GET /api/historial` sobre una BD vacía devuelve `[]` con código 200 — Evidencia: tests/aceptacion/test_wp_1_3.py
   - CA-1.3.8 [S]: `GET /api/indicadores` devuelve al menos las claves `ocupacion`, `posicion_robot`, `tiempo_ciclo_s`, `peso_kg`, `precision_cm`, `alertas` — Evidencia: tests/aceptacion/test_wp_1_3.py
   - CA-1.3.9 [S]: el suscriptor corre contra un broker Mosquitto real con el simulador y la BD queda poblada — Evidencia: docs/pm/evidencia/WP-1.3/corrida_con_broker.txt
+  - CA-1.3.10 [D]: la fila de historial de un DROP_OK guarda en `ruta_ejecutada` el identificador de la ruta del evento (por ejemplo `RUTA_1`) y la tarima deja `ubicacion_nodo` (columna de `tarimas`) en NULL — Evidencia: tests/aceptacion/test_wp_1_3.py
+  - CA-1.3.11 [D]: en `GET /api/indicadores`, `ocupacion` es la fracción de tarimas en UBICADA_DESTINO sobre el total de tarimas (0 si no hay); `posicion_robot` es la última telemetría (`x_cm`, `y_cm`); `tiempo_ciclo_s` es `ts` del último DROP_OK menos `ts` del LIFT_OK de la misma tarima, en segundos; `peso_kg` es el último peso de la telemetría; `precision_cm` es la distancia entre la última posición telemetrada y el destino del último DROP_OK; `alertas` es la lista de los rechazos más recientes; con la BD vacía responde 200 con las seis claves y valores nulos o vacíos — Evidencia: tests/aceptacion/test_wp_1_3.py
+  - CA-1.3.12 [D]: la fila de `registro_rechazos_seguridad` de un SOBREPESO toma `coord_x_cm` y `coord_y_cm` de la última telemetría del robot, o NULL si no hubo — Evidencia: tests/aceptacion/test_wp_1_3.py
 
 ### WP-2.1 — Chasis y tracción
 - Riesgo: medio
