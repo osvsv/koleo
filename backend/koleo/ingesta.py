@@ -154,7 +154,7 @@ def _evento(conn, p, recibido_ms):
             "INSERT INTO registro_rechazos_seguridad "
             "(id_tarima, peso_detectado_kg, motivo, coord_x_cm, coord_y_cm, fecha_hora) "
             "VALUES (?,?,?,?,?,?)",
-            (id_tarima, p["peso_kg"], "SOBREPESO", p.get("x_cm", x), p.get("y_cm", y), _iso(ts)))
+            (id_tarima, p["peso_kg"], "SOBREPESO", x, y, _iso(ts)))
         conn.execute("UPDATE tarimas SET estado='BLOQUEADA_SOBREPESO', peso_kg=?, "
                      "ultima_actualizacion=? WHERE id_tarima=?",
                      (p["peso_kg"], _iso(ts), id_tarima))
