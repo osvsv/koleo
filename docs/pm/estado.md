@@ -1,6 +1,6 @@
 # Estado del proyecto
 
-> Archivo generado por gen_estado.py el 2026-11-12T12:22 sobre el commit f9cc30c. No editar a mano.
+> Archivo generado por gen_estado.py el 2026-11-12T12:43 sobre el commit 39e1607. No editar a mano.
 
 ## Gates
 
@@ -14,8 +14,8 @@
 | WP | Nombre | Riesgo | Tipo | Estado | Iteraciones | Último dictamen | Informe |
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | WP-1.1 | Contratos MQTT, comandos del ESP32, estados y SQL | medio | entregable | Conforme@7229b5e | 2 | CONFORME | docs/pm/auditorias/WP-1.1_it2.md |
-| WP-1.2 | Robot simulado | bajo | entregable | Conforme@b7c751b | 2 | CONFORME CON OBSERVACIONES | docs/pm/auditorias/WP-1.2_it3.md |
-| WP-1.3 | Backend de persistencia y Web API | alto | entregable | Pendiente | 0 | — | — |
+| WP-1.2 | Robot simulado | bajo | entregable | Requiere reverificación | 2 | CONFORME CON OBSERVACIONES | docs/pm/auditorias/WP-1.2_it3.md |
+| WP-1.3 | Backend de persistencia y Web API | alto | entregable | En corrección | 1 | NO CONFORME | docs/pm/auditorias/WP-1.3_it2.md |
 | WP-2.1 | Chasis y tracción | medio | integracion | Pendiente | 0 | — | — |
 | WP-2.2 | Mecanismo de elevación | alto | integracion | Pendiente | 0 | — | — |
 | WP-2.3 | Energía y energizado seguro | alto | integracion | Pendiente | 0 | — | — |
@@ -35,4 +35,4 @@
 
 ## Resumen
 
-Conforme: 2, Pendiente: 17
+Conforme: 1, En corrección: 1, Pendiente: 16, Requiere reverificación: 1
