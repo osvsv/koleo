@@ -1,0 +1,5 @@
+BD: tarimas [('TAR-101', None, 8.45, None, 150, 120, 'UBICADA_DESTINO', '2026-11-12T18:27:42.405000+00:00'), ('TAR-102', None, 11.8, None, None, None, 'BLOQUEADA_SOBREPESO', '2026-11-12T18:27:45.960000+00:00'), ('TAR-103', None, 6.2, None, 120, 90, 'UBICADA_DESTINO', '2026-11-12T18:27:55.494000+00:00')]
+historial_movimientos [(1, 'EV-3021ded8c75c-DROP_OK-13', 'TAR-101', 'RUTA_1', 0, 0, 150, 120, 8.45, 628, '2026-11-12T18:27:42.405000+00:00'), (2, 'EV-2b2f1e91c18a-DROP_OK-11', 'TAR-103', 'RUTA_3', 0, 0, 120, 90, 6.2, 624, '2026-11-12T18:27:55.494000+00:00')]
+registro_rechazos_seguridad [(1, 'TAR-102', 11.8, 'SOBREPESO', 0, 0, '2026-11-12T18:27:45.960000+00:00')]
+
+2026-11-12 12:26:12,663 koleo.suscriptor INFO conectado al broker (Success)
