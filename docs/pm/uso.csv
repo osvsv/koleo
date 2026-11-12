@@ -3,3 +3,4 @@ fecha,sesion,fase,wp,rol,modelo,entrada,salida,cache_escritura,cache_lectura,usd
 2026-11-11 12:47,f3c9f770-4eda-4976-9b66-42a1d6661c1e,pm-planificar+pm-adoptar+pm-validar+pm-ejecutar,WP-1.1,ejecutor-wbs,claude-sonnet-5-5,26,20374,62643,275749,0.6233,105.2
 2026-11-11 12:47,f3c9f770-4eda-4976-9b66-42a1d6661c1e,pm-planificar+pm-adoptar+pm-validar+pm-ejecutar,WP-1.1,principal,claude-sonnet-5-5,194,201847,436827,17555723,10.9160,105.2
 2026-11-11 12:47,f3c9f770-4eda-4976-9b66-42a1d6661c1e,pm-planificar+pm-adoptar+pm-validar+pm-ejecutar,WP-1.1,redactor-aceptacion,claude-sonnet-5-5,48,58982,126915,1813951,1.9050,105.2
+2026-11-12 10:55,d79e5814-5054-4ea2-895c-59a5a548a746,pm-ejecutar,—,principal,claude-sonnet-5-5,6,1026,68831,135884,0.4692,1.7

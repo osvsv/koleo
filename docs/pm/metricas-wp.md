@@ -1,6 +1,6 @@
 # Calidad y costo por WP
 
-> Archivo generado por metricas_wp.py el 2026-11-11T14:33 sobre el commit 2701dc4. No editar a mano. Los escapes se anotan en `metricas.md` (sección Escapes) y el uso lo registra el hook de fin de sesión en `uso.csv`.
+> Archivo generado por metricas_wp.py el 2026-11-12T10:58 sobre el commit b61a457. No editar a mano. Los escapes se anotan en `metricas.md` (sección Escapes) y el uso lo registra el hook de fin de sesión en `uso.csv`.
 
 Hallazgos it1 = Mayor/Menor/Observación/Línea base en la primera auditoría. Retrabajo = iteraciones de corrección + reverificaciones. USD eq. = equivalente con la tabla de precios del hook, sin el auditor en sombra (columna aparte).
 
