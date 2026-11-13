@@ -3,11 +3,16 @@ import { useTablero } from "./usePolling.js";
 import Flotilla from "./Flotilla.jsx";
 import Monitoreo from "./Monitoreo.jsx";
 import Indicadores from "./Indicadores.jsx";
+import Control from "./control/Control.jsx";
+import Logistica from "./logistica/Logistica.jsx";
+import { useTarimas } from "./logistica/useTarimas.js";
 
 export default function App() {
   const d = useTablero();
   const [vista, setVista] = useState("flotilla");
-  const tabs = [["flotilla", "Flotilla"], ["monitoreo", "Monitoreo"]];
+  const [asignada, setAsignada] = useState({ ruta: "", id_tarima: "" });
+  const { tarimas, refrescar } = useTarimas(d.conectado === true);
+  const tabs = [["flotilla", "Flotilla"], ["monitoreo", "Monitoreo"], ["control", "Control"], ["logistica", "Logística"]];
   return (
     <div className="min-h-screen bg-slate-100 text-slate-900">
       <header className="flex items-center justify-between bg-slate-800 px-6 py-3 text-white">
@@ -28,9 +33,13 @@ export default function App() {
       {d.conectado && (
         <main className="space-y-6 p-6">
           <Indicadores ind={d.indicadores} />
-          {vista === "flotilla"
-            ? <Flotilla robots={d.robots} />
-            : <Monitoreo robots={d.robots} historial={d.historial} />}
+          {vista === "flotilla" && <Flotilla robots={d.robots} />}
+          {vista === "monitoreo" && <Monitoreo robots={d.robots} historial={d.historial} />}
+          {vista === "control" && <Control tarimas={tarimas} rutaInicial={asignada.ruta} tarimaInicial={asignada.id_tarima} />}
+          {vista === "logistica" && (
+            <Logistica tarimas={tarimas} historial={d.historial} alRegistrar={refrescar}
+              alAsignarRuta={(id_tarima, ruta) => { setAsignada({ ruta, id_tarima }); setVista("control"); }} />
+          )}
         </main>
       )}
     </div>

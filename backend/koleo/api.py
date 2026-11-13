@@ -2,8 +2,9 @@
 import os
 import sqlite3
 
-from flask import Flask, jsonify
+from flask import Flask, jsonify, request
 
+from . import ordenes as ord_
 from .ingesta import asegurar_tablas
 
 ESTADOS_EN_RUTA = ("EN_MISION", "ELEVANDO", "EN_RUTA", "DEPOSITANDO")
@@ -74,6 +75,39 @@ def crear_app(db_path, publicador=None):
     @app.get("/api/ordenes")
     def ordenes():
         return jsonify(consulta("SELECT * FROM ordenes ORDER BY ts"))
+
+    @app.post("/api/ordenes")
+    def crear_orden():
+        conn = conectar()
+        try:
+            id_orden = ord_.crear_orden(conn, publicador, request.get_json(silent=True))
+        except ord_.ErrorValidacion as e:
+            return jsonify({"error": str(e)}), 400
+        except RuntimeError as e:
+            return jsonify({"error": str(e)}), 503
+        finally:
+            conn.close()
+        return jsonify({"id_orden": id_orden}), 202
+
+    @app.get("/api/ordenes/<id_orden>")
+    def orden(id_orden):
+        conn = conectar()
+        try:
+            o = ord_.obtener_orden(conn, id_orden)
+        finally:
+            conn.close()
+        return (jsonify(o), 200) if o else (jsonify({"error": "orden no encontrada"}), 404)
+
+    @app.post("/api/tarimas")
+    def registrar_tarima():
+        conn = conectar()
+        try:
+            id_t = ord_.registrar_tarima(conn, request.get_json(silent=True))
+        except ord_.ErrorValidacion as e:
+            return jsonify({"error": str(e)}), 400
+        finally:
+            conn.close()
+        return jsonify({"id_tarima": id_t}), 201
 
     return app
 
