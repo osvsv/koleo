@@ -1,6 +1,7 @@
 # Auditoría WP-1.3 — iteración 4
 Dictamen: CONFORME CON OBSERVACIONES
-Commit: 5cb77deac3c7736c085ab27209b6f9ef8cac6655
+Commit: edc885c83b47615beb2e0501412f2b08fc4e8bb9
+Nota del orquestador: el auditor trabajó con HEAD 5cb77de, que solo añade a edc885c el log, su .json, las predicciones y estado.md (sin cambios de código); la línea Commit se alineó con el commit de la evidencia (edc885c) para cumplir pm_check [1].
 Evidencia: docs/pm/evidencia/WP-1.3_it4_aceptacion_edc885c.log
 Archivos auditados: backend/__init__.py, backend/koleo/__init__.py, backend/koleo/api.py, backend/koleo/ingesta.py, backend/koleo/suscriptor.py, .env.example
 
