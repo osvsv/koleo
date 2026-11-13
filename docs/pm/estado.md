@@ -1,6 +1,6 @@
 # Estado del proyecto
 
-> Archivo generado por gen_estado.py el 2026-11-12T12:47 sobre el commit 615282d. No editar a mano.
+> Archivo generado por gen_estado.py el 2026-11-13T07:50 sobre el commit e87bfb8. No editar a mano.
 
 ## Gates
 
@@ -13,14 +13,14 @@
 
 | WP | Nombre | Riesgo | Tipo | Estado | Iteraciones | Último dictamen | Informe |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| WP-1.1 | Contratos MQTT, comandos del ESP32, estados y SQL | medio | entregable | Conforme@7229b5e | 2 | CONFORME | docs/pm/auditorias/WP-1.1_it2.md |
+| WP-1.1 | Contratos MQTT, comandos del ESP32, estados y SQL | medio | entregable | Requiere reverificación (CC-004) | 2 | CONFORME | docs/pm/auditorias/WP-1.1_it2.md |
 | WP-1.2 | Robot simulado | bajo | entregable | Conforme@615282d | 3 | CONFORME CON OBSERVACIONES | docs/pm/auditorias/WP-1.2_it4.md |
 | WP-1.3 | Backend de persistencia y Web API | alto | entregable | Conforme@ff00514 | 2 | CONFORME CON OBSERVACIONES | docs/pm/auditorias/WP-1.3_it3.md |
 | WP-2.1 | Chasis y tracción | medio | integracion | Pendiente | 0 | — | — |
 | WP-2.2 | Mecanismo de elevación | alto | integracion | Pendiente | 0 | — | — |
 | WP-2.3 | Energía y energizado seguro | alto | integracion | Pendiente | 0 | — | — |
 | WP-2.4 | Sensores montados | medio | integracion | Pendiente | 0 | — | — |
-| WP-3.1 | Báscula con fallo seguro y elevación | alto | entregable | Pendiente | 0 | — | — |
+| WP-3.1 | Elevación con peso declarado y rechazo por sobrepeso | alto | entregable | Pendiente | 0 | — | — |
 | WP-3.2 | Enlace de comandos Pi–ESP32 por MQTT | alto | entregable | Pendiente | 0 | — | — |
 | WP-3.3 | Parada continua por obstáculo | alto | entregable | Pendiente | 0 | — | — |
 | WP-4.1 | Puente MQTT | alto | entregable | Pendiente | 0 | — | — |
@@ -35,4 +35,4 @@
 
 ## Resumen
 
-Conforme: 3, Pendiente: 16
+Conforme: 2, Pendiente: 16, Requiere reverificación: 1
