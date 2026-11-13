@@ -250,3 +250,82 @@ def test_ca_1_3_12_rechazo_sin_telemetria_previa_deja_coordenadas_nulas(entorno)
     _procesar(conn, TEMA_EVENTO, _sobrepeso(), TS0 + 10)
     (r,) = filas(conn, "registro_rechazos_seguridad")
     assert r["coord_x_cm"] is None and r["coord_y_cm"] is None
+
+
+# ---------------------------------------------------------------- CA-1.3.13 (CC-005)
+
+def _telemetria_robot(robot_id="robot1", estado="EN_RUTA", velocidad=12.5, ts=TS0 - 500):
+    return {"ts": ts, "robot_id": robot_id, "x_cm": 30.0, "y_cm": 60.0,
+            "velocidad_cm_s": velocidad, "estado": estado, "peso_kg": 0.0,
+            "distancia_obstaculo_cm": 120.0}
+
+
+def _orden_iniciar_aceptada(conn):
+    orden = {"ts": TS0 - 900, "id_orden": "ORD-13", "tipo": "INICIAR",
+             "ruta": "RUTA_1", "id_tarima": "TAR-101"}
+    _procesar(conn, "koleo/robot1/orden", orden, TS0 - 895)
+    ack = {"ts": TS0 - 800, "id_orden": "ORD-13", "resultado": "aceptada"}
+    _procesar(conn, "koleo/robot1/orden/ack", ack, TS0 - 795)
+
+
+def _robot(db, robot_id):
+    resp = _api(db).get("/api/robots")
+    assert resp.status_code == 200
+    r = [x for x in resp.get_json() if x.get("robot_id") == robot_id]
+    assert len(r) == 1, f"{robot_id} debe aparecer una vez en /api/robots"
+    return r[0]
+
+
+def test_ca_1_3_13_robots_velocidad_y_ruta_actual_en_ruta(entorno):
+    """CA-1.3.13 [D]"""
+    conn, db = entorno
+    _orden_iniciar_aceptada(conn)
+    _procesar(conn, "koleo/robot1/telemetria", _telemetria_robot(), TS0 - 495)
+    r = _robot(db, "robot1")
+    assert r["velocidad_cm_s"] == pytest.approx(12.5)
+    assert r["ruta_actual"] == "RUTA_1"
+
+
+def test_ca_1_3_13_robots_ruta_actual_nula_si_inactivo(entorno):
+    """CA-1.3.13 [D]"""
+    conn, db = entorno
+    _orden_iniciar_aceptada(conn)
+    _procesar(conn, "koleo/robot1/telemetria",
+              _telemetria_robot(estado="INACTIVO", velocidad=0.0), TS0 - 495)
+    assert _robot(db, "robot1")["ruta_actual"] is None
+
+
+def test_ca_1_3_13_robots_alertas_por_robot(entorno):
+    """CA-1.3.13 [D]: el rechazo aparece en robot1 y no en robot2."""
+    conn, db = entorno
+    _procesar(conn, "koleo/robot1/telemetria", _telemetria_robot(), TS0 - 495)
+    _procesar(conn, "koleo/robot2/telemetria", _telemetria_robot("robot2"), TS0 - 490)
+    _procesar(conn, TEMA_EVENTO, _sobrepeso(), TS0 + 10)
+    alertas = _robot(db, "robot1")["alertas"]
+    assert len(alertas) == 1
+    a = alertas[0]
+    for clave in ("id_tarima", "peso_detectado_kg", "motivo", "fecha_hora"):
+        assert clave in a, clave
+    assert a["id_tarima"] == "TAR-102"
+    assert a["peso_detectado_kg"] == pytest.approx(11.80)
+    assert _robot(db, "robot2")["alertas"] == []
+
+
+def test_ca_1_3_13_robots_alertas_maximo_5_mas_reciente_primero(entorno):
+    """CA-1.3.13 [D]: con 6 sobrepesos solo quedan 5, el último primero."""
+    conn, db = entorno
+    _procesar(conn, "koleo/robot1/telemetria", _telemetria_robot(), TS0 - 495)
+    for i in range(6):
+        ev = _sobrepeso(f"EV-S{i}", ts=TS0 + i * 1000)
+        ev["id_tarima"] = f"TAR-2{i:02d}"
+        _procesar(conn, TEMA_EVENTO, ev, TS0 + i * 1000 + 10)
+    alertas = _robot(db, "robot1")["alertas"]
+    assert [a["id_tarima"] for a in alertas] == [f"TAR-2{i:02d}" for i in (5, 4, 3, 2, 1)]
+
+
+def test_ca_1_3_13_robots_bd_vacia_devuelve_lista_vacia(entorno):
+    """CA-1.3.13 [D]"""
+    _, db = entorno
+    resp = _api(db).get("/api/robots")
+    assert resp.status_code == 200
+    assert resp.get_json() == []

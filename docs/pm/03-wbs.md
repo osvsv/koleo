@@ -1,5 +1,5 @@
 # WBS — KOLEO
-Versión: 1.4 (G1, respuestas de Osvaldo aplicadas; CC-002, CC-003, CC-004)
+Versión: 1.5 (G1, respuestas de Osvaldo aplicadas; CC-002, CC-003, CC-004, CC-005)
 
 Convenciones: los WP de software los ejecuta `/pm-ejecutar`. Los WP **físicos** (tipo `integracion`) los hacen personas; su evidencia va a `docs/pm/evidencia/hw/<WP>/` y el auditor la inspecciona (DP-09). Los WP de firmware combinan código (lo escribe el ejecutor) y pruebas de banco (las aportan personas). Los criterios llevan procedencia [S] salvo los marcados [D] por DP-04.
 
@@ -73,8 +73,8 @@ Convenciones: los WP de software los ejecuta `/pm-ejecutar`. Los WP **físicos**
 - Tipo: entregable
 - Entregable: servicio Python que recibe mensajes MQTT, los guarda en SQLite con el esquema canónico y los expone por una API REST
 - Alcance de archivos: backend/**
-- Interfaz: `backend.koleo.ingesta.procesar_mensaje(conn: sqlite3.Connection, topic: str, payload: dict, recibido_ms: int) -> None`; `backend.koleo.api.crear_app(db_path: str, publicador=None) -> flask.Flask` con `GET /api/tarimas`, `/api/historial`, `/api/rechazos`, `/api/robots`, `/api/indicadores`; `backend/koleo/suscriptor.py` (cliente MQTT que llama a `procesar_mensaje`); `procesar_mensaje` crea la tarima en `tarimas` (estado EN_PISO) si el evento se refiere a una que no existe, y un mensaje de `koleo/robot1/orden/ack` actualiza el estado de la orden correspondiente. [D] (CC-003) El backend crea por su cuenta, con `CREATE TABLE IF NOT EXISTS` y sin modificar `contratos/esquema.sql`, las tablas auxiliares `robots` (última conexión y telemetría por robot), `ordenes` (estado de cada orden) y `eventos_vistos` (descarta reenvíos QoS 1 de SOBREPESO y LIFT_OK); `POST /api/ordenes` y `POST /api/tarimas` no pertenecen a este WP sino a WP-5.2
-- Trazabilidad: REQ-F-008, REQ-F-011, REQ-F-017, REQ-NF-003
+- Interfaz: `backend.koleo.ingesta.procesar_mensaje(conn: sqlite3.Connection, topic: str, payload: dict, recibido_ms: int) -> None`; `backend.koleo.api.crear_app(db_path: str, publicador=None) -> flask.Flask` con `GET /api/tarimas`, `/api/historial`, `/api/rechazos`, `/api/robots`, `/api/indicadores`; `backend/koleo/suscriptor.py` (cliente MQTT que llama a `procesar_mensaje`); `procesar_mensaje` crea la tarima en `tarimas` (estado EN_PISO) si el evento se refiere a una que no existe, y un mensaje de `koleo/robot1/orden/ack` actualiza el estado de la orden correspondiente. [D] (CC-003) El backend crea por su cuenta, con `CREATE TABLE IF NOT EXISTS` y sin modificar `contratos/esquema.sql`, las tablas auxiliares `robots` (última conexión y telemetría por robot), `ordenes` (estado de cada orden) y `eventos_vistos` (descarta reenvíos QoS 1 de SOBREPESO y LIFT_OK); `POST /api/ordenes` y `POST /api/tarimas` no pertenecen a este WP sino a WP-5.2. [D] (CC-005) La tabla auxiliar `robots` guarda además `velocidad_cm_s` (con migración `ALTER TABLE` si la tabla ya existe sin esa columna) y una tabla auxiliar `rechazos_robot` (`id_alerta`, `robot_id`) relaciona cada fila de `registro_rechazos_seguridad` con el robot que emitió el SOBREPESO; `GET /api/robots` devuelve por robot `robot_id`, `estado`, `conexion`, `x_cm`, `y_cm`, `peso_kg`, `distancia_obstaculo_cm`, `velocidad_cm_s`, `ultimo_ts`, `ruta_actual` y `alertas`
+- Trazabilidad: REQ-F-008, REQ-F-011, REQ-F-012, REQ-F-017, REQ-NF-003
 - Dependencias: WP-1.1, WP-1.2
 - Criterios de aceptación:
   - CA-1.3.1 [S]: un evento DROP_OK de TAR-101 (8.45 kg, destino 150, 120) deja la tarima UBICADA_DESTINO en esas coordenadas y crea una fila en `historial_movimientos` — Evidencia: tests/aceptacion/test_wp_1_3.py
@@ -89,6 +89,7 @@ Convenciones: los WP de software los ejecuta `/pm-ejecutar`. Los WP **físicos**
   - CA-1.3.10 [D]: la fila de historial de un DROP_OK guarda en `ruta_ejecutada` el identificador de la ruta del evento (por ejemplo `RUTA_1`) y la tarima deja `ubicacion_nodo` (columna de `tarimas`) en NULL — Evidencia: tests/aceptacion/test_wp_1_3.py
   - CA-1.3.11 [D]: en `GET /api/indicadores`, `ocupacion` es la fracción de tarimas en UBICADA_DESTINO sobre el total de tarimas (0 si no hay); `posicion_robot` es la última telemetría (`x_cm`, `y_cm`); `tiempo_ciclo_s` es `ts` del último DROP_OK menos `ts` del LIFT_OK de la misma tarima, en segundos; `peso_kg` es el último peso de la telemetría; `precision_cm` es la distancia entre la última posición telemetrada y el destino del último DROP_OK; `alertas` es la lista de los rechazos más recientes; con la BD vacía responde 200 con las seis claves y valores nulos o vacíos — Evidencia: tests/aceptacion/test_wp_1_3.py
   - CA-1.3.12 [D]: la fila de `registro_rechazos_seguridad` de un SOBREPESO toma `coord_x_cm` y `coord_y_cm` de la última telemetría del robot, o NULL si no hubo — Evidencia: tests/aceptacion/test_wp_1_3.py
+  - CA-1.3.13 [D]: con una telemetría de `robot1` (velocidad 12.5 cm/s, estado EN_RUTA) y una orden INICIAR `RUTA_1` aceptada por ack, `GET /api/robots` devuelve para `robot1` `velocidad_cm_s` 12.5 y `ruta_actual` "RUTA_1"; con estado INACTIVO `ruta_actual` es nulo; tras un SOBREPESO de `robot1`, su `alertas` lista ese rechazo (`id_tarima`, `peso_detectado_kg`, `motivo`, `fecha_hora`, máximo 5, el más reciente primero) y las `alertas` de otro robot no lo incluyen; con la BD vacía `GET /api/robots` responde `[]` con código 200 (CC-005) — Evidencia: tests/aceptacion/test_wp_1_3.py
 
 ### WP-2.1 — Chasis y tracción
 - Riesgo: medio
@@ -262,13 +263,13 @@ Convenciones: los WP de software los ejecuta `/pm-ejecutar`. Los WP **físicos**
 - Tipo: entregable
 - Entregable: aplicación React + Vite + Tailwind con los módulos Flotilla y Monitoreo y al menos 5 indicadores en tiempo real
 - Alcance de archivos: ui/**, docs/pm/evidencia/WP-5.1/**
-- Interfaz: `npm run build` y `npm run dev`; consume `GET /api/robots` y `GET /api/indicadores` por consulta cada 1 s (SUP-015)
+- Interfaz: `npm run build` y `npm run dev`; consume `GET /api/robots`, `GET /api/indicadores` y `GET /api/historial` por consulta cada 1 s (SUP-015); no consume `/api/ordenes` ni define umbrales propios de alerta (CC-005)
 - Trazabilidad: REQ-F-012
 - Dependencias: WP-1.2, WP-1.3
 - Criterios de aceptación:
   - CA-5.1.1 [S]: `npm run build` termina sin errores — Evidencia: docs/pm/evidencia/WP-5.1/build.txt
-  - CA-5.1.2 [S]: Flotilla muestra, por robot, identificador, conexión (EN_LINEA / FUERA_DE_LINEA), estado y alertas — Evidencia: docs/pm/evidencia/WP-5.1/flotilla.png (con el simulador)
-  - CA-5.1.3 [S]: Monitoreo muestra el peso declarado frente a capacidad, velocidad, ruta e historial reciente — Evidencia: docs/pm/evidencia/WP-5.1/monitoreo.png
+  - CA-5.1.2 [S]: Flotilla muestra, por robot, identificador, conexión (EN_LINEA / FUERA_DE_LINEA), estado y las `alertas` de ese robot que entrega `GET /api/robots` — Evidencia: docs/pm/evidencia/WP-5.1/flotilla.png (con el simulador)
+  - CA-5.1.3 [S]: Monitoreo muestra el peso declarado frente a capacidad, la velocidad (`velocidad_cm_s`), la ruta en curso (`ruta_actual`) y el historial reciente (`GET /api/historial`) de `GET /api/robots` — Evidencia: docs/pm/evidencia/WP-5.1/monitoreo.png
   - CA-5.1.4 [S]: se muestran al menos 5 indicadores (ocupación, posición del robot, tiempo de ciclo, peso, precisión, alertas) y cambian en ≤ 2 s tras publicar el simulador — Evidencia: docs/pm/evidencia/WP-5.1/indicadores.mp4
   - CA-5.1.5 [S]: con el backend detenido el tablero muestra "sin conexión" y no presenta datos viejos como actuales — Evidencia: docs/pm/evidencia/WP-5.1/sin_conexion.png
 
