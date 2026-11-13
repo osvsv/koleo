@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>KOLEO · Control</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#fafafa}
+a{color:#181925;text-decoration:none}a:hover{color:#5b55e0}
+</style>
+
+</head>
+<body>
+
+
+<div style="min-height: 900px; display: flex; flex-wrap: wrap; background: #fafafa; color: #181925; font-family: Inter, system-ui, sans-serif; font-size: 15px;">
+
+  <nav aria-label="Principal" style="flex: 1 1 220px; max-width: 240px; box-sizing: border-box; padding: 24px 16px; background: #ffffff; border-right: 1px solid #e8e8e8; display: flex; flex-direction: column; gap: 4px;">
+    <div style="display: flex; align-items: center; gap: 10px; padding: 0 8px 24px;">
+      <div style="width: 32px; height: 32px; border-radius: 10px; background: #918df6;" aria-hidden="true"></div>
+      <span style="font-size: 18px; font-weight: 600; letter-spacing: -0.3px;">KOLEO</span>
+    </div>
+    <a href="#" style="padding: 10px 12px; border-radius: 999px; color: #666666;">Inicio</a>
+    <a href="#" style="padding: 10px 12px; border-radius: 999px; color: #666666;">Flotilla</a>
+    <a href="monitoreo.html" style="padding: 10px 12px; border-radius: 999px; color: #666666;">Monitoreo</a>
+    <a href="control.html" aria-current="page" style="padding: 10px 12px; border-radius: 999px; background: #efeefe; color: #181925; font-weight: 500;">Control</a>
+    <div style="padding: 16px 12px 4px; font-size: 12px; color: #767676; text-transform: uppercase; letter-spacing: 0.6px;">Gestión logística</div>
+    <a href="tarimas.html" style="padding: 10px 12px; border-radius: 999px; color: #666666;">Tarimas</a>
+    <a href="#" style="padding: 10px 12px; border-radius: 999px; color: #666666;">Rutas completadas</a>
+    <div style="flex-grow: 1;"></div>
+    <div style="display: flex; align-items: center; gap: 8px; padding: 12px; border: 1px solid #e8e8e8; border-radius: 12px; font-size: 13px; color: #666666;">
+      <span style="width: 8px; height: 8px; border-radius: 50%; background: #33c758;" aria-hidden="true"></span>
+      MQTT conectado
+    </div>
+  </nav>
+
+  <main style="flex: 999 1 560px; min-width: 0; box-sizing: border-box; padding: 24px 32px 40px; display: flex; flex-direction: column; gap: 24px;">
+
+    <header style="display: flex; flex-wrap: wrap; align-items: center; gap: 16px;">
+      <div style="flex-grow: 1;">
+        <h1 style="margin: 0; font-size: 28px; font-weight: 600; letter-spacing: -0.6px;">Control</h1>
+        <p style="margin: 4px 0 0; color: #666666; font-size: 14px;">Elige una ruta y una tarima, revisa la autorización e inicia la misión</p>
+      </div>
+      <span style="display: inline-flex; align-items: center; gap: 8px; padding: 8px 14px; border-radius: 999px; background: #def6e4; color: #1a7f37; font-size: 14px; font-weight: 500;">
+        <span style="width: 8px; height: 8px; border-radius: 50%; background: #33c758;" aria-hidden="true"></span>
+        <span style="font-family: 'JetBrains Mono', monospace;">KOLEO-01</span> · Libre
+      </span>
+      <button type="button" style="height: 44px; padding: 0 22px; border-radius: 999px; border: none; background: #c83200; color: #ffffff; font-size: 15px; font-weight: 600; font-family: inherit; cursor: pointer;">Paro</button>
+    </header>
+
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 24px; align-items: start;">
+
+      <section aria-labelledby="nueva-t" style="background: #ffffff; border: 1px solid #e8e8e8; border-radius: 16px; padding: 24px; display: flex; flex-direction: column; gap: 20px;">
+        <h2 id="nueva-t" style="margin: 0; font-size: 17px; font-weight: 500;">Nueva misión</h2>
+
+        <fieldset style="border: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px;">
+          <legend style="font-size: 13px; color: #666666; margin-bottom: 10px; padding: 0;">1. Ruta</legend>
+          <label style="display: flex; align-items: center; gap: 12px; padding: 14px 16px; border-radius: 12px; border: 2px solid #918df6; background: #efeefe; cursor: pointer;">
+            <input type="radio" name="ruta" value="RUTA_1" checked style="accent-color: #5b55e0; width: 18px; height: 18px; margin: 0;">
+            <span style="flex-grow: 1;"><span style="font-weight: 500;">RUTA_1</span><span style="display: block; font-size: 13px; color: #666666;">(0,0) → (4,5) · 9 celdas</span></span>
+            <span style="font-size: 13px; font-family: 'JetBrains Mono', monospace; color: #4b45c9;">TAR-101</span>
+          </label>
+          <label style="display: flex; align-items: center; gap: 12px; padding: 14px 16px; border-radius: 12px; border: 1px solid #e8e8e8; cursor: pointer;">
+            <input type="radio" name="ruta" value="RUTA_2" style="accent-color: #5b55e0; width: 18px; height: 18px; margin: 0;">
+            <span style="flex-grow: 1;"><span style="font-weight: 500;">RUTA_2</span><span style="display: block; font-size: 13px; color: #666666;">(0,2) → (3,4)</span></span>
+            <span style="font-size: 13px; font-family: 'JetBrains Mono', monospace; color: #666666;">TAR-102</span>
+          </label>
+          <label style="display: flex; align-items: center; gap: 12px; padding: 14px 16px; border-radius: 12px; border: 1px solid #e8e8e8; cursor: pointer;">
+            <input type="radio" name="ruta" value="RUTA_3" style="accent-color: #5b55e0; width: 18px; height: 18px; margin: 0;">
+            <span style="flex-grow: 1;"><span style="font-weight: 500;">RUTA_3</span><span style="display: block; font-size: 13px; color: #666666;">(4,2) → (0,5)</span></span>
+            <span style="font-size: 13px; font-family: 'JetBrains Mono', monospace; color: #666666;">TAR-103</span>
+          </label>
+          <label style="display: flex; align-items: center; gap: 12px; padding: 14px 16px; border-radius: 12px; border: 1px dashed #e8e8e8; cursor: pointer; color: #666666;">
+            <input type="radio" name="ruta" value="PERSONALIZADA" style="accent-color: #5b55e0; width: 18px; height: 18px; margin: 0;">
+            <span>Destino personalizado: elegir celda en el mapa</span>
+          </label>
+        </fieldset>
+
+        <div style="display: flex; flex-direction: column; gap: 6px;">
+          <label for="tarima" style="font-size: 13px; color: #666666;">2. Tarima</label>
+          <select id="tarima" style="height: 44px; padding: 0 12px; border-radius: 8px; border: 1px solid #e8e8e8; background: #ffffff; font-family: inherit; font-size: 15px; color: #181925;">
+            <option>TAR-101 · Lote Electrónica A · 8.45 kg</option>
+            <option>TAR-103 · Sensores Ópticos C · 6.20 kg</option>
+          </select>
+          <span style="font-size: 13px; color: #666666;">El robot confirma la tarima leyendo su código QR.</span>
+        </div>
+      </section>
+
+      <div style="display: flex; flex-direction: column; gap: 24px;">
+        <section aria-labelledby="auth-t" style="background: #ffffff; border: 1px solid #e8e8e8; border-radius: 16px; padding: 24px; display: flex; flex-direction: column; gap: 14px;">
+          <div style="display: flex; align-items: center; gap: 12px;">
+            <h2 id="auth-t" style="margin: 0; font-size: 17px; font-weight: 500; flex-grow: 1;">Autorización de movimiento</h2>
+            <span style="padding: 4px 12px; border-radius: 999px; background: #def6e4; color: #1a7f37; font-size: 13px; font-weight: 500;">Autorizado</span>
+          </div>
+          <ul style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px; font-size: 14px;">
+            <li style="display: flex; gap: 10px; align-items: center;">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1a7f37" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"></path></svg>
+              Robot conectado por MQTT
+            </li>
+            <li style="display: flex; gap: 10px; align-items: center;">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1a7f37" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"></path></svg>
+              Sin obstáculos en la distancia de paro
+            </li>
+            <li style="display: flex; gap: 10px; align-items: center;">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1a7f37" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"></path></svg>
+              Tarima no bloqueada
+            </li>
+            <li style="display: flex; gap: 10px; align-items: center; color: #666666;">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#8a5a00" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg>
+              Peso: se verifica al levantar (máximo 10 kg)
+            </li>
+          </ul>
+        </section>
+
+        <section aria-labelledby="acc-t" style="background: #ffffff; border: 1px solid #e8e8e8; border-radius: 16px; padding: 24px; display: flex; flex-direction: column; gap: 16px;">
+          <h2 id="acc-t" style="margin: 0; font-size: 17px; font-weight: 500;">Acciones</h2>
+          <div style="display: flex; flex-wrap: wrap; gap: 12px;">
+            <button type="button" style="flex: 1 1 180px; height: 52px; border-radius: 999px; border: none; background: #918df6; color: #181925; font-size: 16px; font-weight: 600; font-family: inherit; cursor: pointer;">Iniciar misión</button>
+            <button type="button" disabled style="flex: 1 1 180px; height: 52px; border-radius: 999px; border: 1px solid #e8e8e8; background: #ffffff; color: #767676; font-size: 16px; font-weight: 500; font-family: inherit;">Cancelar misión</button>
+          </div>
+          <p style="margin: 0; font-size: 13px; color: #666666;">Iniciar pide confirmación. El botón Paro está siempre arriba a la derecha y detiene el robot de inmediato.</p>
+        </section>
+
+        <section aria-labelledby="conf-t" style="background: #ffffff; border: 1px solid #918df6; border-radius: 16px; padding: 24px; display: flex; flex-direction: column; gap: 14px;">
+          <h2 id="conf-t" style="margin: 0; font-size: 17px; font-weight: 500;">Confirmación (diálogo)</h2>
+          <p style="margin: 0; font-size: 15px;">¿Iniciar <strong>RUTA_1</strong> con <span style="font-family: 'JetBrains Mono', monospace;">TAR-101</span>? El robot irá de (0,0) a (4,5).</p>
+          <div style="display: flex; gap: 12px; justify-content: flex-end;">
+            <button type="button" style="height: 44px; padding: 0 20px; border-radius: 999px; border: 1px solid #e8e8e8; background: #ffffff; color: #181925; font-size: 15px; font-family: inherit; cursor: pointer;">Volver</button>
+            <button type="button" style="height: 44px; padding: 0 20px; border-radius: 999px; border: none; background: #918df6; color: #181925; font-size: 15px; font-weight: 600; font-family: inherit; cursor: pointer;">Sí, iniciar</button>
+          </div>
+        </section>
+      </div>
+    </div>
+  </main>
+</div>
+
+
+</body>
+</html>
