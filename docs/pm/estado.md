@@ -1,6 +1,6 @@
 # Estado del proyecto
 
-> Archivo generado por gen_estado.py el 2026-11-13T08:22 sobre el commit ee36b9e. No editar a mano.
+> Archivo generado por gen_estado.py el 2026-11-13T08:24 sobre el commit 99a9763. No editar a mano.
 
 ## Gates
 
@@ -27,7 +27,7 @@
 | WP-4.2 | Avance por distancia con encoders | medio | entregable | Pendiente | 0 | — | — |
 | WP-4.3 | Planificador A* y misión | medio | entregable | Pendiente | 0 | — | — |
 | WP-4.4 | Lectura QR | medio | entregable | En corrección | 1 | NO CONFORME | docs/pm/auditorias/WP-4.4_it1.md |
-| WP-5.1 | Tablero: flotilla, monitoreo e indicadores | medio | entregable | Pendiente | 0 | — | — |
+| WP-5.1 | Tablero: flotilla, monitoreo e indicadores | medio | entregable | Conforme@99a9763 | 1 | CONFORME CON OBSERVACIONES | docs/pm/auditorias/WP-5.1_it2.md |
 | WP-5.2 | Tablero: control y gestión logística | medio | entregable | Pendiente | 0 | — | — |
 | WP-6.1 | Pruebas de elevación, rechazo, obstáculo y latencia | alto | integracion | Pendiente | 0 | — | — |
 | WP-6.2 | Pruebas de rutas, llegada y traslado sostenido | alto | integracion | Pendiente | 0 | — | — |
@@ -35,4 +35,4 @@
 
 ## Resumen
 
-Conforme: 3, En corrección: 1, Pendiente: 15
+Conforme: 4, En corrección: 1, Pendiente: 14
