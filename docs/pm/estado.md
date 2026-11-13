@@ -1,6 +1,6 @@
 # Estado del proyecto
 
-> Archivo generado por gen_estado.py el 2026-11-13T07:57 sobre el commit 7ccd096. No editar a mano.
+> Archivo generado por gen_estado.py el 2026-11-13T08:03 sobre el commit 6182431. No editar a mano.
 
 ## Gates
 
@@ -15,7 +15,7 @@
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | WP-1.1 | Contratos MQTT, comandos del ESP32, estados y SQL | medio | entregable | Conforme@d17df56 | 3 | CONFORME | docs/pm/auditorias/WP-1.1_it3.md |
 | WP-1.2 | Robot simulado | bajo | entregable | Conforme@7ccd096 | 4 | CONFORME CON OBSERVACIONES | docs/pm/auditorias/WP-1.2_it5.md |
-| WP-1.3 | Backend de persistencia y Web API | alto | entregable | Conforme@ff00514 | 2 | CONFORME CON OBSERVACIONES | docs/pm/auditorias/WP-1.3_it3.md |
+| WP-1.3 | Backend de persistencia y Web API | alto | entregable | Requiere reverificación (CC-005) | 2 | CONFORME CON OBSERVACIONES | docs/pm/auditorias/WP-1.3_it3.md |
 | WP-2.1 | Chasis y tracción | medio | integracion | Pendiente | 0 | — | — |
 | WP-2.2 | Mecanismo de elevación | alto | integracion | Pendiente | 0 | — | — |
 | WP-2.3 | Energía y energizado seguro | alto | integracion | Pendiente | 0 | — | — |
@@ -27,7 +27,7 @@
 | WP-4.2 | Avance por distancia con encoders | medio | entregable | Pendiente | 0 | — | — |
 | WP-4.3 | Planificador A* y misión | medio | entregable | Pendiente | 0 | — | — |
 | WP-4.4 | Lectura QR | medio | entregable | En corrección | 1 | NO CONFORME | docs/pm/auditorias/WP-4.4_it1.md |
-| WP-5.1 | Tablero: flotilla, monitoreo e indicadores | medio | entregable | Bloqueado (Desviaciones de aprendizaje (it1): la API no da velocidad, ruta en curso ni alertas por robot que exige CA-5.1.2/5.1.3, y la interfaz del WP solo nombra /api/robots e /api/indicadores. Requiere /pm-cambio (ver informe it1)) | 0 | — | — |
+| WP-5.1 | Tablero: flotilla, monitoreo e indicadores | medio | entregable | Pendiente | 0 | — | — |
 | WP-5.2 | Tablero: control y gestión logística | medio | entregable | Pendiente | 0 | — | — |
 | WP-6.1 | Pruebas de elevación, rechazo, obstáculo y latencia | alto | integracion | Pendiente | 0 | — | — |
 | WP-6.2 | Pruebas de rutas, llegada y traslado sostenido | alto | integracion | Pendiente | 0 | — | — |
@@ -35,4 +35,4 @@
 
 ## Resumen
 
-Bloqueado: 1, Conforme: 3, En corrección: 1, Pendiente: 14
+Conforme: 2, En corrección: 1, Pendiente: 15, Requiere reverificación: 1
