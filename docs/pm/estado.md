@@ -1,6 +1,6 @@
 # Estado del proyecto
 
-> Archivo generado por gen_estado.py el 2026-11-13T07:56 sobre el commit 6233438. No editar a mano.
+> Archivo generado por gen_estado.py el 2026-11-13T07:57 sobre el commit 7ccd096. No editar a mano.
 
 ## Gates
 
@@ -14,7 +14,7 @@
 | WP | Nombre | Riesgo | Tipo | Estado | Iteraciones | Último dictamen | Informe |
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | WP-1.1 | Contratos MQTT, comandos del ESP32, estados y SQL | medio | entregable | Conforme@d17df56 | 3 | CONFORME | docs/pm/auditorias/WP-1.1_it3.md |
-| WP-1.2 | Robot simulado | bajo | entregable | Requiere reverificación | 3 | CONFORME CON OBSERVACIONES | docs/pm/auditorias/WP-1.2_it4.md |
+| WP-1.2 | Robot simulado | bajo | entregable | Conforme@7ccd096 | 4 | CONFORME CON OBSERVACIONES | docs/pm/auditorias/WP-1.2_it5.md |
 | WP-1.3 | Backend de persistencia y Web API | alto | entregable | Conforme@ff00514 | 2 | CONFORME CON OBSERVACIONES | docs/pm/auditorias/WP-1.3_it3.md |
 | WP-2.1 | Chasis y tracción | medio | integracion | Pendiente | 0 | — | — |
 | WP-2.2 | Mecanismo de elevación | alto | integracion | Pendiente | 0 | — | — |
@@ -35,4 +35,4 @@
 
 ## Resumen
 
-Bloqueado: 1, Conforme: 2, En corrección: 1, Pendiente: 14, Requiere reverificación: 1
+Bloqueado: 1, Conforme: 3, En corrección: 1, Pendiente: 14
