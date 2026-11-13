@@ -1,6 +1,6 @@
 # KOLEO — Documento de frontend
 
-> **Copia pendiente.** La versión completa vive en Claude: https://claude.ai/artifact/9hMH13nyBzYAM8bbxm8zZM . Este archivo se reemplazará con el documento completo en cuanto se pueda exportar. Mientras tanto, este es el resumen.
+> **Documento histórico.** Resumen de la propuesta de diseño del tablero del 11 de noviembre de 2026. Lo que se construye y cómo se acepta está en la WBS ([WP-5.1 y WP-5.2](pm/03-wbs.md)); donde este resumen difiera, manda la WBS. Por ejemplo, el tablero se implementó en JavaScript (JSX) y consulta la Web API periódicamente.
 
 ## Decisiones tomadas
 
@@ -17,7 +17,7 @@
 - 8 pantallas en cuatro módulos: **Flotilla, Monitoreo, Control y Gestión logística** (Tarimas, Rutas completadas).
 - Flujos principales.
 - Tipos TypeScript y endpoints supuestos.
-- Arquitectura: React + Vite + TypeScript + Tailwind, React Router, TanStack Query, Zustand, MSW para datos falsos, Recharts y mapa en SVG.
+- Arquitectura propuesta: React + Vite + TypeScript + Tailwind, React Router, TanStack Query, Zustand, MSW para datos falsos, Recharts y mapa en SVG.
 - Plan en 4 fases.
 
 ## Sistema visual
