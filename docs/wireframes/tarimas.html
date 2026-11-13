@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>KOLEO · Tarimas</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#fafafa}
+a{color:#181925;text-decoration:none}a:hover{color:#5b55e0}
+</style>
+
+</head>
+<body>
+
+
+<div style="min-height: 900px; display: flex; flex-wrap: wrap; background: #fafafa; color: #181925; font-family: Inter, system-ui, sans-serif; font-size: 15px;">
+
+  <nav aria-label="Principal" style="flex: 1 1 220px; max-width: 240px; box-sizing: border-box; padding: 24px 16px; background: #ffffff; border-right: 1px solid #e8e8e8; display: flex; flex-direction: column; gap: 4px;">
+    <div style="display: flex; align-items: center; gap: 10px; padding: 0 8px 24px;">
+      <div style="width: 32px; height: 32px; border-radius: 10px; background: #918df6;" aria-hidden="true"></div>
+      <span style="font-size: 18px; font-weight: 600; letter-spacing: -0.3px;">KOLEO</span>
+    </div>
+    <a href="#" style="padding: 10px 12px; border-radius: 999px; color: #666666;">Inicio</a>
+    <a href="#" style="padding: 10px 12px; border-radius: 999px; color: #666666;">Flotilla</a>
+    <a href="monitoreo.html" style="padding: 10px 12px; border-radius: 999px; color: #666666;">Monitoreo</a>
+    <a href="control.html" style="padding: 10px 12px; border-radius: 999px; color: #666666;">Control</a>
+    <div style="padding: 16px 12px 4px; font-size: 12px; color: #767676; text-transform: uppercase; letter-spacing: 0.6px;">Gestión logística</div>
+    <a href="tarimas.html" aria-current="page" style="padding: 10px 12px; border-radius: 999px; background: #efeefe; color: #181925; font-weight: 500;">Tarimas</a>
+    <a href="#" style="padding: 10px 12px; border-radius: 999px; color: #666666;">Rutas completadas</a>
+    <div style="flex-grow: 1;"></div>
+    <div style="display: flex; align-items: center; gap: 8px; padding: 12px; border: 1px solid #e8e8e8; border-radius: 12px; font-size: 13px; color: #666666;">
+      <span style="width: 8px; height: 8px; border-radius: 50%; background: #33c758;" aria-hidden="true"></span>
+      MQTT conectado
+    </div>
+  </nav>
+
+  <main style="flex: 999 1 560px; min-width: 0; box-sizing: border-box; padding: 24px 32px 40px; display: flex; flex-direction: column; gap: 24px;">
+
+    <header style="display: flex; flex-wrap: wrap; align-items: center; gap: 16px;">
+      <div style="flex-grow: 1;">
+        <h1 style="margin: 0; font-size: 28px; font-weight: 600; letter-spacing: -0.6px;">Tarimas</h1>
+        <p style="margin: 4px 0 0; color: #666666; font-size: 14px;">Dónde está cada tarima, cuánto pesa y en qué estado se encuentra</p>
+      </div>
+      <button type="button" style="height: 44px; padding: 0 22px; border-radius: 999px; border: none; background: #c83200; color: #ffffff; font-size: 15px; font-weight: 600; font-family: inherit; cursor: pointer;">Paro</button>
+    </header>
+
+    <div style="display: flex; flex-wrap: wrap; gap: 8px;" role="group" aria-label="Filtrar por estado">
+      <button type="button" aria-pressed="true" style="height: 36px; padding: 0 16px; border-radius: 999px; border: none; background: #181925; color: #ffffff; font-size: 14px; font-family: inherit; cursor: pointer;">Todas · 3</button>
+      <button type="button" aria-pressed="false" style="height: 36px; padding: 0 16px; border-radius: 999px; border: 1px solid #e8e8e8; background: #ffffff; color: #181925; font-size: 14px; font-family: inherit; cursor: pointer;">En piso · 0</button>
+      <button type="button" aria-pressed="false" style="height: 36px; padding: 0 16px; border-radius: 999px; border: 1px solid #e8e8e8; background: #ffffff; color: #181925; font-size: 14px; font-family: inherit; cursor: pointer;">En destino · 2</button>
+      <button type="button" aria-pressed="false" style="height: 36px; padding: 0 16px; border-radius: 999px; border: 1px solid #e8e8e8; background: #ffffff; color: #181925; font-size: 14px; font-family: inherit; cursor: pointer;">Bloqueadas · 1</button>
+    </div>
+
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 24px; align-items: start;">
+
+      <section aria-labelledby="lista-t" style="grid-column: span 2; min-width: 0; background: #ffffff; border: 1px solid #e8e8e8; border-radius: 16px; padding: 24px;">
+        <h2 id="lista-t" style="margin: 0 0 12px; font-size: 17px; font-weight: 500;">Inventario</h2>
+        <div style="overflow-x: auto;">
+          <table style="width: 100%; border-collapse: collapse; font-size: 14px;">
+            <thead>
+              <tr style="text-align: left; color: #666666; font-size: 13px;">
+                <th style="padding: 10px 12px; font-weight: 500; border-bottom: 1px solid #e8e8e8;">ID</th>
+                <th style="padding: 10px 12px; font-weight: 500; border-bottom: 1px solid #e8e8e8;">Descripción</th>
+                <th style="padding: 10px 12px; font-weight: 500; border-bottom: 1px solid #e8e8e8;">Peso</th>
+                <th style="padding: 10px 12px; font-weight: 500; border-bottom: 1px solid #e8e8e8;">Ubicación (cm)</th>
+                <th style="padding: 10px 12px; font-weight: 500; border-bottom: 1px solid #e8e8e8;">Estado</th>
+                <th style="padding: 10px 12px; font-weight: 500; border-bottom: 1px solid #e8e8e8;"><span style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0);">Acciones</span></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td style="padding: 12px; border-bottom: 1px solid #f5f5f5; font-family: 'JetBrains Mono', monospace;">TAR-101</td>
+                <td style="padding: 12px; border-bottom: 1px solid #f5f5f5;">Lote Electrónica A</td>
+                <td style="padding: 12px; border-bottom: 1px solid #f5f5f5; font-variant-numeric: tabular-nums;">8.45 kg</td>
+                <td style="padding: 12px; border-bottom: 1px solid #f5f5f5;">(150, 120)</td>
+                <td style="padding: 12px; border-bottom: 1px solid #f5f5f5;"><span style="padding: 2px 10px; border-radius: 999px; background: #def6e4; color: #1a7f37; font-size: 13px;">En destino</span></td>
+                <td style="padding: 12px; border-bottom: 1px solid #f5f5f5; text-align: right;"><button type="button" style="height: 36px; padding: 0 14px; border-radius: 999px; border: 1px solid #e8e8e8; background: #ffffff; color: #181925; font-size: 13px; font-family: inherit; cursor: pointer;">Asignar ruta</button></td>
+              </tr>
+              <tr>
+                <td style="padding: 12px; border-bottom: 1px solid #f5f5f5; font-family: 'JetBrains Mono', monospace;">TAR-102</td>
+                <td style="padding: 12px; border-bottom: 1px solid #f5f5f5;">Baterías (Sobrepeso)</td>
+                <td style="padding: 12px; border-bottom: 1px solid #f5f5f5; font-variant-numeric: tabular-nums; color: #8a2400; font-weight: 500;">11.80 kg</td>
+                <td style="padding: 12px; border-bottom: 1px solid #f5f5f5; color: #666666;">Origen</td>
+                <td style="padding: 12px; border-bottom: 1px solid #f5f5f5;"><span style="padding: 2px 10px; border-radius: 999px; background: #ffe8e0; color: #8a2400; font-size: 13px;">Bloqueada · sobrepeso</span></td>
+                <td style="padding: 12px; border-bottom: 1px solid #f5f5f5; text-align: right;"><button type="button" disabled style="height: 36px; padding: 0 14px; border-radius: 999px; border: 1px solid #e8e8e8; background: #fafafa; color: #767676; font-size: 13px; font-family: inherit;">Asignar ruta</button></td>
+              </tr>
+              <tr>
+                <td style="padding: 12px; font-family: 'JetBrains Mono', monospace;">TAR-103</td>
+                <td style="padding: 12px;">Sensores Ópticos C</td>
+                <td style="padding: 12px; font-variant-numeric: tabular-nums;">6.20 kg</td>
+                <td style="padding: 12px;">(150, 0)</td>
+                <td style="padding: 12px;"><span style="padding: 2px 10px; border-radius: 999px; background: #def6e4; color: #1a7f37; font-size: 13px;">En destino</span></td>
+                <td style="padding: 12px; text-align: right;"><button type="button" style="height: 36px; padding: 0 14px; border-radius: 999px; border: 1px solid #e8e8e8; background: #ffffff; color: #181925; font-size: 13px; font-family: inherit; cursor: pointer;">Asignar ruta</button></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section aria-labelledby="alta-t" style="background: #ffffff; border: 1px solid #e8e8e8; border-radius: 16px; padding: 24px; display: flex; flex-direction: column; gap: 14px;">
+        <h2 id="alta-t" style="margin: 0; font-size: 17px; font-weight: 500;">Registrar tarima</h2>
+        <div style="display: flex; flex-direction: column; gap: 6px;">
+          <label for="t-id" style="font-size: 13px; color: #666666;">ID (código QR)</label>
+          <input id="t-id" type="text" placeholder="TAR-104" style="height: 44px; padding: 0 12px; border-radius: 8px; border: 1px solid #e8e8e8; font-family: 'JetBrains Mono', monospace; font-size: 15px;">
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 6px;">
+          <label for="t-desc" style="font-size: 13px; color: #666666;">Descripción</label>
+          <input id="t-desc" type="text" style="height: 44px; padding: 0 12px; border-radius: 8px; border: 1px solid #e8e8e8; font-family: inherit; font-size: 15px;">
+        </div>
+        <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px;">
+          <div style="display: flex; flex-direction: column; gap: 6px;">
+            <label for="t-peso" style="font-size: 13px; color: #666666;">Peso estimado (kg)</label>
+            <input id="t-peso" type="number" step="0.01" style="height: 44px; padding: 0 12px; border-radius: 8px; border: 1px solid #e8e8e8; font-family: inherit; font-size: 15px;">
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 6px;">
+            <label for="t-celda" style="font-size: 13px; color: #666666;">Celda inicial</label>
+            <input id="t-celda" type="text" placeholder="fila, columna" style="height: 44px; padding: 0 12px; border-radius: 8px; border: 1px solid #e8e8e8; font-family: inherit; font-size: 15px;">
+          </div>
+        </div>
+        <p style="margin: 0; font-size: 13px; color: #666666;">Si el peso pasa de 10 kg, la tarima queda bloqueada y el robot no la levanta.</p>
+        <button type="button" style="height: 48px; border-radius: 999px; border: none; background: #918df6; color: #181925; font-size: 15px; font-weight: 600; font-family: inherit; cursor: pointer;">Registrar</button>
+      </section>
+    </div>
+  </main>
+</div>
+
+
+</body>
+</html>

@@ -1,0 +1,210 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>KOLEO · Monitoreo</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#fafafa}
+a{color:#181925;text-decoration:none}a:hover{color:#5b55e0}
+</style>
+
+</head>
+<body>
+
+
+<div style="min-height: 900px; display: flex; flex-wrap: wrap; background: #fafafa; color: #181925; font-family: Inter, system-ui, sans-serif; font-size: 15px;">
+
+  <nav aria-label="Principal" style="flex: 1 1 220px; max-width: 240px; box-sizing: border-box; padding: 24px 16px; background: #ffffff; border-right: 1px solid #e8e8e8; display: flex; flex-direction: column; gap: 4px;">
+    <div style="display: flex; align-items: center; gap: 10px; padding: 0 8px 24px;">
+      <div style="width: 32px; height: 32px; border-radius: 10px; background: #918df6;" aria-hidden="true"></div>
+      <span style="font-size: 18px; font-weight: 600; letter-spacing: -0.3px;">KOLEO</span>
+    </div>
+    <a href="#" style="padding: 10px 12px; border-radius: 999px; color: #666666;">Inicio</a>
+    <a href="#" style="padding: 10px 12px; border-radius: 999px; color: #666666;">Flotilla</a>
+    <a href="monitoreo.html" aria-current="page" style="padding: 10px 12px; border-radius: 999px; background: #efeefe; color: #181925; font-weight: 500;">Monitoreo</a>
+    <a href="control.html" style="padding: 10px 12px; border-radius: 999px; color: #666666;">Control</a>
+    <div style="padding: 16px 12px 4px; font-size: 12px; color: #767676; text-transform: uppercase; letter-spacing: 0.6px;">Gestión logística</div>
+    <a href="tarimas.html" style="padding: 10px 12px; border-radius: 999px; color: #666666;">Tarimas</a>
+    <a href="#" style="padding: 10px 12px; border-radius: 999px; color: #666666;">Rutas completadas</a>
+    <div style="flex-grow: 1;"></div>
+    <div style="display: flex; align-items: center; gap: 8px; padding: 12px; border: 1px solid #e8e8e8; border-radius: 12px; font-size: 13px; color: #666666;">
+      <span style="width: 8px; height: 8px; border-radius: 50%; background: #33c758;" aria-hidden="true"></span>
+      MQTT conectado
+    </div>
+  </nav>
+
+  <main style="flex: 999 1 560px; min-width: 0; box-sizing: border-box; padding: 24px 32px 40px; display: flex; flex-direction: column; gap: 24px;">
+
+    <header style="display: flex; flex-wrap: wrap; align-items: center; gap: 16px;">
+      <div style="flex-grow: 1;">
+        <h1 style="margin: 0; font-size: 28px; font-weight: 600; letter-spacing: -0.6px;">Monitoreo</h1>
+        <p style="margin: 4px 0 0; color: #666666; font-size: 14px;">Posición y telemetría del robot en vivo · valores de ejemplo</p>
+      </div>
+      <span style="display: inline-flex; align-items: center; gap: 8px; padding: 8px 14px; border-radius: 999px; background: #e6efff; color: #1f5fd1; font-size: 14px; font-weight: 500;">
+        <span style="width: 8px; height: 8px; border-radius: 50%; background: #2c78fc;" aria-hidden="true"></span>
+        <span style="font-family: 'JetBrains Mono', monospace;">KOLEO-01</span> · En ruta
+      </span>
+      <button type="button" aria-label="Alertas, 1 nueva" style="position: relative; width: 44px; height: 44px; border-radius: 999px; border: 1px solid #e8e8e8; background: #ffffff; display: flex; align-items: center; justify-content: center; cursor: pointer;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#181925" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 8a6 6 0 1 1 12 0c0 7 3 9 3 9H3s3-2 3-9"></path><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"></path></svg>
+        <span style="position: absolute; top: 6px; right: 6px; min-width: 16px; height: 16px; border-radius: 999px; background: #c83200; color: #ffffff; font-size: 11px; font-weight: 600; display: flex; align-items: center; justify-content: center;">1</span>
+      </button>
+      <button type="button" style="height: 44px; padding: 0 22px; border-radius: 999px; border: none; background: #c83200; color: #ffffff; font-size: 15px; font-weight: 600; font-family: inherit; cursor: pointer;">Paro</button>
+    </header>
+
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 24px; align-items: start;">
+
+      <section aria-labelledby="mapa-t" style="background: #ffffff; border: 1px solid #e8e8e8; border-radius: 16px; padding: 24px; display: flex; flex-direction: column; gap: 16px;">
+        <div style="display: flex; align-items: baseline; gap: 12px;">
+          <h2 id="mapa-t" style="margin: 0; font-size: 17px; font-weight: 500; flex-grow: 1;">Mapa del almacén</h2>
+          <span style="font-size: 13px; color: #666666;">Celdas de 30 × 30 cm</span>
+        </div>
+        <div style="overflow-x: auto;">
+          <div role="img" aria-label="Cuadrícula de 5 filas por 6 columnas con la ruta 1 y el robot a mitad del camino" style="display: grid; grid-template-columns: repeat(6, 64px); gap: 4px; width: max-content;">
+            <div style="width: 64px; height: 64px; box-sizing: border-box; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 11px; background: #efeefe; border: 1px dashed #918df6; color: #4b45c9; font-weight: 500;">Inicio</div>
+<div style="width: 64px; height: 64px; box-sizing: border-box; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 11px; background: #efeefe; border: 1px dashed #918df6;"></div>
+<div style="width: 64px; height: 64px; box-sizing: border-box; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 11px; background: #efeefe; border: 1px dashed #918df6;"></div>
+<div style="width: 64px; height: 64px; box-sizing: border-box; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 11px; background: #e8e8e8; color: #666666;">Estante</div>
+<div style="width: 64px; height: 64px; box-sizing: border-box; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 11px; background: #fafafa; border: 1px solid #e8e8e8; color: #767676;"></div>
+<div style="width: 64px; height: 64px; box-sizing: border-box; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 11px; background: #fafafa; border: 1px solid #e8e8e8; color: #767676;"></div>
+<div style="width: 64px; height: 64px; box-sizing: border-box; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 11px; background: #fafafa; border: 1px solid #e8e8e8; color: #767676;"></div>
+<div style="width: 64px; height: 64px; box-sizing: border-box; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 11px; background: #e8e8e8; color: #666666;">Estante</div>
+<div style="width: 64px; height: 64px; box-sizing: border-box; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 11px; background: #efeefe; border: 1px dashed #918df6;"></div>
+<div style="width: 64px; height: 64px; box-sizing: border-box; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 11px; background: #e8e8e8; color: #666666;">Estante</div>
+<div style="width: 64px; height: 64px; box-sizing: border-box; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 11px; background: #fafafa; border: 1px solid #e8e8e8; color: #767676;"></div>
+<div style="width: 64px; height: 64px; box-sizing: border-box; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 11px; background: #fafafa; border: 1px solid #e8e8e8; color: #767676;"></div>
+<div style="width: 64px; height: 64px; box-sizing: border-box; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 11px; background: #fafafa; border: 1px solid #e8e8e8; color: #767676;"></div>
+<div style="width: 64px; height: 64px; box-sizing: border-box; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 11px; background: #e8e8e8; color: #666666;">Estante</div>
+<div style="width: 64px; height: 64px; box-sizing: border-box; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 11px; background: #e6efff; border: 2px solid #2c78fc; color: #1f5fd1; font-weight: 600;">KOLEO</div>
+<div style="width: 64px; height: 64px; box-sizing: border-box; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 11px; background: #fafafa; border: 1px solid #e8e8e8; color: #767676;"></div>
+<div style="width: 64px; height: 64px; box-sizing: border-box; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 11px; background: #fafafa; border: 1px solid #e8e8e8; color: #767676;"></div>
+<div style="width: 64px; height: 64px; box-sizing: border-box; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 11px; background: #e8e8e8; color: #666666;">Estante</div>
+<div style="width: 64px; height: 64px; box-sizing: border-box; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 11px; background: #fafafa; border: 1px solid #e8e8e8; color: #767676;"></div>
+<div style="width: 64px; height: 64px; box-sizing: border-box; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 11px; background: #fafafa; border: 1px solid #e8e8e8; color: #767676;"></div>
+<div style="width: 64px; height: 64px; box-sizing: border-box; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 11px; background: #efeefe; border: 1px dashed #918df6;"></div>
+<div style="width: 64px; height: 64px; box-sizing: border-box; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 11px; background: #e8e8e8; color: #666666;">Estante</div>
+<div style="width: 64px; height: 64px; box-sizing: border-box; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 11px; background: #fafafa; border: 1px solid #e8e8e8; color: #767676;"></div>
+<div style="width: 64px; height: 64px; box-sizing: border-box; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 11px; background: #fafafa; border: 1px solid #e8e8e8; color: #767676;"></div>
+<div style="width: 64px; height: 64px; box-sizing: border-box; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 11px; background: #e8e8e8; color: #666666;">Estante</div>
+<div style="width: 64px; height: 64px; box-sizing: border-box; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 11px; background: #e8e8e8; color: #666666;">Estante</div>
+<div style="width: 64px; height: 64px; box-sizing: border-box; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 11px; background: #efeefe; border: 1px dashed #918df6;"></div>
+<div style="width: 64px; height: 64px; box-sizing: border-box; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 11px; background: #efeefe; border: 1px dashed #918df6;"></div>
+<div style="width: 64px; height: 64px; box-sizing: border-box; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 11px; background: #efeefe; border: 1px dashed #918df6;"></div>
+<div style="width: 64px; height: 64px; box-sizing: border-box; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 11px; background: #efeefe; border: 2px solid #918df6; color: #4b45c9; font-weight: 600;">Destino</div>
+          </div>
+        </div>
+        <div style="display: flex; flex-wrap: wrap; gap: 16px; font-size: 13px; color: #666666;">
+          <span style="display: inline-flex; align-items: center; gap: 6px;"><span style="width: 14px; height: 14px; border-radius: 4px; background: #e8e8e8;" aria-hidden="true"></span>Estantería</span>
+          <span style="display: inline-flex; align-items: center; gap: 6px;"><span style="width: 14px; height: 14px; border-radius: 4px; background: #efeefe; border: 1px dashed #918df6;" aria-hidden="true"></span>Ruta planeada</span>
+          <span style="display: inline-flex; align-items: center; gap: 6px;"><span style="width: 14px; height: 14px; border-radius: 50%; background: #2c78fc;" aria-hidden="true"></span>Robot</span>
+        </div>
+      </section>
+
+      <div style="display: flex; flex-direction: column; gap: 24px;">
+        <section aria-labelledby="mision-t" style="background: #ffffff; border: 1px solid #e8e8e8; border-radius: 16px; padding: 24px; display: flex; flex-direction: column; gap: 12px;">
+          <h2 id="mision-t" style="margin: 0; font-size: 17px; font-weight: 500;">Misión en curso</h2>
+          <div style="display: flex; flex-wrap: wrap; gap: 8px; font-size: 14px;">
+            <span style="padding: 4px 12px; border-radius: 999px; background: #f5f5f5;">RUTA_1</span>
+            <span style="padding: 4px 12px; border-radius: 999px; background: #f5f5f5; font-family: 'JetBrains Mono', monospace;">TAR-101</span>
+            <span style="padding: 4px 12px; border-radius: 999px; background: #f5f5f5;">(0,0) → (4,5)</span>
+          </div>
+          <div>
+            <div style="display: flex; justify-content: space-between; font-size: 13px; color: #666666; margin-bottom: 6px;"><span>Avance</span><span>4 de 9 celdas</span></div>
+            <div style="height: 8px; border-radius: 999px; background: #f5f5f5;"><div style="width: 44%; height: 8px; border-radius: 999px; background: #918df6;"></div></div>
+          </div>
+        </section>
+
+        <section aria-labelledby="tele-t" style="background: #ffffff; border: 1px solid #e8e8e8; border-radius: 16px; padding: 24px; display: flex; flex-direction: column; gap: 20px;">
+          <h2 id="tele-t" style="margin: 0; font-size: 17px; font-weight: 500;">Telemetría</h2>
+          <div>
+            <div style="display: flex; align-items: baseline; gap: 8px;">
+              <span style="font-size: 13px; color: #666666; flex-grow: 1;">Peso de la carga</span>
+              <span style="font-size: 28px; font-weight: 600; letter-spacing: -0.5px; font-variant-numeric: tabular-nums;">8.45</span>
+              <span style="font-size: 14px; color: #666666;">/ 10 kg</span>
+            </div>
+            <div style="margin-top: 8px; height: 8px; border-radius: 999px; background: #f5f5f5;"><div style="width: 84.5%; height: 8px; border-radius: 999px; background: #33c758;"></div></div>
+          </div>
+          <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px;">
+            <div style="padding: 14px; border-radius: 12px; background: #fafafa; border: 1px solid #e8e8e8;">
+              <div style="font-size: 12px; color: #666666;">Velocidad</div>
+              <div style="font-size: 20px; font-weight: 600; font-variant-numeric: tabular-nums; margin-top: 4px;">37 <span style="font-size: 13px; font-weight: 400; color: #666666;">cm/s</span></div>
+            </div>
+            <div style="padding: 14px; border-radius: 12px; background: #fafafa; border: 1px solid #e8e8e8;">
+              <div style="font-size: 12px; color: #666666;">Obstáculo más cercano</div>
+              <div style="font-size: 20px; font-weight: 600; font-variant-numeric: tabular-nums; margin-top: 4px;">82 <span style="font-size: 13px; font-weight: 400; color: #666666;">cm</span></div>
+            </div>
+            <div style="padding: 14px; border-radius: 12px; background: #fafafa; border: 1px solid #e8e8e8;">
+              <div style="font-size: 12px; color: #666666;">Celda actual</div>
+              <div style="font-size: 20px; font-weight: 600; font-variant-numeric: tabular-nums; margin-top: 4px;">(2,2)</div>
+            </div>
+          </div>
+        </section>
+
+        <section aria-labelledby="alertas-t" style="background: #ffffff; border: 1px solid #e8e8e8; border-radius: 16px; padding: 24px; display: flex; flex-direction: column; gap: 12px;">
+          <h2 id="alertas-t" style="margin: 0; font-size: 17px; font-weight: 500;">Alertas</h2>
+          <div style="display: flex; gap: 12px; align-items: flex-start; padding: 14px; border-radius: 12px; background: #ffe8e0;">
+            <span style="padding: 2px 10px; border-radius: 999px; background: #c83200; color: #ffffff; font-size: 12px; font-weight: 600;">Sobrepeso</span>
+            <div style="font-size: 14px; color: #181925;">
+              <div><span style="font-family: 'JetBrains Mono', monospace;">TAR-102</span> rechazada: 11.80 kg excede el límite de 10 kg</div>
+              <div style="color: #8a2400; font-size: 13px; margin-top: 2px;">Actuador protegido · tarima bloqueada</div>
+            </div>
+          </div>
+        </section>
+      </div>
+    </div>
+
+    <section aria-labelledby="hist-t" style="background: #ffffff; border: 1px solid #e8e8e8; border-radius: 16px; padding: 24px;">
+      <div style="display: flex; align-items: baseline; gap: 12px; margin-bottom: 12px;">
+        <h2 id="hist-t" style="margin: 0; font-size: 17px; font-weight: 500; flex-grow: 1;">Historial reciente</h2>
+        <a href="#" style="font-size: 14px; color: #5b55e0; font-weight: 500;">Ver todo</a>
+      </div>
+      <div style="overflow-x: auto;">
+        <table style="width: 100%; border-collapse: collapse; font-size: 14px;">
+          <thead>
+            <tr style="text-align: left; color: #666666; font-size: 13px;">
+              <th style="padding: 10px 12px; font-weight: 500; border-bottom: 1px solid #e8e8e8;">Tarima</th>
+              <th style="padding: 10px 12px; font-weight: 500; border-bottom: 1px solid #e8e8e8;">Ruta</th>
+              <th style="padding: 10px 12px; font-weight: 500; border-bottom: 1px solid #e8e8e8;">Destino (cm)</th>
+              <th style="padding: 10px 12px; font-weight: 500; border-bottom: 1px solid #e8e8e8;">Peso medido</th>
+              <th style="padding: 10px 12px; font-weight: 500; border-bottom: 1px solid #e8e8e8;">Latencia</th>
+              <th style="padding: 10px 12px; font-weight: 500; border-bottom: 1px solid #e8e8e8;">Resultado</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td style="padding: 12px; border-bottom: 1px solid #f5f5f5; font-family: 'JetBrains Mono', monospace;">TAR-103</td>
+              <td style="padding: 12px; border-bottom: 1px solid #f5f5f5;">RUTA_3</td>
+              <td style="padding: 12px; border-bottom: 1px solid #f5f5f5;">(150, 0)</td>
+              <td style="padding: 12px; border-bottom: 1px solid #f5f5f5;">6.20 kg</td>
+              <td style="padding: 12px; border-bottom: 1px solid #f5f5f5; color: #666666;">[ms]</td>
+              <td style="padding: 12px; border-bottom: 1px solid #f5f5f5;"><span style="padding: 2px 10px; border-radius: 999px; background: #def6e4; color: #1a7f37; font-size: 13px;">En destino</span></td>
+            </tr>
+            <tr>
+              <td style="padding: 12px; border-bottom: 1px solid #f5f5f5; font-family: 'JetBrains Mono', monospace;">TAR-102</td>
+              <td style="padding: 12px; border-bottom: 1px solid #f5f5f5;">RUTA_2</td>
+              <td style="padding: 12px; border-bottom: 1px solid #f5f5f5; color: #666666;">—</td>
+              <td style="padding: 12px; border-bottom: 1px solid #f5f5f5;">11.80 kg</td>
+              <td style="padding: 12px; border-bottom: 1px solid #f5f5f5; color: #666666;">—</td>
+              <td style="padding: 12px; border-bottom: 1px solid #f5f5f5;"><span style="padding: 2px 10px; border-radius: 999px; background: #ffe8e0; color: #8a2400; font-size: 13px;">Rechazada</span></td>
+            </tr>
+            <tr>
+              <td style="padding: 12px; font-family: 'JetBrains Mono', monospace;">TAR-101</td>
+              <td style="padding: 12px;">RUTA_1</td>
+              <td style="padding: 12px;">(150, 120)</td>
+              <td style="padding: 12px;">8.45 kg</td>
+              <td style="padding: 12px; color: #666666;">[ms]</td>
+              <td style="padding: 12px;"><span style="padding: 2px 10px; border-radius: 999px; background: #def6e4; color: #1a7f37; font-size: 13px;">En destino</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+</div>
+
+
+</body>
+</html>
