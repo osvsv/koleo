@@ -1,4 +1,5 @@
 """Web API REST de KOLEO (REQ-F-011). Lee la BD SQLite del backend."""
+import json
 import os
 import sqlite3
 
@@ -11,7 +12,10 @@ ESTADOS_EN_RUTA = ("EN_MISION", "ELEVANDO", "EN_RUTA", "DEPOSITANDO")
 
 
 def crear_app(db_path, publicador=None):
-    """`publicador(topic, payload_dict)` se conserva para el WP-5.2 (publicacion de ordenes); aqui no se usa."""
+    """`publicador(topic, payload_dict)` publica las ordenes de POST /api/ordenes (REQ-F-011).
+
+    Si es None, POST /api/ordenes responde 503; el resto de la API sigue funcionando.
+    """
     app = Flask(__name__)
 
     def conectar():
@@ -112,8 +116,29 @@ def crear_app(db_path, publicador=None):
     return app
 
 
+def crear_publicador(env, cliente=None):
+    """Devuelve `publicador(topic, payload_dict)` sobre MQTT, o None si falta KOLEO_MQTT_HOST."""
+    host = env.get("KOLEO_MQTT_HOST")
+    if not host:
+        return None
+    if cliente is None:
+        import paho.mqtt.client as mqtt
+        cliente = mqtt.Client(mqtt.CallbackAPIVersion.VERSION2, client_id="koleo-api")
+        usuario = env.get("KOLEO_MQTT_USER")
+        if usuario:
+            cliente.username_pw_set(usuario, env.get("KOLEO_MQTT_PASSWORD") or None)
+        cliente.connect(host, int(env.get("KOLEO_MQTT_PORT") or 1883))
+        cliente.loop_start()
+
+    def publicador(topic, payload):
+        cliente.publish(topic, json.dumps(payload), qos=1)
+
+    return publicador
+
+
 def main():
-    app = crear_app(os.environ.get("KOLEO_DB_PATH", "koleo.db"))
+    app = crear_app(os.environ.get("KOLEO_DB_PATH", "koleo.db"),
+                    crear_publicador(os.environ))
     app.run(host=os.environ.get("KOLEO_API_HOST", "127.0.0.1"),
             port=int(os.environ.get("KOLEO_API_PORT", "5000")))
 
