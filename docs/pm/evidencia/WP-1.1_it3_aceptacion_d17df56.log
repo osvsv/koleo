@@ -1,0 +1,950 @@
+Comando: .venv\Scripts\python.exe -m pytest tests/aceptacion -q
+Commit: d17df56400529808879ec63e8ff256efc5f570cd
+Fecha: 2026-11-13T07:54:03
+Árbol limpio: no
+Código de salida: 1
+============================================================
+STDOUT
+......................................................................FF [ 58%]
+FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF...FFFFFFFF                     [100%]
+================================== FAILURES ===================================
+________________ test_ca_3_2_1_lift_ack_devuelve_la_respuesta _________________
+
+    def test_ca_3_2_1_lift_ack_devuelve_la_respuesta():
+        """CA-3.2.1"""
+        resp = {"resultado": "ACK", "codigo": "LIFT_OK"}
+        cliente = ClienteFalso(resp)
+>       assert _enlace(cliente).lift("TAR-101", 8.45) == resp
+               ^^^^^^^^^^^^^^^^
+
+tests\aceptacion\test_wp_3_2.py:37: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+cliente = <test_wp_3_2.ClienteFalso object at 0x000001D6BD302120>
+
+    def _enlace(cliente):
+>       from pi.enlace import EnlaceESP32
+E       ModuleNotFoundError: No module named 'pi.enlace'
+
+tests\aceptacion\test_wp_3_2.py:29: ModuleNotFoundError
+___________ test_ca_3_2_1_lift_overweight_devuelve_error_sin_lanzar ___________
+
+    def test_ca_3_2_1_lift_overweight_devuelve_error_sin_lanzar():
+        """CA-3.2.1"""
+        resp = {"resultado": "ERR", "codigo": "OVERWEIGHT"}
+>       assert _enlace(ClienteFalso(resp)).lift("TAR-101", 8.45) == resp
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\aceptacion\test_wp_3_2.py:48: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+cliente = <test_wp_3_2.ClienteFalso object at 0x000001D6BD1CF890>
+
+    def _enlace(cliente):
+>       from pi.enlace import EnlaceESP32
+E       ModuleNotFoundError: No module named 'pi.enlace'
+
+tests\aceptacion\test_wp_3_2.py:29: ModuleNotFoundError
+__________________ test_ca_3_2_2_timeout_lanza_y_envia_stop ___________________
+
+    def test_ca_3_2_2_timeout_lanza_y_envia_stop():
+        """CA-3.2.2"""
+        cliente = ClienteFalso(sin_respuesta=True)
+>       enlace = _enlace(cliente)
+                 ^^^^^^^^^^^^^^^^
+
+tests\aceptacion\test_wp_3_2.py:54: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+cliente = <test_wp_3_2.ClienteFalso object at 0x000001D6BD328A50>
+
+    def _enlace(cliente):
+>       from pi.enlace import EnlaceESP32
+E       ModuleNotFoundError: No module named 'pi.enlace'
+
+tests\aceptacion\test_wp_3_2.py:29: ModuleNotFoundError
+__________________ test_ca_3_2_3_drop_publica_mensaje_valido __________________
+
+    def test_ca_3_2_3_drop_publica_mensaje_valido():
+        """CA-3.2.3"""
+        cliente = ClienteFalso()
+>       _enlace(cliente).drop("TAR-101", 150, 120)
+        ^^^^^^^^^^^^^^^^
+
+tests\aceptacion\test_wp_3_2.py:67: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+cliente = <test_wp_3_2.ClienteFalso object at 0x000001D6BD2CED70>
+
+    def _enlace(cliente):
+>       from pi.enlace import EnlaceESP32
+E       ModuleNotFoundError: No module named 'pi.enlace'
+
+tests\aceptacion\test_wp_3_2.py:29: ModuleNotFoundError
+___________________ test_ca_3_2_3_move_publica_pwm_y_valida ___________________
+
+    def test_ca_3_2_3_move_publica_pwm_y_valida():
+        """CA-3.2.3"""
+        cliente = ClienteFalso()
+>       _enlace(cliente).move(80, -80)
+        ^^^^^^^^^^^^^^^^
+
+tests\aceptacion\test_wp_3_2.py:79: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+cliente = <test_wp_3_2.ClienteFalso object at 0x000001D6BD2CCD60>
+
+    def _enlace(cliente):
+>       from pi.enlace import EnlaceESP32
+E       ModuleNotFoundError: No module named 'pi.enlace'
+
+tests\aceptacion\test_wp_3_2.py:29: ModuleNotFoundError
+_________________________ test_ca_3_2_3_id_cmd_unico __________________________
+
+    def test_ca_3_2_3_id_cmd_unico():
+        """CA-3.2.3: cada comando lleva un id_cmd único."""
+        cliente = ClienteFalso()
+>       enlace = _enlace(cliente)
+                 ^^^^^^^^^^^^^^^^
+
+tests\aceptacion\test_wp_3_2.py:90: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+cliente = <test_wp_3_2.ClienteFalso object at 0x000001D6BD39C5F0>
+
+    def _enlace(cliente):
+>       from pi.enlace import EnlaceESP32
+E       ModuleNotFoundError: No module named 'pi.enlace'
+
+tests\aceptacion\test_wp_3_2.py:29: ModuleNotFoundError
+_______ test_ca_4_1_1_obstaculo_sobrepeso_y_lift_ok_son_eventos_validos _______
+
+    def test_ca_4_1_1_obstaculo_sobrepeso_y_lift_ok_son_eventos_validos():
+        """CA-4.1.1"""
+        entradas = [
+            ("esp32/evento", {"ts": TS, "codigo": "OBSTACULO_CERCANO"}, TS + 1, "OBSTACULO"),
+            ("esp32/evento", {"ts": TS + 5, "codigo": "OVERWEIGHT", "id_tarima": "TAR-101",
+                              "peso_kg": 11.8}, TS + 6, "SOBREPESO"),
+            ("esp32/resp", {"ts": TS + 9, "id_cmd": "CMD-9", "resultado": "ACK", "codigo": "LIFT_OK"}, TS + 10, "LIFT_OK"),
+        ]
+        ids = []
+        for topic, payload, ts_ms, tipo in entradas:
+            assert not errores(def_de_tema(PREFIJO + topic), payload), "entrada fuera de contrato"
+>           salida = _consolidar(topic, payload, ts_ms)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\aceptacion\test_wp_4_1.py:45: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+topic = 'esp32/evento'
+payload = {'ts': 1700000000000, 'codigo': 'OBSTACULO_CERCANO'}
+ts_ms = 1700000000001
+
+    def _consolidar(topic, payload, ts_ms):
+>       from pi.puente_mqtt import consolidar_esp32
+E       ModuleNotFoundError: No module named 'pi.puente_mqtt'
+
+tests\aceptacion\test_wp_4_1.py:20: ModuleNotFoundError
+______________ test_ca_4_1_1_sensores_produce_telemetria_valida _______________
+
+    def test_ca_4_1_1_sensores_produce_telemetria_valida():
+        """CA-4.1.1"""
+        payload = {"ts": TS, "distancia_obstaculo_cm": 40.0, "enc_izq": 100, "enc_der": 100}
+        assert not errores("esp32_sensores", payload)
+>       salida = _consolidar("esp32/sensores", payload, TS + 2)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\aceptacion\test_wp_4_1.py:57: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+topic = 'esp32/sensores'
+payload = {'ts': 1700000000000, 'distancia_obstaculo_cm': 40.0, 'enc_izq': 100, 'enc_der': 100}
+ts_ms = 1700000000002
+
+    def _consolidar(topic, payload, ts_ms):
+>       from pi.puente_mqtt import consolidar_esp32
+E       ModuleNotFoundError: No module named 'pi.puente_mqtt'
+
+tests\aceptacion\test_wp_4_1.py:20: ModuleNotFoundError
+______________ test_ca_4_1_7_drop_ok_usa_ts_drop_ms_del_contexto ______________
+
+    def test_ca_4_1_7_drop_ok_usa_ts_drop_ms_del_contexto():
+        """CA-4.1.7 [D] (CC-004): el ts del evento DROP_OK es contexto['ts_drop_ms']."""
+>       from pi.puente_mqtt import consolidar_esp32
+E       ModuleNotFoundError: No module named 'pi.puente_mqtt'
+
+tests\aceptacion\test_wp_4_1.py:66: ModuleNotFoundError
+___________ test_ca_4_1_8_peso_declarado_devuelve_peso_de_la_tarima ___________
+
+    def test_ca_4_1_8_peso_declarado_devuelve_peso_de_la_tarima():
+        """CA-4.1.8"""
+>       from pi.ordenes import peso_declarado
+E       ModuleNotFoundError: No module named 'pi.ordenes'
+
+tests\aceptacion\test_wp_4_1.py:101: ModuleNotFoundError
+______ test_ca_4_1_8_tarima_inexistente_o_sin_peso_valido_lanza[TAR-999] ______
+
+id_tarima = 'TAR-999'
+
+    @pytest.mark.parametrize("id_tarima", ["TAR-999", "TAR-102", "TAR-103", "TAR-104"])
+    def test_ca_4_1_8_tarima_inexistente_o_sin_peso_valido_lanza(id_tarima):
+        """CA-4.1.8: inexistente, sin peso, cero o negativo."""
+>       from pi.ordenes import PesoNoDeclarado, peso_declarado
+E       ModuleNotFoundError: No module named 'pi.ordenes'
+
+tests\aceptacion\test_wp_4_1.py:108: ModuleNotFoundError
+______ test_ca_4_1_8_tarima_inexistente_o_sin_peso_valido_lanza[TAR-102] ______
+
+id_tarima = 'TAR-102'
+
+    @pytest.mark.parametrize("id_tarima", ["TAR-999", "TAR-102", "TAR-103", "TAR-104"])
+    def test_ca_4_1_8_tarima_inexistente_o_sin_peso_valido_lanza(id_tarima):
+        """CA-4.1.8: inexistente, sin peso, cero o negativo."""
+>       from pi.ordenes import PesoNoDeclarado, peso_declarado
+E       ModuleNotFoundError: No module named 'pi.ordenes'
+
+tests\aceptacion\test_wp_4_1.py:108: ModuleNotFoundError
+______ test_ca_4_1_8_tarima_inexistente_o_sin_peso_valido_lanza[TAR-103] ______
+
+id_tarima = 'TAR-103'
+
+    @pytest.mark.parametrize("id_tarima", ["TAR-999", "TAR-102", "TAR-103", "TAR-104"])
+    def test_ca_4_1_8_tarima_inexistente_o_sin_peso_valido_lanza(id_tarima):
+        """CA-4.1.8: inexistente, sin peso, cero o negativo."""
+>       from pi.ordenes import PesoNoDeclarado, peso_declarado
+E       ModuleNotFoundError: No module named 'pi.ordenes'
+
+tests\aceptacion\test_wp_4_1.py:108: ModuleNotFoundError
+______ test_ca_4_1_8_tarima_inexistente_o_sin_peso_valido_lanza[TAR-104] ______
+
+id_tarima = 'TAR-104'
+
+    @pytest.mark.parametrize("id_tarima", ["TAR-999", "TAR-102", "TAR-103", "TAR-104"])
+    def test_ca_4_1_8_tarima_inexistente_o_sin_peso_valido_lanza(id_tarima):
+        """CA-4.1.8: inexistente, sin peso, cero o negativo."""
+>       from pi.ordenes import PesoNoDeclarado, peso_declarado
+E       ModuleNotFoundError: No module named 'pi.ordenes'
+
+tests\aceptacion\test_wp_4_1.py:108: ModuleNotFoundError
+_____________ test_ca_4_1_2_iniciar_con_robot_inactivo_se_acepta ______________
+
+    def test_ca_4_1_2_iniciar_con_robot_inactivo_se_acepta():
+        """CA-4.1.2"""
+>       ack = _procesar(_orden(), "INACTIVO", set())
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\aceptacion\test_wp_4_1.py:127: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+payload = {'ts': 1700000000000, 'id_orden': 'ORD-1', 'tipo': 'INICIAR', 'ruta': 'RUTA_1', ...}
+estado = 'INACTIVO', vistas = set()
+
+    def _procesar(payload, estado, vistas):
+>       from pi.ordenes import procesar_orden
+E       ModuleNotFoundError: No module named 'pi.ordenes'
+
+tests\aceptacion\test_wp_4_1.py:121: ModuleNotFoundError
+____________ test_ca_4_1_2_id_orden_repetido_produce_el_mismo_ack _____________
+
+    def test_ca_4_1_2_id_orden_repetido_produce_el_mismo_ack():
+        """CA-4.1.2: la repetición no se reevalúa (mismo ack)."""
+        vistas = set()
+>       primero = _procesar(_orden(), "INACTIVO", vistas)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\aceptacion\test_wp_4_1.py:136: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+payload = {'ts': 1700000000000, 'id_orden': 'ORD-1', 'tipo': 'INICIAR', 'ruta': 'RUTA_1', ...}
+estado = 'INACTIVO', vistas = set()
+
+    def _procesar(payload, estado, vistas):
+>       from pi.ordenes import procesar_orden
+E       ModuleNotFoundError: No module named 'pi.ordenes'
+
+tests\aceptacion\test_wp_4_1.py:121: ModuleNotFoundError
+_________________ test_ca_4_1_3_iniciar_en_mision_se_rechaza __________________
+
+    def test_ca_4_1_3_iniciar_en_mision_se_rechaza():
+        """CA-4.1.3"""
+>       ack = _procesar(_orden(id_orden="ORD-2"), "EN_MISION", set())
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\aceptacion\test_wp_4_1.py:144: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+payload = {'ts': 1700000000000, 'id_orden': 'ORD-2', 'tipo': 'INICIAR', 'ruta': 'RUTA_1', ...}
+estado = 'EN_MISION', vistas = set()
+
+    def _procesar(payload, estado, vistas):
+>       from pi.ordenes import procesar_orden
+E       ModuleNotFoundError: No module named 'pi.ordenes'
+
+tests\aceptacion\test_wp_4_1.py:121: ModuleNotFoundError
+_________ test_ca_4_1_3_paro_se_acepta_en_cualquier_estado[INACTIVO] __________
+
+estado = 'INACTIVO'
+
+    @pytest.mark.parametrize("estado", ESTADOS_ROBOT)
+    def test_ca_4_1_3_paro_se_acepta_en_cualquier_estado(estado):
+        """CA-4.1.3"""
+>       ack = _procesar(_orden("PARO", id_orden="ORD-P"), estado, set())
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\aceptacion\test_wp_4_1.py:153: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+payload = {'ts': 1700000000000, 'id_orden': 'ORD-P', 'tipo': 'PARO'}
+estado = 'INACTIVO', vistas = set()
+
+    def _procesar(payload, estado, vistas):
+>       from pi.ordenes import procesar_orden
+E       ModuleNotFoundError: No module named 'pi.ordenes'
+
+tests\aceptacion\test_wp_4_1.py:121: ModuleNotFoundError
+_________ test_ca_4_1_3_paro_se_acepta_en_cualquier_estado[EN_MISION] _________
+
+estado = 'EN_MISION'
+
+    @pytest.mark.parametrize("estado", ESTADOS_ROBOT)
+    def test_ca_4_1_3_paro_se_acepta_en_cualquier_estado(estado):
+        """CA-4.1.3"""
+>       ack = _procesar(_orden("PARO", id_orden="ORD-P"), estado, set())
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\aceptacion\test_wp_4_1.py:153: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+payload = {'ts': 1700000000000, 'id_orden': 'ORD-P', 'tipo': 'PARO'}
+estado = 'EN_MISION', vistas = set()
+
+    def _procesar(payload, estado, vistas):
+>       from pi.ordenes import procesar_orden
+E       ModuleNotFoundError: No module named 'pi.ordenes'
+
+tests\aceptacion\test_wp_4_1.py:121: ModuleNotFoundError
+_________ test_ca_4_1_3_paro_se_acepta_en_cualquier_estado[ELEVANDO] __________
+
+estado = 'ELEVANDO'
+
+    @pytest.mark.parametrize("estado", ESTADOS_ROBOT)
+    def test_ca_4_1_3_paro_se_acepta_en_cualquier_estado(estado):
+        """CA-4.1.3"""
+>       ack = _procesar(_orden("PARO", id_orden="ORD-P"), estado, set())
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\aceptacion\test_wp_4_1.py:153: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+payload = {'ts': 1700000000000, 'id_orden': 'ORD-P', 'tipo': 'PARO'}
+estado = 'ELEVANDO', vistas = set()
+
+    def _procesar(payload, estado, vistas):
+>       from pi.ordenes import procesar_orden
+E       ModuleNotFoundError: No module named 'pi.ordenes'
+
+tests\aceptacion\test_wp_4_1.py:121: ModuleNotFoundError
+__________ test_ca_4_1_3_paro_se_acepta_en_cualquier_estado[EN_RUTA] __________
+
+estado = 'EN_RUTA'
+
+    @pytest.mark.parametrize("estado", ESTADOS_ROBOT)
+    def test_ca_4_1_3_paro_se_acepta_en_cualquier_estado(estado):
+        """CA-4.1.3"""
+>       ack = _procesar(_orden("PARO", id_orden="ORD-P"), estado, set())
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\aceptacion\test_wp_4_1.py:153: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+payload = {'ts': 1700000000000, 'id_orden': 'ORD-P', 'tipo': 'PARO'}
+estado = 'EN_RUTA', vistas = set()
+
+    def _procesar(payload, estado, vistas):
+>       from pi.ordenes import procesar_orden
+E       ModuleNotFoundError: No module named 'pi.ordenes'
+
+tests\aceptacion\test_wp_4_1.py:121: ModuleNotFoundError
+________ test_ca_4_1_3_paro_se_acepta_en_cualquier_estado[DEPOSITANDO] ________
+
+estado = 'DEPOSITANDO'
+
+    @pytest.mark.parametrize("estado", ESTADOS_ROBOT)
+    def test_ca_4_1_3_paro_se_acepta_en_cualquier_estado(estado):
+        """CA-4.1.3"""
+>       ack = _procesar(_orden("PARO", id_orden="ORD-P"), estado, set())
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\aceptacion\test_wp_4_1.py:153: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+payload = {'ts': 1700000000000, 'id_orden': 'ORD-P', 'tipo': 'PARO'}
+estado = 'DEPOSITANDO', vistas = set()
+
+    def _procesar(payload, estado, vistas):
+>       from pi.ordenes import procesar_orden
+E       ModuleNotFoundError: No module named 'pi.ordenes'
+
+tests\aceptacion\test_wp_4_1.py:121: ModuleNotFoundError
+____ test_ca_4_1_3_paro_se_acepta_en_cualquier_estado[DETENIDO_OBSTACULO] _____
+
+estado = 'DETENIDO_OBSTACULO'
+
+    @pytest.mark.parametrize("estado", ESTADOS_ROBOT)
+    def test_ca_4_1_3_paro_se_acepta_en_cualquier_estado(estado):
+        """CA-4.1.3"""
+>       ack = _procesar(_orden("PARO", id_orden="ORD-P"), estado, set())
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\aceptacion\test_wp_4_1.py:153: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+payload = {'ts': 1700000000000, 'id_orden': 'ORD-P', 'tipo': 'PARO'}
+estado = 'DETENIDO_OBSTACULO', vistas = set()
+
+    def _procesar(payload, estado, vistas):
+>       from pi.ordenes import procesar_orden
+E       ModuleNotFoundError: No module named 'pi.ordenes'
+
+tests\aceptacion\test_wp_4_1.py:121: ModuleNotFoundError
+___________ test_ca_4_1_3_paro_se_acepta_en_cualquier_estado[ERROR] ___________
+
+estado = 'ERROR'
+
+    @pytest.mark.parametrize("estado", ESTADOS_ROBOT)
+    def test_ca_4_1_3_paro_se_acepta_en_cualquier_estado(estado):
+        """CA-4.1.3"""
+>       ack = _procesar(_orden("PARO", id_orden="ORD-P"), estado, set())
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\aceptacion\test_wp_4_1.py:153: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+payload = {'ts': 1700000000000, 'id_orden': 'ORD-P', 'tipo': 'PARO'}
+estado = 'ERROR', vistas = set()
+
+    def _procesar(payload, estado, vistas):
+>       from pi.ordenes import procesar_orden
+E       ModuleNotFoundError: No module named 'pi.ordenes'
+
+tests\aceptacion\test_wp_4_1.py:121: ModuleNotFoundError
+__________________ test_ca_4_2_1_una_vuelta_es_pi_por_6_5_cm __________________
+
+    def test_ca_4_2_1_una_vuelta_es_pi_por_6_5_cm():
+        """CA-4.2.1"""
+>       od = _od()
+             ^^^^^
+
+tests\aceptacion\test_wp_4_2.py:14: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+    def _od():
+>       from pi import odometria
+E       ImportError: cannot import name 'odometria' from 'pi' (C:\Users\osval\koleo\pi\__init__.py)
+
+tests\aceptacion\test_wp_4_2.py:8: ImportError
+_______________________ test_ca_4_2_2_ida_y_vuelta[100] _______________________
+
+n = 100
+
+    @pytest.mark.parametrize("n", [100, 515, 1000])
+    def test_ca_4_2_2_ida_y_vuelta(n):
+        """CA-4.2.2"""
+>       od = _od()
+             ^^^^^
+
+tests\aceptacion\test_wp_4_2.py:23: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+    def _od():
+>       from pi import odometria
+E       ImportError: cannot import name 'odometria' from 'pi' (C:\Users\osval\koleo\pi\__init__.py)
+
+tests\aceptacion\test_wp_4_2.py:8: ImportError
+_______________________ test_ca_4_2_2_ida_y_vuelta[515] _______________________
+
+n = 515
+
+    @pytest.mark.parametrize("n", [100, 515, 1000])
+    def test_ca_4_2_2_ida_y_vuelta(n):
+        """CA-4.2.2"""
+>       od = _od()
+             ^^^^^
+
+tests\aceptacion\test_wp_4_2.py:23: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+    def _od():
+>       from pi import odometria
+E       ImportError: cannot import name 'odometria' from 'pi' (C:\Users\osval\koleo\pi\__init__.py)
+
+tests\aceptacion\test_wp_4_2.py:8: ImportError
+______________________ test_ca_4_2_2_ida_y_vuelta[1000] _______________________
+
+n = 1000
+
+    @pytest.mark.parametrize("n", [100, 515, 1000])
+    def test_ca_4_2_2_ida_y_vuelta(n):
+        """CA-4.2.2"""
+>       od = _od()
+             ^^^^^
+
+tests\aceptacion\test_wp_4_2.py:23: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+    def _od():
+>       from pi import odometria
+E       ImportError: cannot import name 'odometria' from 'pi' (C:\Users\osval\koleo\pi\__init__.py)
+
+tests\aceptacion\test_wp_4_2.py:8: ImportError
+_____________________ test_ca_4_2_2_30_cm_son_757_pulsos ______________________
+
+    def test_ca_4_2_2_30_cm_son_757_pulsos():
+        """CA-4.2.2"""
+>       assert _od().cm_a_pulsos(30) == pytest.approx(757, abs=1)
+               ^^^^^
+
+tests\aceptacion\test_wp_4_2.py:29: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+    def _od():
+>       from pi import odometria
+E       ImportError: cannot import name 'odometria' from 'pi' (C:\Users\osval\koleo\pi\__init__.py)
+
+tests\aceptacion\test_wp_4_2.py:8: ImportError
+____________ test_ca_4_2_3_pulsos_negativos_distancia_negativa[-1] ____________
+
+pulsos = -1
+
+    @pytest.mark.parametrize("pulsos", [-1, -515, -1000])
+    def test_ca_4_2_3_pulsos_negativos_distancia_negativa(pulsos):
+        """CA-4.2.3"""
+>       od = _od()
+             ^^^^^
+
+tests\aceptacion\test_wp_4_2.py:35: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+    def _od():
+>       from pi import odometria
+E       ImportError: cannot import name 'odometria' from 'pi' (C:\Users\osval\koleo\pi\__init__.py)
+
+tests\aceptacion\test_wp_4_2.py:8: ImportError
+___________ test_ca_4_2_3_pulsos_negativos_distancia_negativa[-515] ___________
+
+pulsos = -515
+
+    @pytest.mark.parametrize("pulsos", [-1, -515, -1000])
+    def test_ca_4_2_3_pulsos_negativos_distancia_negativa(pulsos):
+        """CA-4.2.3"""
+>       od = _od()
+             ^^^^^
+
+tests\aceptacion\test_wp_4_2.py:35: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+    def _od():
+>       from pi import odometria
+E       ImportError: cannot import name 'odometria' from 'pi' (C:\Users\osval\koleo\pi\__init__.py)
+
+tests\aceptacion\test_wp_4_2.py:8: ImportError
+__________ test_ca_4_2_3_pulsos_negativos_distancia_negativa[-1000] ___________
+
+pulsos = -1000
+
+    @pytest.mark.parametrize("pulsos", [-1, -515, -1000])
+    def test_ca_4_2_3_pulsos_negativos_distancia_negativa(pulsos):
+        """CA-4.2.3"""
+>       od = _od()
+             ^^^^^
+
+tests\aceptacion\test_wp_4_2.py:35: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+    def _od():
+>       from pi import odometria
+E       ImportError: cannot import name 'odometria' from 'pi' (C:\Users\osval\koleo\pi\__init__.py)
+
+tests\aceptacion\test_wp_4_2.py:8: ImportError
+__________________ test_ca_4_3_1_rutas_de_referencia[RUTA_1] __________________
+
+ruta = 'RUTA_1'
+
+    @pytest.mark.parametrize("ruta", list(RUTAS))
+    def test_ca_4_3_1_rutas_de_referencia(ruta):
+        """CA-4.3.1"""
+>       mapa, plan = _planificador()
+                     ^^^^^^^^^^^^^^^
+
+tests\aceptacion\test_wp_4_3.py:28: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+    def _planificador():
+>       from pi.mapa import MAPA
+E       ModuleNotFoundError: No module named 'pi.mapa'
+
+tests\aceptacion\test_wp_4_3.py:20: ModuleNotFoundError
+__________________ test_ca_4_3_1_rutas_de_referencia[RUTA_2] __________________
+
+ruta = 'RUTA_2'
+
+    @pytest.mark.parametrize("ruta", list(RUTAS))
+    def test_ca_4_3_1_rutas_de_referencia(ruta):
+        """CA-4.3.1"""
+>       mapa, plan = _planificador()
+                     ^^^^^^^^^^^^^^^
+
+tests\aceptacion\test_wp_4_3.py:28: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+    def _planificador():
+>       from pi.mapa import MAPA
+E       ModuleNotFoundError: No module named 'pi.mapa'
+
+tests\aceptacion\test_wp_4_3.py:20: ModuleNotFoundError
+__________________ test_ca_4_3_1_rutas_de_referencia[RUTA_3] __________________
+
+ruta = 'RUTA_3'
+
+    @pytest.mark.parametrize("ruta", list(RUTAS))
+    def test_ca_4_3_1_rutas_de_referencia(ruta):
+        """CA-4.3.1"""
+>       mapa, plan = _planificador()
+                     ^^^^^^^^^^^^^^^
+
+tests\aceptacion\test_wp_4_3.py:28: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+    def _planificador():
+>       from pi.mapa import MAPA
+E       ModuleNotFoundError: No module named 'pi.mapa'
+
+tests\aceptacion\test_wp_4_3.py:20: ModuleNotFoundError
+________________ test_ca_4_3_2_meta_en_obstaculo_devuelve_none ________________
+
+    def test_ca_4_3_2_meta_en_obstaculo_devuelve_none():
+        """CA-4.3.2"""
+>       _, plan = _planificador()
+                  ^^^^^^^^^^^^^^^
+
+tests\aceptacion\test_wp_4_3.py:42: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+    def _planificador():
+>       from pi.mapa import MAPA
+E       ModuleNotFoundError: No module named 'pi.mapa'
+
+tests\aceptacion\test_wp_4_3.py:20: ModuleNotFoundError
+__________ test_ca_4_3_2_inicio_igual_a_meta_devuelve_solo_esa_celda __________
+
+    def test_ca_4_3_2_inicio_igual_a_meta_devuelve_solo_esa_celda():
+        """CA-4.3.2"""
+>       _, plan = _planificador()
+                  ^^^^^^^^^^^^^^^
+
+tests\aceptacion\test_wp_4_3.py:48: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+    def _planificador():
+>       from pi.mapa import MAPA
+E       ModuleNotFoundError: No module named 'pi.mapa'
+
+tests\aceptacion\test_wp_4_3.py:20: ModuleNotFoundError
+__________________________ test_ca_4_3_3_celda_a_cm ___________________________
+
+    def test_ca_4_3_3_celda_a_cm():
+        """CA-4.3.3"""
+>       from pi.mision import celda_a_cm
+E       ModuleNotFoundError: No module named 'pi.mision'
+
+tests\aceptacion\test_wp_4_3.py:54: ModuleNotFoundError
+___________________ test_ca_4_3_4_secuencia_lift_move_drop ____________________
+
+    def test_ca_4_3_4_secuencia_lift_move_drop():
+        """CA-4.3.4"""
+        enlace = EnlaceFalso()
+>       resultado = _ejecutar(enlace)
+                    ^^^^^^^^^^^^^^^^^
+
+tests\aceptacion\test_wp_4_3.py:110: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+enlace = <test_wp_4_3.EnlaceFalso object at 0x000001D6BD302270>
+
+    def _ejecutar(enlace):
+>       from pi import odometria
+E       ImportError: cannot import name 'odometria' from 'pi' (C:\Users\osval\koleo\pi\__init__.py)
+
+tests\aceptacion\test_wp_4_3.py:98: ImportError
+________ test_ca_4_3_5_lift_rechazado_no_mueve_ni_deposita[OVERWEIGHT] ________
+
+codigo = 'OVERWEIGHT'
+
+    @pytest.mark.parametrize("codigo", ["OVERWEIGHT", "PESO_INVALIDO"])
+    def test_ca_4_3_5_lift_rechazado_no_mueve_ni_deposita(codigo):
+        """CA-4.3.5"""
+        enlace = EnlaceFalso(lift={"resultado": "ERR", "codigo": codigo})
+>       resultado = _ejecutar(enlace)
+                    ^^^^^^^^^^^^^^^^^
+
+tests\aceptacion\test_wp_4_3.py:126: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+enlace = <test_wp_4_3.EnlaceFalso object at 0x000001D6BD1CFD90>
+
+    def _ejecutar(enlace):
+>       from pi import odometria
+E       ImportError: cannot import name 'odometria' from 'pi' (C:\Users\osval\koleo\pi\__init__.py)
+
+tests\aceptacion\test_wp_4_3.py:98: ImportError
+______ test_ca_4_3_5_lift_rechazado_no_mueve_ni_deposita[PESO_INVALIDO] _______
+
+codigo = 'PESO_INVALIDO'
+
+    @pytest.mark.parametrize("codigo", ["OVERWEIGHT", "PESO_INVALIDO"])
+    def test_ca_4_3_5_lift_rechazado_no_mueve_ni_deposita(codigo):
+        """CA-4.3.5"""
+        enlace = EnlaceFalso(lift={"resultado": "ERR", "codigo": codigo})
+>       resultado = _ejecutar(enlace)
+                    ^^^^^^^^^^^^^^^^^
+
+tests\aceptacion\test_wp_4_3.py:126: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+enlace = <test_wp_4_3.EnlaceFalso object at 0x000001D6BD328A50>
+
+    def _ejecutar(enlace):
+>       from pi import odometria
+E       ImportError: cannot import name 'odometria' from 'pi' (C:\Users\osval\koleo\pi\__init__.py)
+
+tests\aceptacion\test_wp_4_3.py:98: ImportError
+_________________ test_ca_4_3_6_timeout_aborta_con_stop[lift] _________________
+
+falla_en = 'lift'
+
+    @pytest.mark.parametrize("falla_en", ["lift", "move"])
+    def test_ca_4_3_6_timeout_aborta_con_stop(falla_en):
+        """CA-4.3.6"""
+        enlace = EnlaceFalso(falla_en=falla_en)
+>       resultado = _ejecutar(enlace)  # no debe propagar la excepción
+                    ^^^^^^^^^^^^^^^^^
+
+tests\aceptacion\test_wp_4_3.py:136: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+enlace = <test_wp_4_3.EnlaceFalso object at 0x000001D6BD1416E0>
+
+    def _ejecutar(enlace):
+>       from pi import odometria
+E       ImportError: cannot import name 'odometria' from 'pi' (C:\Users\osval\koleo\pi\__init__.py)
+
+tests\aceptacion\test_wp_4_3.py:98: ImportError
+_________________ test_ca_4_3_6_timeout_aborta_con_stop[move] _________________
+
+falla_en = 'move'
+
+    @pytest.mark.parametrize("falla_en", ["lift", "move"])
+    def test_ca_4_3_6_timeout_aborta_con_stop(falla_en):
+        """CA-4.3.6"""
+        enlace = EnlaceFalso(falla_en=falla_en)
+>       resultado = _ejecutar(enlace)  # no debe propagar la excepción
+                    ^^^^^^^^^^^^^^^^^
+
+tests\aceptacion\test_wp_4_3.py:136: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+enlace = <test_wp_4_3.EnlaceFalso object at 0x000001D6BD2CE520>
+
+    def _ejecutar(enlace):
+>       from pi import odometria
+E       ImportError: cannot import name 'odometria' from 'pi' (C:\Users\osval\koleo\pi\__init__.py)
+
+tests\aceptacion\test_wp_4_3.py:98: ImportError
+_____ test_ca_5_2_1_iniciar_valido_responde_202_publica_y_queda_pendiente _____
+
+entorno = (<FlaskClient <Flask 'backend.koleo.api'>>, <test_wp_5_2.PublicadorFalso object at 0x000001D6BD302900>, 'C:\\Users\\osval\\AppData\\Local\\Temp\\pytest-of-osval\\pytest-333\\test_ca_5_2_1_iniciar_valido_r0\\koleo.db')
+
+    def test_ca_5_2_1_iniciar_valido_responde_202_publica_y_queda_pendiente(entorno):
+        """CA-5.2.1"""
+        client, pub, _ = entorno
+        resp = client.post("/api/ordenes", json=INICIAR)
+>       assert resp.status_code == 202
+E       assert 405 == 202
+E        +  where 405 = <WrapperTestResponse streamed [405 METHOD NOT ALLOWED]>.status_code
+
+tests\aceptacion\test_wp_5_2.py:34: AssertionError
+____ test_ca_5_2_2_iniciar_incompleto_responde_400_sin_publicar[id_tarima] ____
+
+entorno = (<FlaskClient <Flask 'backend.koleo.api'>>, <test_wp_5_2.PublicadorFalso object at 0x000001D6BD32A210>, 'C:\\Users\\osval\\AppData\\Local\\Temp\\pytest-of-osval\\pytest-333\\test_ca_5_2_2_iniciar_incomple0\\koleo.db')
+faltante = 'id_tarima'
+
+    @pytest.mark.parametrize("faltante", ["id_tarima", "ruta"])
+    def test_ca_5_2_2_iniciar_incompleto_responde_400_sin_publicar(entorno, faltante):
+        """CA-5.2.2"""
+        client, pub, _ = entorno
+        cuerpo = {k: v for k, v in INICIAR.items() if k != faltante}
+>       assert client.post("/api/ordenes", json=cuerpo).status_code == 400
+E       AssertionError: assert 405 == 400
+E        +  where 405 = <WrapperTestResponse streamed [405 METHOD NOT ALLOWED]>.status_code
+E        +    where <WrapperTestResponse streamed [405 METHOD NOT ALLOWED]> = post('/api/ordenes', json={'tipo': 'INICIAR', 'ruta': 'RUTA_1'})
+E        +      where post = <FlaskClient <Flask 'backend.koleo.api'>>.post
+
+tests\aceptacion\test_wp_5_2.py:51: AssertionError
+______ test_ca_5_2_2_iniciar_incompleto_responde_400_sin_publicar[ruta] _______
+
+entorno = (<FlaskClient <Flask 'backend.koleo.api'>>, <test_wp_5_2.PublicadorFalso object at 0x000001D6BD32A710>, 'C:\\Users\\osval\\AppData\\Local\\Temp\\pytest-of-osval\\pytest-333\\test_ca_5_2_2_iniciar_incomple1\\koleo.db')
+faltante = 'ruta'
+
+    @pytest.mark.parametrize("faltante", ["id_tarima", "ruta"])
+    def test_ca_5_2_2_iniciar_incompleto_responde_400_sin_publicar(entorno, faltante):
+        """CA-5.2.2"""
+        client, pub, _ = entorno
+        cuerpo = {k: v for k, v in INICIAR.items() if k != faltante}
+>       assert client.post("/api/ordenes", json=cuerpo).status_code == 400
+E       AssertionError: assert 405 == 400
+E        +  where 405 = <WrapperTestResponse streamed [405 METHOD NOT ALLOWED]>.status_code
+E        +    where <WrapperTestResponse streamed [405 METHOD NOT ALLOWED]> = post('/api/ordenes', json={'tipo': 'INICIAR', 'id_tarima': 'TAR-101'})
+E        +      where post = <FlaskClient <Flask 'backend.koleo.api'>>.post
+
+tests\aceptacion\test_wp_5_2.py:51: AssertionError
+_________ test_ca_5_2_3_ack_actualiza_el_estado_de_la_orden[aceptada] _________
+
+entorno = (<FlaskClient <Flask 'backend.koleo.api'>>, <test_wp_5_2.PublicadorFalso object at 0x000001D6BD2CFCE0>, 'C:\\Users\\osval\\AppData\\Local\\Temp\\pytest-of-osval\\pytest-333\\test_ca_5_2_3_ack_actualiza_el0\\koleo.db')
+resultado = 'aceptada'
+
+    @pytest.mark.parametrize("resultado", ["aceptada", "rechazada"])
+    def test_ca_5_2_3_ack_actualiza_el_estado_de_la_orden(entorno, resultado):
+        """CA-5.2.3: el ack llega por la ingesta del backend (tema orden/ack)."""
+        import sqlite3
+        from backend.koleo.ingesta import procesar_mensaje
+        client, _, db = entorno
+>       id_orden = client.post("/api/ordenes", json=INICIAR).get_json()["id_orden"]
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: 'NoneType' object is not subscriptable
+
+tests\aceptacion\test_wp_5_2.py:61: TypeError
+________ test_ca_5_2_3_ack_actualiza_el_estado_de_la_orden[rechazada] _________
+
+entorno = (<FlaskClient <Flask 'backend.koleo.api'>>, <test_wp_5_2.PublicadorFalso object at 0x000001D6BE6850F0>, 'C:\\Users\\osval\\AppData\\Local\\Temp\\pytest-of-osval\\pytest-333\\test_ca_5_2_3_ack_actualiza_el1\\koleo.db')
+resultado = 'rechazada'
+
+    @pytest.mark.parametrize("resultado", ["aceptada", "rechazada"])
+    def test_ca_5_2_3_ack_actualiza_el_estado_de_la_orden(entorno, resultado):
+        """CA-5.2.3: el ack llega por la ingesta del backend (tema orden/ack)."""
+        import sqlite3
+        from backend.koleo.ingesta import procesar_mensaje
+        client, _, db = entorno
+>       id_orden = client.post("/api/ordenes", json=INICIAR).get_json()["id_orden"]
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: 'NoneType' object is not subscriptable
+
+tests\aceptacion\test_wp_5_2.py:61: TypeError
+________________ test_ca_5_2_4_registrar_tarima_queda_en_piso _________________
+
+entorno = (<FlaskClient <Flask 'backend.koleo.api'>>, <test_wp_5_2.PublicadorFalso object at 0x000001D6BD307D10>, 'C:\\Users\\osval\\AppData\\Local\\Temp\\pytest-of-osval\\pytest-333\\test_ca_5_2_4_registrar_tarima0\\koleo.db')
+
+    def test_ca_5_2_4_registrar_tarima_queda_en_piso(entorno):
+        """CA-5.2.4"""
+        client, _, _ = entorno
+        resp = client.post("/api/tarimas",
+                           json={"id_tarima": "TAR-104", "peso_kg": 5.0, "descripcion": "Lote de prueba"})
+>       assert 200 <= resp.status_code < 300
+E       assert 405 < 300
+E        +  where 405 = <WrapperTestResponse streamed [405 METHOD NOT ALLOWED]>.status_code
+
+tests\aceptacion\test_wp_5_2.py:80: AssertionError
+____________ test_ca_5_2_4_registro_invalido_responde_400[cuerpo0] ____________
+
+entorno = (<FlaskClient <Flask 'backend.koleo.api'>>, <test_wp_5_2.PublicadorFalso object at 0x000001D6BD3539B0>, 'C:\\Users\\osval\\AppData\\Local\\Temp\\pytest-of-osval\\pytest-333\\test_ca_5_2_4_registro_invalid0\\koleo.db')
+cuerpo = {'id_tarima': 'TAR-104', 'peso_kg': 0, 'descripcion': 'peso cero'}
+
+    @pytest.mark.parametrize("cuerpo", [
+        {"id_tarima": "TAR-104", "peso_kg": 0, "descripcion": "peso cero"},
+        {"id_tarima": "ABC", "peso_kg": 5.0, "descripcion": "id inválido"},
+    ])
+    def test_ca_5_2_4_registro_invalido_responde_400(entorno, cuerpo):
+        """CA-5.2.4"""
+        client, _, _ = entorno
+>       assert client.post("/api/tarimas", json=cuerpo).status_code == 400
+E       AssertionError: assert 405 == 400
+E        +  where 405 = <WrapperTestResponse streamed [405 METHOD NOT ALLOWED]>.status_code
+E        +    where <WrapperTestResponse streamed [405 METHOD NOT ALLOWED]> = post('/api/tarimas', json={'id_tarima': 'TAR-104', 'peso_kg': 0, 'descripcion': 'peso cero'})
+E        +      where post = <FlaskClient <Flask 'backend.koleo.api'>>.post
+
+tests\aceptacion\test_wp_5_2.py:94: AssertionError
+____________ test_ca_5_2_4_registro_invalido_responde_400[cuerpo1] ____________
+
+entorno = (<FlaskClient <Flask 'backend.koleo.api'>>, <test_wp_5_2.PublicadorFalso object at 0x000001D6BD353130>, 'C:\\Users\\osval\\AppData\\Local\\Temp\\pytest-of-osval\\pytest-333\\test_ca_5_2_4_registro_invalid1\\koleo.db')
+cuerpo = {'id_tarima': 'ABC', 'peso_kg': 5.0, 'descripcion': 'id inválido'}
+
+    @pytest.mark.parametrize("cuerpo", [
+        {"id_tarima": "TAR-104", "peso_kg": 0, "descripcion": "peso cero"},
+        {"id_tarima": "ABC", "peso_kg": 5.0, "descripcion": "id inválido"},
+    ])
+    def test_ca_5_2_4_registro_invalido_responde_400(entorno, cuerpo):
+        """CA-5.2.4"""
+        client, _, _ = entorno
+>       assert client.post("/api/tarimas", json=cuerpo).status_code == 400
+E       AssertionError: assert 405 == 400
+E        +  where 405 = <WrapperTestResponse streamed [405 METHOD NOT ALLOWED]>.status_code
+E        +    where <WrapperTestResponse streamed [405 METHOD NOT ALLOWED]> = post('/api/tarimas', json={'id_tarima': 'ABC', 'peso_kg': 5.0, 'descripcion': 'id inválido'})
+E        +      where post = <FlaskClient <Flask 'backend.koleo.api'>>.post
+
+tests\aceptacion\test_wp_5_2.py:94: AssertionError
+=========================== short test summary info ===========================
+FAILED tests/aceptacion/test_wp_3_2.py::test_ca_3_2_1_lift_ack_devuelve_la_respuesta
+FAILED tests/aceptacion/test_wp_3_2.py::test_ca_3_2_1_lift_overweight_devuelve_error_sin_lanzar
+FAILED tests/aceptacion/test_wp_3_2.py::test_ca_3_2_2_timeout_lanza_y_envia_stop
+FAILED tests/aceptacion/test_wp_3_2.py::test_ca_3_2_3_drop_publica_mensaje_valido
+FAILED tests/aceptacion/test_wp_3_2.py::test_ca_3_2_3_move_publica_pwm_y_valida
+FAILED tests/aceptacion/test_wp_3_2.py::test_ca_3_2_3_id_cmd_unico - ModuleNo...
+FAILED tests/aceptacion/test_wp_4_1.py::test_ca_4_1_1_obstaculo_sobrepeso_y_lift_ok_son_eventos_validos
+FAILED tests/aceptacion/test_wp_4_1.py::test_ca_4_1_1_sensores_produce_telemetria_valida
+FAILED tests/aceptacion/test_wp_4_1.py::test_ca_4_1_7_drop_ok_usa_ts_drop_ms_del_contexto
+FAILED tests/aceptacion/test_wp_4_1.py::test_ca_4_1_8_peso_declarado_devuelve_peso_de_la_tarima
+FAILED tests/aceptacion/test_wp_4_1.py::test_ca_4_1_8_tarima_inexistente_o_sin_peso_valido_lanza[TAR-999]
+FAILED tests/aceptacion/test_wp_4_1.py::test_ca_4_1_8_tarima_inexistente_o_sin_peso_valido_lanza[TAR-102]
+FAILED tests/aceptacion/test_wp_4_1.py::test_ca_4_1_8_tarima_inexistente_o_sin_peso_valido_lanza[TAR-103]
+FAILED tests/aceptacion/test_wp_4_1.py::test_ca_4_1_8_tarima_inexistente_o_sin_peso_valido_lanza[TAR-104]
+FAILED tests/aceptacion/test_wp_4_1.py::test_ca_4_1_2_iniciar_con_robot_inactivo_se_acepta
+FAILED tests/aceptacion/test_wp_4_1.py::test_ca_4_1_2_id_orden_repetido_produce_el_mismo_ack
+FAILED tests/aceptacion/test_wp_4_1.py::test_ca_4_1_3_iniciar_en_mision_se_rechaza
+FAILED tests/aceptacion/test_wp_4_1.py::test_ca_4_1_3_paro_se_acepta_en_cualquier_estado[INACTIVO]
+FAILED tests/aceptacion/test_wp_4_1.py::test_ca_4_1_3_paro_se_acepta_en_cualquier_estado[EN_MISION]
+FAILED tests/aceptacion/test_wp_4_1.py::test_ca_4_1_3_paro_se_acepta_en_cualquier_estado[ELEVANDO]
+FAILED tests/aceptacion/test_wp_4_1.py::test_ca_4_1_3_paro_se_acepta_en_cualquier_estado[EN_RUTA]
+FAILED tests/aceptacion/test_wp_4_1.py::test_ca_4_1_3_paro_se_acepta_en_cualquier_estado[DEPOSITANDO]
+FAILED tests/aceptacion/test_wp_4_1.py::test_ca_4_1_3_paro_se_acepta_en_cualquier_estado[DETENIDO_OBSTACULO]
+FAILED tests/aceptacion/test_wp_4_1.py::test_ca_4_1_3_paro_se_acepta_en_cualquier_estado[ERROR]
+FAILED tests/aceptacion/test_wp_4_2.py::test_ca_4_2_1_una_vuelta_es_pi_por_6_5_cm
+FAILED tests/aceptacion/test_wp_4_2.py::test_ca_4_2_2_ida_y_vuelta[100] - Imp...
+FAILED tests/aceptacion/test_wp_4_2.py::test_ca_4_2_2_ida_y_vuelta[515] - Imp...
+FAILED tests/aceptacion/test_wp_4_2.py::test_ca_4_2_2_ida_y_vuelta[1000] - Im...
+FAILED tests/aceptacion/test_wp_4_2.py::test_ca_4_2_2_30_cm_son_757_pulsos - ...
+FAILED tests/aceptacion/test_wp_4_2.py::test_ca_4_2_3_pulsos_negativos_distancia_negativa[-1]
+FAILED tests/aceptacion/test_wp_4_2.py::test_ca_4_2_3_pulsos_negativos_distancia_negativa[-515]
+FAILED tests/aceptacion/test_wp_4_2.py::test_ca_4_2_3_pulsos_negativos_distancia_negativa[-1000]
+FAILED tests/aceptacion/test_wp_4_3.py::test_ca_4_3_1_rutas_de_referencia[RUTA_1]
+FAILED tests/aceptacion/test_wp_4_3.py::test_ca_4_3_1_rutas_de_referencia[RUTA_2]
+FAILED tests/aceptacion/test_wp_4_3.py::test_ca_4_3_1_rutas_de_referencia[RUTA_3]
+FAILED tests/aceptacion/test_wp_4_3.py::test_ca_4_3_2_meta_en_obstaculo_devuelve_none
+FAILED tests/aceptacion/test_wp_4_3.py::test_ca_4_3_2_inicio_igual_a_meta_devuelve_solo_esa_celda
+FAILED tests/aceptacion/test_wp_4_3.py::test_ca_4_3_3_celda_a_cm - ModuleNotF...
+FAILED tests/aceptacion/test_wp_4_3.py::test_ca_4_3_4_secuencia_lift_move_drop
+FAILED tests/aceptacion/test_wp_4_3.py::test_ca_4_3_5_lift_rechazado_no_mueve_ni_deposita[OVERWEIGHT]
+FAILED tests/aceptacion/test_wp_4_3.py::test_ca_4_3_5_lift_rechazado_no_mueve_ni_deposita[PESO_INVALIDO]
+FAILED tests/aceptacion/test_wp_4_3.py::test_ca_4_3_6_timeout_aborta_con_stop[lift]
+FAILED tests/aceptacion/test_wp_4_3.py::test_ca_4_3_6_timeout_aborta_con_stop[move]
+FAILED tests/aceptacion/test_wp_5_2.py::test_ca_5_2_1_iniciar_valido_responde_202_publica_y_queda_pendiente
+FAILED tests/aceptacion/test_wp_5_2.py::test_ca_5_2_2_iniciar_incompleto_responde_400_sin_publicar[id_tarima]
+FAILED tests/aceptacion/test_wp_5_2.py::test_ca_5_2_2_iniciar_incompleto_responde_400_sin_publicar[ruta]
+FAILED tests/aceptacion/test_wp_5_2.py::test_ca_5_2_3_ack_actualiza_el_estado_de_la_orden[aceptada]
+FAILED tests/aceptacion/test_wp_5_2.py::test_ca_5_2_3_ack_actualiza_el_estado_de_la_orden[rechazada]
+FAILED tests/aceptacion/test_wp_5_2.py::test_ca_5_2_4_registrar_tarima_queda_en_piso
+FAILED tests/aceptacion/test_wp_5_2.py::test_ca_5_2_4_registro_invalido_responde_400[cuerpo0]
+FAILED tests/aceptacion/test_wp_5_2.py::test_ca_5_2_4_registro_invalido_responde_400[cuerpo1]
+51 failed, 73 passed in 2.92s
+
+============================================================
+STDERR
+

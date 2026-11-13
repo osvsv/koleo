@@ -1,6 +1,6 @@
 # Estado del proyecto
 
-> Archivo generado por gen_estado.py el 2026-11-13T07:51 sobre el commit 6eac27a. No editar a mano.
+> Archivo generado por gen_estado.py el 2026-11-13T07:56 sobre el commit 6233438. No editar a mano.
 
 ## Gates
 
@@ -13,8 +13,8 @@
 
 | WP | Nombre | Riesgo | Tipo | Estado | Iteraciones | Último dictamen | Informe |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| WP-1.1 | Contratos MQTT, comandos del ESP32, estados y SQL | medio | entregable | Requiere reverificación (CC-004) | 2 | CONFORME | docs/pm/auditorias/WP-1.1_it2.md |
-| WP-1.2 | Robot simulado | bajo | entregable | Conforme@615282d | 3 | CONFORME CON OBSERVACIONES | docs/pm/auditorias/WP-1.2_it4.md |
+| WP-1.1 | Contratos MQTT, comandos del ESP32, estados y SQL | medio | entregable | Conforme@d17df56 | 3 | CONFORME | docs/pm/auditorias/WP-1.1_it3.md |
+| WP-1.2 | Robot simulado | bajo | entregable | Requiere reverificación | 3 | CONFORME CON OBSERVACIONES | docs/pm/auditorias/WP-1.2_it4.md |
 | WP-1.3 | Backend de persistencia y Web API | alto | entregable | Conforme@ff00514 | 2 | CONFORME CON OBSERVACIONES | docs/pm/auditorias/WP-1.3_it3.md |
 | WP-2.1 | Chasis y tracción | medio | integracion | Pendiente | 0 | — | — |
 | WP-2.2 | Mecanismo de elevación | alto | integracion | Pendiente | 0 | — | — |
@@ -26,8 +26,8 @@
 | WP-4.1 | Puente MQTT | alto | entregable | Pendiente | 0 | — | — |
 | WP-4.2 | Avance por distancia con encoders | medio | entregable | Pendiente | 0 | — | — |
 | WP-4.3 | Planificador A* y misión | medio | entregable | Pendiente | 0 | — | — |
-| WP-4.4 | Lectura QR | medio | entregable | Pendiente | 0 | — | — |
-| WP-5.1 | Tablero: flotilla, monitoreo e indicadores | medio | entregable | Pendiente | 0 | — | — |
+| WP-4.4 | Lectura QR | medio | entregable | En corrección | 1 | NO CONFORME | docs/pm/auditorias/WP-4.4_it1.md |
+| WP-5.1 | Tablero: flotilla, monitoreo e indicadores | medio | entregable | Bloqueado (Desviaciones de aprendizaje (it1): la API no da velocidad, ruta en curso ni alertas por robot que exige CA-5.1.2/5.1.3, y la interfaz del WP solo nombra /api/robots e /api/indicadores. Requiere /pm-cambio (ver informe it1)) | 0 | — | — |
 | WP-5.2 | Tablero: control y gestión logística | medio | entregable | Pendiente | 0 | — | — |
 | WP-6.1 | Pruebas de elevación, rechazo, obstáculo y latencia | alto | integracion | Pendiente | 0 | — | — |
 | WP-6.2 | Pruebas de rutas, llegada y traslado sostenido | alto | integracion | Pendiente | 0 | — | — |
@@ -35,4 +35,4 @@
 
 ## Resumen
 
-Conforme: 2, Pendiente: 16, Requiere reverificación: 1
+Bloqueado: 1, Conforme: 2, En corrección: 1, Pendiente: 14, Requiere reverificación: 1
