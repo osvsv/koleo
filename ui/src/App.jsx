@@ -29,8 +29,8 @@ export default function App() {
         <main className="space-y-6 p-6">
           <Indicadores ind={d.indicadores} />
           {vista === "flotilla"
-            ? <Flotilla robots={d.robots} alertas={d.indicadores.alertas} />
-            : <Monitoreo robots={d.robots} historial={d.historial} ordenes={d.ordenes} />}
+            ? <Flotilla robots={d.robots} />
+            : <Monitoreo robots={d.robots} historial={d.historial} />}
         </main>
       )}
     </div>

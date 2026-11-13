@@ -10,17 +10,17 @@ async function get(url) {
 
 // Consulta cada 1 s. Si una consulta falla, se descartan los datos: no se muestran datos viejos.
 export function useTablero() {
-  const [estado, setEstado] = useState({ conectado: null, robots: [], indicadores: null, historial: [], ordenes: [] });
+  const [estado, setEstado] = useState({ conectado: null, robots: [], indicadores: null, historial: [] });
   useEffect(() => {
     let vivo = true;
     const ciclo = async () => {
       try {
-        const [robots, indicadores, historial, ordenes] = await Promise.all([
-          get("/api/robots"), get("/api/indicadores"), get("/api/historial"), get("/api/ordenes"),
+        const [robots, indicadores, historial] = await Promise.all([
+          get("/api/robots"), get("/api/indicadores"), get("/api/historial"),
         ]);
-        if (vivo) setEstado({ conectado: true, robots, indicadores, historial, ordenes });
+        if (vivo) setEstado({ conectado: true, robots, indicadores, historial });
       } catch {
-        if (vivo) setEstado({ conectado: false, robots: [], indicadores: null, historial: [], ordenes: [] });
+        if (vivo) setEstado({ conectado: false, robots: [], indicadores: null, historial: [] });
       }
     };
     ciclo();

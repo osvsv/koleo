@@ -2,10 +2,7 @@ import React from "react";
 
 const CAPACIDAD_KG = 10;
 
-export default function Monitoreo({ robots, historial, ordenes }) {
-  const ultimo = historial[historial.length - 1];
-  const orden = ordenes[ordenes.length - 1];
-  const ruta = ultimo?.ruta_ejecutada || orden?.ruta || "—";
+export default function Monitoreo({ robots, historial }) {
   return (
     <section className="space-y-4">
       <h2 className="text-lg font-bold">Monitoreo</h2>
@@ -20,9 +17,8 @@ export default function Monitoreo({ robots, historial, ordenes }) {
               <div className="h-3 w-full rounded bg-slate-200">
                 <div className={"h-3 rounded " + (peso > CAPACIDAD_KG ? "bg-red-600" : "bg-sky-600")} style={{ width: pct + "%" }} />
               </div>
-              {/* La API no expone velocidad (la BD no la guarda): ver informe del WP, desviacion de aprendizaje. */}
-              <div className="mt-2 text-sm">Velocidad: no disponible en la API</div>
-              <div className="text-sm">Ruta: {ruta}</div>
+              <div className="mt-2 text-sm">Velocidad: {r.velocidad_cm_s ?? "—"} cm/s</div>
+              <div className="text-sm">Ruta: {r.ruta_actual ?? "sin ruta en curso"}</div>
             </div>
           );
         })}
