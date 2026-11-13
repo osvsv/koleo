@@ -1,5 +1,5 @@
 # WBS — KOLEO
-Versión: 1.6 (G1, respuestas de Osvaldo aplicadas; CC-002, CC-003, CC-004, CC-005, CC-006)
+Versión: 1.7 (G1, respuestas de Osvaldo aplicadas; CC-002, CC-003, CC-004, CC-005, CC-006, CC-007)
 
 Convenciones: los WP de software los ejecuta `/pm-ejecutar`. Los WP **físicos** (tipo `integracion`) los hacen personas; su evidencia va a `docs/pm/evidencia/hw/<WP>/` y el auditor la inspecciona (DP-09). Los WP de firmware combinan código (lo escribe el ejecutor) y pruebas de banco (las aportan personas). Los criterios llevan procedencia [S] salvo los marcados [D] por DP-04.
 
@@ -270,7 +270,7 @@ Convenciones: los WP de software los ejecuta `/pm-ejecutar`. Los WP **físicos**
   - CA-5.1.1 [S]: `npm run build` termina sin errores — Evidencia: docs/pm/evidencia/WP-5.1/build.txt
   - CA-5.1.2 [S]: Flotilla muestra, por robot, identificador, conexión (EN_LINEA / FUERA_DE_LINEA), estado y las `alertas` de ese robot que entrega `GET /api/robots` — Evidencia: docs/pm/evidencia/WP-5.1/flotilla.png (con el simulador)
   - CA-5.1.3 [S]: Monitoreo muestra el peso declarado frente a capacidad, la velocidad (`velocidad_cm_s`), la ruta en curso (`ruta_actual`) y el historial reciente (`GET /api/historial`) de `GET /api/robots` — Evidencia: docs/pm/evidencia/WP-5.1/monitoreo.png
-  - CA-5.1.4 [S]: se muestran al menos 5 indicadores (ocupación, posición del robot, tiempo de ciclo, peso, precisión, alertas) y cambian en ≤ 2 s tras publicar el simulador — Evidencia: docs/pm/evidencia/WP-5.1/indicadores.mp4
+  - CA-5.1.4 [D]: se muestran al menos 5 indicadores (ocupación, posición del robot, tiempo de ciclo, peso, precisión, alertas) y cambian en ≤ 2 s tras publicar el simulador — Evidencia: docs/pm/evidencia/WP-5.1/indicadores_antes.png y docs/pm/evidencia/WP-5.1/indicadores_despues.png (capturas antes y después de publicar una telemetría nueva; los 2 s no se cronometran, CC-007)
   - CA-5.1.5 [S]: con el backend detenido el tablero muestra "sin conexión" y no presenta datos viejos como actuales — Evidencia: docs/pm/evidencia/WP-5.1/sin_conexion.png
 
 ### WP-5.2 — Tablero: control y gestión logística
