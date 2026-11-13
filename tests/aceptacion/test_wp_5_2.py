@@ -93,3 +93,66 @@ def test_ca_5_2_4_registro_invalido_responde_400(entorno, cuerpo):
     client, _, _ = entorno
     assert client.post("/api/tarimas", json=cuerpo).status_code == 400
     assert client.get("/api/tarimas").get_json() == []
+
+
+# --- CA-5.2.6 (CC-008): publicador MQTT, parte verificable sin broker ---------
+# La captura con Mosquitto real (orden_mosquitto.txt) es evidencia física.
+
+class ClienteFalso:
+    """Imita paho-mqtt: publish(topic, payload=None, qos=0, retain=False)."""
+
+    def __init__(self):
+        self.llamadas = []
+
+    def publish(self, topic, payload=None, qos=0, retain=False):
+        self.llamadas.append({"topic": topic, "payload": payload, "qos": qos})
+
+
+def _env_mqtt():
+    return {"KOLEO_MQTT_HOST": "broker.invalido", "KOLEO_MQTT_PORT": "1883"}
+
+
+def test_ca_5_2_6_sin_host_crear_publicador_devuelve_none():
+    """CA-5.2.6"""
+    from backend.koleo.api import crear_publicador
+    assert crear_publicador({}) is None
+
+
+def test_ca_5_2_6_publicador_publica_json_con_qos_1():
+    """CA-5.2.6"""
+    import json
+    from backend.koleo.api import crear_publicador
+    cliente = ClienteFalso()
+    pub = crear_publicador(_env_mqtt(), cliente=cliente)
+    assert callable(pub)
+    mensaje = {"tipo": "INICIAR", "ruta": "RUTA_1", "id_tarima": "TAR-101", "id_orden": "ORD-1"}
+    pub("koleo/robot1/orden", mensaje)
+    assert len(cliente.llamadas) == 1
+    ll = cliente.llamadas[0]
+    assert ll["topic"] == "koleo/robot1/orden"
+    assert isinstance(ll["payload"], str)
+    assert json.loads(ll["payload"]) == mensaje
+    assert ll["qos"] == 1
+
+
+def test_ca_5_2_6_post_ordenes_con_publicador_real_publica_en_el_tema(tmp_path):
+    """CA-5.2.6"""
+    from backend.koleo.api import crear_app, crear_publicador
+    ruta = tmp_path / "koleo.db"
+    crear_bd(ruta).close()
+    cliente = ClienteFalso()
+    app = crear_app(str(ruta), publicador=crear_publicador(_env_mqtt(), cliente=cliente))
+    resp = app.test_client().post("/api/ordenes", json=INICIAR)
+    assert resp.status_code == 202
+    assert [ll["topic"] for ll in cliente.llamadas] == ["koleo/robot1/orden"]
+    assert como_dict(cliente.llamadas[0]["payload"])["tipo"] == "INICIAR"
+
+
+def test_ca_5_2_6_sin_publicador_ordenes_503_y_resto_de_la_api_sigue(tmp_path):
+    """CA-5.2.6"""
+    from backend.koleo.api import crear_app
+    ruta = tmp_path / "koleo.db"
+    crear_bd(ruta).close()
+    client = crear_app(str(ruta)).test_client()
+    assert client.post("/api/ordenes", json=INICIAR).status_code == 503
+    assert client.get("/api/robots").status_code == 200
