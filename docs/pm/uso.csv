@@ -4,3 +4,7 @@ fecha,sesion,fase,wp,rol,modelo,entrada,salida,cache_escritura,cache_lectura,usd
 2026-11-11 12:47,f3c9f770-4eda-4976-9b66-42a1d6661c1e,pm-planificar+pm-adoptar+pm-validar+pm-ejecutar,WP-1.1,principal,claude-sonnet-5-5,194,201847,436827,17555723,10.9160,105.2
 2026-11-11 12:47,f3c9f770-4eda-4976-9b66-42a1d6661c1e,pm-planificar+pm-adoptar+pm-validar+pm-ejecutar,WP-1.1,redactor-aceptacion,claude-sonnet-5-5,48,58982,126915,1813951,1.9050,105.2
 2026-11-12 10:55,d79e5814-5054-4ea2-895c-59a5a548a746,pm-ejecutar,—,principal,claude-sonnet-5-5,6,1026,68831,135884,0.4692,1.7
+2026-11-12 10:58,3da6302f-3382-4066-96ba-8e2fc97dc11c,pm-estado+pm-ejecutar+pm-cambio+pm-validar,WP-1.2+WP-1.3,auditor-conformidad,claude-opus-5-5,144,61014,303442,3073306,4.9592,187.0
+2026-11-12 10:58,3da6302f-3382-4066-96ba-8e2fc97dc11c,pm-estado+pm-ejecutar+pm-cambio+pm-validar,WP-1.2+WP-1.3,ejecutor-wbs,claude-sonnet-5-5,84,34488,144946,976591,1.3541,187.0
+2026-11-12 10:58,3da6302f-3382-4066-96ba-8e2fc97dc11c,pm-estado+pm-ejecutar+pm-cambio+pm-validar,WP-1.2+WP-1.3,principal,claude-sonnet-5-5,324,95483,238402,21127980,9.2020,187.0
+2026-11-12 10:58,3da6302f-3382-4066-96ba-8e2fc97dc11c,pm-estado+pm-ejecutar+pm-cambio+pm-validar,WP-1.2+WP-1.3,redactor-aceptacion,claude-sonnet-5-5,40,10255,42197,380179,0.4262,187.0
