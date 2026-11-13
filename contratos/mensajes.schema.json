@@ -88,8 +88,11 @@
         "pwm_izq": {"type": "number"},
         "pwm_der": {"type": "number"},
         "x_cm": {"type": "number"},
-        "y_cm": {"type": "number"}
-      }
+        "y_cm": {"type": "number"},
+        "peso_kg": {"type": "number"}
+      },
+      "if": {"properties": {"cmd": {"const": "LIFT"}}, "required": ["cmd"]},
+      "then": {"required": ["peso_kg"]}
     },
     "esp32_resp": {
       "type": "object",
@@ -98,12 +101,12 @@
         "ts": {"$ref": "#/$defs/ts"},
         "id_cmd": {"$ref": "#/$defs/texto"},
         "resultado": {"enum": ["ACK", "ERR"]},
-        "codigo": {"enum": ["LIFT_OK", "OVERWEIGHT", "SCALE_FAIL", "NO_LOAD", "OBSTACULO_CERCANO", "MOVE_OK", "STOP_OK", "DROP_OK"]}
+        "codigo": {"enum": ["LIFT_OK", "OVERWEIGHT", "PESO_INVALIDO", "OBSTACULO_CERCANO", "MOVE_OK", "STOP_OK", "DROP_OK"]}
       }
     },
     "esp32_sensores": {
       "type": "object",
-      "required": ["ts", "peso_kg", "distancia_obstaculo_cm", "enc_izq", "enc_der"],
+      "required": ["ts", "distancia_obstaculo_cm", "enc_izq", "enc_der"],
       "properties": {
         "ts": {"$ref": "#/$defs/ts"},
         "peso_kg": {"type": "number"},
@@ -117,7 +120,7 @@
       "required": ["ts", "codigo"],
       "properties": {
         "ts": {"$ref": "#/$defs/ts"},
-        "codigo": {"enum": ["LIFT_OK", "OVERWEIGHT", "SCALE_FAIL", "NO_LOAD", "OBSTACULO_CERCANO", "DROP_OK"]},
+        "codigo": {"enum": ["LIFT_OK", "OVERWEIGHT", "PESO_INVALIDO", "OBSTACULO_CERCANO", "DROP_OK"]},
         "id_tarima": {"$ref": "#/$defs/texto"},
         "peso_kg": {"type": "number"}
       }
