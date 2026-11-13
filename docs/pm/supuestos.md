@@ -31,5 +31,5 @@ Actualizado en G1 (2026-11-11). Estados: Pendiente · Confirmado · Corregido. O
 | SUP-004 | Fusible de 10 A en la línea de la batería y sin paro de emergencia físico (DP-10); decisión abierta | REQ-NF-005, WP-2.3 | 2 | Pendiente | G1 V-08 quedó pendiente (Osvaldo, 2026-11-11) |
 | SUP-017 | La reductora da 515 pulsos por vuelta y la rueda mide 65 mm | REQ-F-006, WP-4.2 | 2 | Pendiente | — |
 | SUP-025 | El ESP32 sigue alimentado por un cable USB desde la Pi, solo como energía (sin datos) | WP-2.3, WP-3.2 | 2 | Pendiente | — |
-| SUP-026 | Retirado por CC-004: ya no hay báscula, calibración ni detección de "sin carga" | REQ-F-016, WP-3.1 | 0 | Corregido | Osvaldo, CC-004 (2026-11-13) |
+| SUP-026 | Retirado por CC-004: ya no hay báscula, calibración ni detección de "sin carga" | WP-3.1 | 0 | Corregido | Osvaldo, CC-004 (2026-11-13) |
 | SUP-028 | Si falta tiempo, el orden de recorte es WP-5.2 (control y gestión), WP-4.4 (QR) y rutas 2 y 3 | WP-5.2, WP-4.4 | 2 | Pendiente | — |

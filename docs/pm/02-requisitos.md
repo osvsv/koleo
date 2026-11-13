@@ -20,7 +20,6 @@ Requisitos de sistema. Procedencia: [D] decidido por Osvaldo (Fase 0 o G1, ver `
 | REQ-F-013 | Desde el tablero se pueden INICIAR, CANCELAR y PARAR misiones; cada orden tiene id, se publica por MQTT y su confirmación se refleja. | [S] | Media | Prueba de aceptación (API) e inspección (tablero) |
 | REQ-F-014 | El tablero permite registrar tarimas, consultar sus ubicaciones, asignar rutas y revisar traslados concluidos. | [S] | Media | Prueba de aceptación (API) e inspección (tablero) |
 | REQ-F-015 | Un robot simulado publica telemetría y eventos conformes al contrato para las 3 rutas, de modo que backend y tablero se prueben sin el robot físico. | [S] | Alta | Prueba de aceptación |
-| REQ-F-016 | Retirado por CC-004: sin báscula no hay detección de "sin carga"; un peso declarado ≤ 0 se rechaza por REQ-F-003 y el tablero ya rechaza pesos de 0 kg (REQ-F-014). | — | — | — |
 | REQ-F-017 | Cada entrega lleva un id único (`id_evento`); todas las entregas se registran, aunque sean de la misma tarima, y un mismo `id_evento` repetido por reenvío se descarta. | [D] | Crítica | Prueba de aceptación |
 | REQ-NF-001 | Error de llegada al destino < 10 cm. | [D] | Crítica | Evidencia física (VAL-04) |
 | REQ-NF-002 | Elevación de la carga de demostración (100 g) en < 15 s; la capacidad de diseño sigue siendo 10 kg. | [D] | Crítica | Evidencia física (VAL-01) |
@@ -98,8 +97,8 @@ Se redactan para todos los requisitos funcionales (nivel Estándar). Nacen [S] s
 - EJ-029 [S]: Dado el simulador con RUTA_1 y 8.45 kg, entonces genera telemetría, LIFT_OK y DROP_OK final en (150, 120), todos válidos contra el contrato.
 - EJ-030 [S] (caso límite): Dado RUTA_2 con 11.80 kg, entonces genera SOBREPESO y ningún LIFT_OK ni DROP_OK.
 
-### REQ-F-016
-- EJ-031 y EJ-032: retirados por CC-004 (ver REQ-F-016).
+### Requisito retirado
+- El requisito de "sin carga" (antes F-016) y sus ejemplos EJ-031 y EJ-032 se retiraron por CC-004: sin báscula no hay detección de "sin carga"; un peso declarado ≤ 0 se rechaza por REQ-F-003 y el tablero ya rechaza pesos de 0 kg (REQ-F-014).
 
 ### REQ-F-017
 - EJ-033 [D]: Dado dos entregas de TAR-101 con `id_evento` distintos, cuando el backend las procesa, entonces `historial_movimientos` tiene dos filas.
