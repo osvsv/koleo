@@ -1,5 +1,5 @@
 # WBS — KOLEO
-Versión: 1.7 (G1, respuestas de Osvaldo aplicadas; CC-002, CC-003, CC-004, CC-005, CC-006, CC-007)
+Versión: 1.8 (G1, respuestas de Osvaldo aplicadas; CC-002, CC-003, CC-004, CC-005, CC-006, CC-007, CC-008)
 
 Convenciones: los WP de software los ejecuta `/pm-ejecutar`. Los WP **físicos** (tipo `integracion`) los hacen personas; su evidencia va a `docs/pm/evidencia/hw/<WP>/` y el auditor la inspecciona (DP-09). Los WP de firmware combinan código (lo escribe el ejecutor) y pruebas de banco (las aportan personas). Los criterios llevan procedencia [S] salvo los marcados [D] por DP-04.
 
@@ -278,7 +278,7 @@ Convenciones: los WP de software los ejecuta `/pm-ejecutar`. Los WP **físicos**
 - Tipo: entregable
 - Entregable: endpoints de órdenes y de registro de tarimas, y los módulos Control y Gestión logística del tablero
 - Alcance de archivos: ui/src/control/**, ui/src/logistica/**, backend/koleo/ordenes.py, backend/koleo/api.py, docs/pm/evidencia/WP-5.2/**
-- Interfaz: `POST /api/ordenes` (`{tipo, ruta?, id_tarima?}` → 202 `{id_orden}`, publica con el `publicador` (una función `publicador(topic: str, payload: dict)`) inyectado en `crear_app`); `GET /api/ordenes/<id>`; `POST /api/tarimas` (`{id_tarima, peso_kg, descripcion}`)
+- Interfaz: `POST /api/ordenes` (`{tipo, ruta?, id_tarima?}` → 202 `{id_orden}`, publica con el `publicador` (una función `publicador(topic: str, payload: dict)`) inyectado en `crear_app`); `GET /api/ordenes/<id>`; `POST /api/tarimas` (`{id_tarima, peso_kg, descripcion}`); [D] (CC-008) `backend.koleo.api.crear_publicador(env: dict, cliente=None)` devuelve un `publicador(topic, payload)` que publica el JSON con QoS 1 en el broker MQTT (`cliente` es un cliente paho o uno falso inyectado en pruebas) o `None` si `env` no trae `KOLEO_MQTT_HOST`, y `main()` lo pasa a `crear_app`
 - Trazabilidad: REQ-F-013, REQ-F-014
 - Dependencias: WP-1.3, WP-5.1
 - Criterios de aceptación:
@@ -287,6 +287,7 @@ Convenciones: los WP de software los ejecuta `/pm-ejecutar`. Los WP **físicos**
   - CA-5.2.3 [S]: un `orden_ack` recibido actualiza el estado de la orden a "aceptada" o "rechazada" — Evidencia: tests/aceptacion/test_wp_5_2.py
   - CA-5.2.4 [S]: `POST /api/tarimas` con TAR-104 y 5.0 kg crea la tarima EN_PISO; con peso 0 o id "ABC" responde 400 — Evidencia: tests/aceptacion/test_wp_5_2.py
   - CA-5.2.5 [S]: el tablero tiene botones INICIAR, CANCELAR y PARO y un formulario de registro, y refleja el ack — Evidencia: docs/pm/evidencia/WP-5.2/control.png
+  - CA-5.2.6 [D]: `python -m backend.koleo.api` construye el publicador MQTT con `crear_publicador(os.environ)`, con `KOLEO_MQTT_HOST`, `KOLEO_MQTT_PORT`, `KOLEO_MQTT_USER` y `KOLEO_MQTT_PASSWORD` leídos de variables de entorno y sin valores en el repositorio, y lo pasa a `crear_app`; `crear_publicador` publica en el tema recibido el payload como JSON con QoS 1 y devuelve `None` sin `KOLEO_MQTT_HOST`; con el broker accesible, `POST /api/ordenes` con INICIAR válido responde 202 y el mensaje aparece en `mosquitto_sub -t 'koleo/robot1/orden'`; si no hay publicador, `POST /api/ordenes` responde 503 sin afectar al resto de la API (CC-008) — Evidencia: tests/aceptacion/test_wp_5_2.py y docs/pm/evidencia/WP-5.2/orden_mosquitto.txt
 
 ### WP-6.1 — Pruebas de elevación, rechazo, obstáculo y latencia
 - Riesgo: alto
