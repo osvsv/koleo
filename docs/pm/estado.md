@@ -1,6 +1,6 @@
 # Estado del proyecto
 
-> Archivo generado por gen_estado.py el 2026-11-13T08:27 sobre el commit 5c9acfa. No editar a mano.
+> Archivo generado por gen_estado.py el 2026-11-13T08:29 sobre el commit 0dfbfae. No editar a mano.
 
 ## Gates
 
@@ -15,7 +15,7 @@
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | WP-1.1 | Contratos MQTT, comandos del ESP32, estados y SQL | medio | entregable | Conforme@d17df56 | 3 | CONFORME | docs/pm/auditorias/WP-1.1_it3.md |
 | WP-1.2 | Robot simulado | bajo | entregable | Conforme@7ccd096 | 4 | CONFORME CON OBSERVACIONES | docs/pm/auditorias/WP-1.2_it5.md |
-| WP-1.3 | Backend de persistencia y Web API | alto | entregable | Requiere reverificación | 3 | CONFORME CON OBSERVACIONES | docs/pm/auditorias/WP-1.3_it4.md |
+| WP-1.3 | Backend de persistencia y Web API | alto | entregable | Conforme@0dfbfae | 4 | CONFORME CON OBSERVACIONES | docs/pm/auditorias/WP-1.3_it5.md |
 | WP-2.1 | Chasis y tracción | medio | integracion | Pendiente | 0 | — | — |
 | WP-2.2 | Mecanismo de elevación | alto | integracion | Pendiente | 0 | — | — |
 | WP-2.3 | Energía y energizado seguro | alto | integracion | Pendiente | 0 | — | — |
@@ -27,7 +27,7 @@
 | WP-4.2 | Avance por distancia con encoders | medio | entregable | Pendiente | 0 | — | — |
 | WP-4.3 | Planificador A* y misión | medio | entregable | Pendiente | 0 | — | — |
 | WP-4.4 | Lectura QR | medio | entregable | En corrección | 1 | NO CONFORME | docs/pm/auditorias/WP-4.4_it1.md |
-| WP-5.1 | Tablero: flotilla, monitoreo e indicadores | medio | entregable | Requiere reverificación | 1 | CONFORME CON OBSERVACIONES | docs/pm/auditorias/WP-5.1_it2.md |
+| WP-5.1 | Tablero: flotilla, monitoreo e indicadores | medio | entregable | Conforme@0dfbfae | 2 | CONFORME CON OBSERVACIONES | docs/pm/auditorias/WP-5.1_it3.md |
 | WP-5.2 | Tablero: control y gestión logística | medio | entregable | Bloqueado (Desviación de aprendizaje (it1): al arrancar el backend real (`python -m backend.koleo.api`) no hay publicador MQTT y `POST /api/ordenes` devuelve 503; ningún criterio de la línea base cubre el cableado del publicador. Requiere /pm-cambio (ver informe it1)) | 0 | — | — |
 | WP-6.1 | Pruebas de elevación, rechazo, obstáculo y latencia | alto | integracion | Pendiente | 0 | — | — |
 | WP-6.2 | Pruebas de rutas, llegada y traslado sostenido | alto | integracion | Pendiente | 0 | — | — |
@@ -35,4 +35,4 @@
 
 ## Resumen
 
-Bloqueado: 1, Conforme: 2, En corrección: 1, Pendiente: 13, Requiere reverificación: 2
+Bloqueado: 1, Conforme: 4, En corrección: 1, Pendiente: 13
