@@ -1,0 +1,14 @@
+# CA-5.2.6: orden por POST /api/ordenes llega a koleo/robot1/orden (broker Mosquitto real, 127.0.0.1:18830)
+# Capturado por el orquestador el 2026-11-13T14:36:21Z, commit base 5908fde + cambios sin commit de WP-5.2 it2
+$ curl -si -X POST http://127.0.0.1:15210/api/ordenes -H "Content-Type: application/json" -d {"tipo":"INICIAR","ruta":"RUTA_1","id_tarima":"TAR-101"}
+HTTP/1.1 202 ACCEPTED
+Server: Werkzeug/3.1.9 Python/3.13.7
+Date: Fri, 13 Nov 2026 14:36:27 GMT
+Content-Type: application/json
+Content-Length: 32
+Connection: close
+
+{"id_orden":"ORD-32b0b9763eb2"}
+
+$ mosquitto_sub -h 127.0.0.1 -p 18830 -v -t koleo/robot1/orden -C 1
+koleo/robot1/orden {"ts": 1794580587494, "id_orden": "ORD-32b0b9763eb2", "tipo": "INICIAR", "ruta": "RUTA_1", "id_tarima": "TAR-101"}
