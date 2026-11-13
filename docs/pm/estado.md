@@ -1,6 +1,6 @@
 # Estado del proyecto
 
-> Archivo generado por gen_estado.py el 2026-11-13T08:07 sobre el commit 95db1d4. No editar a mano.
+> Archivo generado por gen_estado.py el 2026-11-13T08:08 sobre el commit edc885c. No editar a mano.
 
 ## Gates
 
