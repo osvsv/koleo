@@ -1,6 +1,6 @@
 # Estado del proyecto
 
-> Archivo generado por gen_estado.py el 2026-11-13T08:35 sobre el commit b18e59f. No editar a mano.
+> Archivo generado por gen_estado.py el 2026-11-13T08:41 sobre el commit 525905a. No editar a mano.
 
 ## Gates
 
@@ -15,7 +15,7 @@
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | WP-1.1 | Contratos MQTT, comandos del ESP32, estados y SQL | medio | entregable | Conforme@d17df56 | 3 | CONFORME | docs/pm/auditorias/WP-1.1_it3.md |
 | WP-1.2 | Robot simulado | bajo | entregable | Conforme@7ccd096 | 4 | CONFORME CON OBSERVACIONES | docs/pm/auditorias/WP-1.2_it5.md |
-| WP-1.3 | Backend de persistencia y Web API | alto | entregable | Conforme@0dfbfae | 4 | CONFORME CON OBSERVACIONES | docs/pm/auditorias/WP-1.3_it5.md |
+| WP-1.3 | Backend de persistencia y Web API | alto | entregable | Requiere reverificación | 4 | CONFORME CON OBSERVACIONES | docs/pm/auditorias/WP-1.3_it5.md |
 | WP-2.1 | Chasis y tracción | medio | integracion | Pendiente | 0 | — | — |
 | WP-2.2 | Mecanismo de elevación | alto | integracion | Pendiente | 0 | — | — |
 | WP-2.3 | Energía y energizado seguro | alto | integracion | Pendiente | 0 | — | — |
@@ -28,11 +28,11 @@
 | WP-4.3 | Planificador A* y misión | medio | entregable | Pendiente | 0 | — | — |
 | WP-4.4 | Lectura QR | medio | entregable | En corrección | 1 | NO CONFORME | docs/pm/auditorias/WP-4.4_it1.md |
 | WP-5.1 | Tablero: flotilla, monitoreo e indicadores | medio | entregable | Conforme@0dfbfae | 2 | CONFORME CON OBSERVACIONES | docs/pm/auditorias/WP-5.1_it3.md |
-| WP-5.2 | Tablero: control y gestión logística | medio | entregable | Pendiente | 0 | — | — |
+| WP-5.2 | Tablero: control y gestión logística | medio | entregable | Conforme@525905a | 1 | CONFORME CON OBSERVACIONES | docs/pm/auditorias/WP-5.2_it2.md |
 | WP-6.1 | Pruebas de elevación, rechazo, obstáculo y latencia | alto | integracion | Pendiente | 0 | — | — |
 | WP-6.2 | Pruebas de rutas, llegada y traslado sostenido | alto | integracion | Pendiente | 0 | — | — |
 | WP-6.3 | Ensayo general y reporte | medio | integracion | Pendiente | 0 | — | — |
 
 ## Resumen
 
-Conforme: 4, En corrección: 1, Pendiente: 14
+Conforme: 4, En corrección: 1, Pendiente: 13, Requiere reverificación: 1
