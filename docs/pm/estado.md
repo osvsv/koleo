@@ -1,6 +1,6 @@
 # Estado del proyecto
 
-> Archivo generado por gen_estado.py el 2026-11-13T09:28 sobre el commit b2f5100. No editar a mano.
+> Archivo generado por gen_estado.py el 2026-11-13T09:36 sobre el commit 7528a91. No editar a mano.
 
 ## Gates
 
@@ -15,7 +15,7 @@
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | WP-1.1 | Contratos MQTT, comandos del ESP32, estados y SQL | medio | entregable | Conforme@d17df56 | 3 | CONFORME | docs/pm/auditorias/WP-1.1_it3.md |
 | WP-1.2 | Robot simulado | bajo | entregable | Conforme@7ccd096 | 4 | CONFORME CON OBSERVACIONES | docs/pm/auditorias/WP-1.2_it5.md |
-| WP-1.3 | Backend de persistencia y Web API | alto | entregable | Requiere reverificación | 4 | CONFORME CON OBSERVACIONES | docs/pm/auditorias/WP-1.3_it5.md |
+| WP-1.3 | Backend de persistencia y Web API | alto | entregable | Conforme@7528a91 | 5 | CONFORME CON OBSERVACIONES | docs/pm/auditorias/WP-1.3_it6.md |
 | WP-2.1 | Chasis y tracción | medio | integracion | Pendiente | 0 | — | — |
 | WP-2.2 | Mecanismo de elevación | alto | integracion | Pendiente | 0 | — | — |
 | WP-2.3 | Energía y energizado seguro | alto | integracion | Pendiente | 0 | — | — |
@@ -35,4 +35,4 @@
 
 ## Resumen
 
-Conforme: 4, En corrección: 1, Pendiente: 13, Requiere reverificación: 1
+Conforme: 5, En corrección: 1, Pendiente: 13
