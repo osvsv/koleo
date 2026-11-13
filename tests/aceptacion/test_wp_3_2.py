@@ -34,15 +34,18 @@ def test_ca_3_2_1_lift_ack_devuelve_la_respuesta():
     """CA-3.2.1"""
     resp = {"resultado": "ACK", "codigo": "LIFT_OK"}
     cliente = ClienteFalso(resp)
-    assert _enlace(cliente).lift("TAR-101") == resp
+    assert _enlace(cliente).lift("TAR-101", 8.45) == resp
     assert cliente.publicados and cliente.publicados[0][0] == TEMA_CMD
-    assert cliente.publicados[0][1]["cmd"] == "LIFT"
+    msg = cliente.publicados[0][1]
+    assert not errores("esp32_cmd", msg), errores("esp32_cmd", msg)
+    assert msg["cmd"] == "LIFT"
+    assert msg["peso_kg"] == 8.45
 
 
 def test_ca_3_2_1_lift_overweight_devuelve_error_sin_lanzar():
     """CA-3.2.1"""
     resp = {"resultado": "ERR", "codigo": "OVERWEIGHT"}
-    assert _enlace(ClienteFalso(resp)).lift("TAR-101") == resp
+    assert _enlace(ClienteFalso(resp)).lift("TAR-101", 8.45) == resp
 
 
 def test_ca_3_2_2_timeout_lanza_y_envia_stop():
@@ -50,7 +53,8 @@ def test_ca_3_2_2_timeout_lanza_y_envia_stop():
     cliente = ClienteFalso(sin_respuesta=True)
     enlace = _enlace(cliente)
     with pytest.raises(TimeoutError):
-        enlace.enviar({"cmd": "LIFT", "id_cmd": "CMD-T1", "id_tarima": "TAR-101"})
+        enlace.enviar({"cmd": "LIFT", "id_cmd": "CMD-T1", "id_tarima": "TAR-101",
+                        "peso_kg": 8.45})
     comandos = [p.get("cmd") for _, p in cliente.publicados]
     assert comandos[0] == "LIFT"
     assert "STOP" in comandos[1:], "tras el timeout el enlace debe intentar enviar STOP"

@@ -20,7 +20,7 @@ ORDEN_INICIAR = {"ts": TS, "id_orden": "ORD-1", "tipo": "INICIAR",
 CONEXION = {"ts": TS, "robot_id": "robot1", "estado": "EN_LINEA"}
 CMD = {"ts": TS, "id_cmd": "CMD-1", "cmd": "STOP"}
 RESP = {"ts": TS, "id_cmd": "CMD-1", "resultado": "ACK", "codigo": "LIFT_OK"}
-SENSORES = {"ts": TS, "peso_kg": 8.45, "distancia_obstaculo_cm": 40.0, "enc_izq": 10, "enc_der": 12}
+SENSORES = {"ts": TS, "distancia_obstaculo_cm": 40.0, "enc_izq": 10, "enc_der": 12}
 ESP_EVENTO = {"ts": TS, "codigo": "OBSTACULO_CERCANO"}
 DROP_OK = {**EVENTO, "tipo": "DROP_OK", "peso_kg": 8.45, "x_cm": 150, "y_cm": 120,
            "ruta": "RUTA_1", "origen_x_cm": 0, "origen_y_cm": 0}
@@ -192,11 +192,21 @@ def test_ca_1_1_8_esp32_cmd():
         assert not es_valido("esp32_cmd", sin(CMD, campo)), campo
     assert not es_valido("esp32_cmd", {**CMD, "id_cmd": 7})
     assert not es_valido("esp32_cmd", {**CMD, "cmd": "EXPLOTAR"})
-    for cmd in ("LIFT", "MOVE", "STOP", "DROP"):
-        assert es_valido("esp32_cmd", {**CMD, "cmd": cmd})
+    for cmd in ("MOVE", "STOP", "DROP"):
+        assert es_valido("esp32_cmd", {**CMD, "cmd": cmd})  # sin peso_kg (CC-004)
+    assert es_valido("esp32_cmd", {**CMD, "cmd": "LIFT", "peso_kg": 8.45})
     completo = {**CMD, "cmd": "DROP", "id_tarima": "TAR-101", "pwm_izq": 80, "pwm_der": -80,
                 "x_cm": 150, "y_cm": 120}
     assert es_valido("esp32_cmd", completo)
+
+
+def test_ca_1_1_8_esp32_cmd_lift_exige_peso_kg():
+    """CA-1.1.8 (CC-004): LIFT exige peso_kg; los demás cmd no."""
+    lift = {**CMD, "cmd": "LIFT", "id_tarima": "TAR-101"}
+    assert not es_valido("esp32_cmd", lift)
+    assert es_valido("esp32_cmd", {**lift, "peso_kg": 8.45})
+    for cmd in ("MOVE", "STOP", "DROP"):
+        assert es_valido("esp32_cmd", {**CMD, "cmd": cmd})
 
 
 def test_ca_1_1_8_esp32_resp():
@@ -206,6 +216,7 @@ def test_ca_1_1_8_esp32_resp():
         assert not es_valido("esp32_resp", sin(RESP, campo)), campo
     assert es_valido("esp32_resp", {**RESP, "resultado": "ERR", "codigo": "OVERWEIGHT"})
     assert not es_valido("esp32_resp", {**RESP, "resultado": "OK"})
+    assert es_valido("esp32_resp", {**RESP, "resultado": "ERR", "codigo": "PESO_INVALIDO"})
 
 
 def test_ca_1_1_8_esp32_sensores():
@@ -213,15 +224,22 @@ def test_ca_1_1_8_esp32_sensores():
     assert es_valido("esp32_sensores", SENSORES)
     for campo in SENSORES:
         assert not es_valido("esp32_sensores", sin(SENSORES, campo)), campo
+    assert set(SENSORES) == {"ts", "distancia_obstaculo_cm", "enc_izq", "enc_der"}
 
 
-@pytest.mark.parametrize("codigo", ["LIFT_OK", "OVERWEIGHT", "SCALE_FAIL", "NO_LOAD",
+@pytest.mark.parametrize("codigo", ["LIFT_OK", "OVERWEIGHT", "PESO_INVALIDO",
                                     "OBSTACULO_CERCANO", "DROP_OK"])
 def test_ca_1_1_8_esp32_evento_codigos(codigo):
     """CA-1.1.8"""
     assert es_valido("esp32_evento", {**ESP_EVENTO, "codigo": codigo})
     assert es_valido("esp32_evento", {**ESP_EVENTO, "codigo": codigo,
                                       "id_tarima": "TAR-101", "peso_kg": 8.45})
+
+
+@pytest.mark.parametrize("codigo", ["SCALE_FAIL", "NO_LOAD"])
+def test_ca_1_1_8_esp32_evento_codigos_retirados(codigo):
+    """CA-1.1.8 (CC-004): la báscula se retiró; estos códigos ya no son válidos."""
+    assert not es_valido("esp32_evento", {**ESP_EVENTO, "codigo": codigo})
 
 
 def test_ca_1_1_8_esp32_evento_obligatorios_y_enum():

@@ -16,7 +16,7 @@ Versión: 1.1 (G1, respuestas de Osvaldo aplicadas)
 
 ## Modelo de planeación y cadencia
 
-- Modelo: **incremental con arranque en espiral por riesgo**. Primero lo más incierto y bloqueante (ensamble mecánico y energizado, báscula, enlace de comandos por red), y en paralelo lo que no depende del hardware (contratos, robot simulado, persistencia).
+- Modelo: **incremental con arranque en espiral por riesgo**. Primero lo más incierto y bloqueante (ensamble mecánico y energizado, elevación con peso declarado, enlace de comandos por red), y en paralelo lo que no depende del hardware (contratos, robot simulado, persistencia).
 - Cadencia: **tres incrementos con demo interna del equipo, sin fecha comprometida** (el profesor no hace revisiones parciales, DP-12); la entrega final es tentativamente el 2-dic. Sesión de integración con el robot físico a mitad de semana, a convenir.
 - Justificación: en Stacey la parte de software está en "complicado" (se puede planear) y la de hardware en "complejo" (se descubre al integrar), por lo que se necesita integrar cada semana. Quien valida está disponible semanalmente con el robot. El costo de cambio es alto en lo físico y bajo en software: los contratos (MQTT, estados, SQL) se fijan primero. Hay fecha fija, así que el recorte de alcance por puerta es preferible al atraso acumulado.
 
@@ -73,7 +73,7 @@ IDs definitivos de `03-wbs.md` (la tabla del borrador aprobado en G0 usaba IDs p
 
 | Incremento | WP que lo cierran | Demo |
 | --- | --- | --- |
-| Inc. 1 — contratos, ensamble y esqueleto (sin fecha comprometida) | WP-1.1 contratos; WP-1.2 robot simulado; WP-1.3 backend (MQTT → SQLite → API); WP-2.1 chasis y tracción; WP-2.2 elevación; WP-2.3 energía y energizado seguro; WP-3.1 báscula con fallo seguro | Robot simulado completa 2 traslados y 1 rechazo en la BD (VAL-08); robot armado energizado levanta sin carga |
+| Inc. 1 — contratos, ensamble y esqueleto (sin fecha comprometida) | WP-1.1 contratos; WP-1.2 robot simulado; WP-1.3 backend (MQTT → SQLite → API); WP-2.1 chasis y tracción; WP-2.2 elevación; WP-2.3 energía y energizado seguro; WP-3.1 elevación con peso declarado y rechazo por sobrepeso | Robot simulado completa 2 traslados y 1 rechazo en la BD (VAL-08); robot armado energizado levanta sin carga |
 | Inc. 2 — robot real y seguridad (sin fecha comprometida) | WP-2.4 sensores montados; WP-3.2 enlace de comandos por MQTT; WP-3.3 parada continua por obstáculo; WP-4.1 puente MQTT real; WP-4.2 avance por encoders; WP-5.1 tablero: flotilla, monitoreo e indicadores; WP-6.1 VAL-01, 02, 05 y 07 | Elevación de la carga de demostración (100 g), rechazo con peso simulado de 11.8 kg, paro por obstáculo y latencia, con evidencia |
 | Inc. 3 — navegación, interfaz y validación (antes de la entrega final) | WP-4.3 A* y misión; WP-4.4 QR; WP-5.2 tablero: control y logística; WP-6.2 VAL-03, 04 y 06; WP-6.3 ensayo y reporte | Tres rutas, error de llegada, 3 minutos y demo completa grabada |
 
@@ -96,7 +96,7 @@ IDs definitivos de `03-wbs.md` (la tabla del borrador aprobado en G0 usaba IDs p
 | DP-13 | Se acepta reportar la medición real si una meta no se alcanza (en vez de demostrar algo que falla) | [S] | `KOLEO_Metodologia_y_plan.md` (propuesta); confirmar en G1 |
 | DP-14 | Sin cable de datos entre ESP32 y Pi: ambos se conectan a la red; el ESP32 publica sensores y eventos y recibe comandos por MQTT, y la Pi los consolida en los temas del contrato | [D] | Osvaldo, G1 V-06, 2026-11-11 |
 | DP-15 | La carga física de demostración es de 100 g | [D] | Osvaldo, G1 V-11 y V-17, 2026-11-11 |
-| DP-16 | El límite de sobrepeso sigue en 10 kg y el rechazo se verifica con peso simulado | [D] | Osvaldo, G1 (aclaración tras V-11), 2026-11-11 |
+| DP-16 | El límite de sobrepeso sigue en 10 kg y el rechazo se verifica con el peso declarado de la tarima (sin celda de carga) | [D] | Osvaldo, G1 (aclaración tras V-11), 2026-11-11; Osvaldo, CC-004, 2026-11-13 |
 | DP-17 | Se mantienen los 19 WP y se recorta por puerta lo que no alcance el tiempo | [D] | Osvaldo, G1 (aclaración tras V-02), 2026-11-11 |
 | DP-18 | El trabajo se asigna por tareas, sin dueños por subsistema | [D] | Osvaldo, G1 V-01, 2026-11-11 |
 | DP-19 | Capacidad del equipo: 4 a 6 h por semana por persona | [D] | Osvaldo, G1 V-02, 2026-11-11 |

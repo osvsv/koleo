@@ -67,8 +67,8 @@ class EnlaceFalso:
         if nombre == self._falla_en:
             raise TimeoutError("sin respuesta")
 
-    def lift(self, id_tarima):
-        self._reg("lift", id_tarima)
+    def lift(self, id_tarima, peso_kg):
+        self._reg("lift", id_tarima, peso_kg)
         return self._lift
 
     def move(self, izq, der):
@@ -86,7 +86,7 @@ class EnlaceFalso:
     def enviar(self, cmd):
         c = cmd["cmd"].lower()
         if c == "lift":
-            return self.lift(cmd.get("id_tarima"))
+            return self.lift(cmd.get("id_tarima"), cmd.get("peso_kg"))
         if c == "move":
             return self.move(cmd.get("pwm_izq"), cmd.get("pwm_der"))
         if c == "drop":
@@ -97,7 +97,7 @@ class EnlaceFalso:
 def _ejecutar(enlace):
     from pi import odometria
     from pi.mision import ejecutar_mision
-    return ejecutar_mision("RUTA_1", "TAR-101", enlace, odometria)
+    return ejecutar_mision("RUTA_1", "TAR-101", 8.45, enlace, odometria)
 
 
 def _nombres(enlace):
@@ -111,7 +111,7 @@ def test_ca_4_3_4_secuencia_lift_move_drop():
     assert resultado["estado"] == "completada"
     nombres = _nombres(enlace)
     assert nombres[0] == "lift"
-    assert enlace.llamadas[0][1] == ("TAR-101",)
+    assert enlace.llamadas[0][1] == ("TAR-101", 8.45)
     assert "move" in nombres
     assert "drop" in nombres
     assert nombres.index("lift") < nombres.index("move") < nombres.index("drop")
@@ -119,7 +119,7 @@ def test_ca_4_3_4_secuencia_lift_move_drop():
     assert (drop[0], drop[1], drop[2]) == ("TAR-101", 150, 120)
 
 
-@pytest.mark.parametrize("codigo", ["OVERWEIGHT", "SCALE_FAIL"])
+@pytest.mark.parametrize("codigo", ["OVERWEIGHT", "PESO_INVALIDO"])
 def test_ca_4_3_5_lift_rechazado_no_mueve_ni_deposita(codigo):
     """CA-4.3.5"""
     enlace = EnlaceFalso(lift={"resultado": "ERR", "codigo": codigo})
