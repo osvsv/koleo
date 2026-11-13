@@ -9,6 +9,7 @@ con CREATE TABLE IF NOT EXISTS la primera vez que se procesa un mensaje valido.
 import json
 import logging
 import math
+import re
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -17,6 +18,7 @@ import jsonschema
 log = logging.getLogger("koleo.ingesta")
 
 PREFIJO = "koleo/robot1/"
+_RE_TEMA = re.compile(r"^koleo/robot[0-9A-Za-z_-]*/(.+)$")
 RAIZ = Path(__file__).resolve().parents[2]
 
 _TEMA_A_DEF = {
@@ -39,7 +41,12 @@ CREATE TABLE IF NOT EXISTS robots (
     ultimo_ts     INTEGER,
     ts_lift_ms    INTEGER,
     ultimo_ciclo_s REAL,
-    ultima_precision_cm REAL
+    ultima_precision_cm REAL,
+    velocidad_cm_s REAL
+);
+CREATE TABLE IF NOT EXISTS rechazos_robot (
+    id_alerta INTEGER PRIMARY KEY,
+    robot_id  VARCHAR(32) NOT NULL
 );
 CREATE TABLE IF NOT EXISTS ordenes (
     id_orden   VARCHAR(64) PRIMARY KEY,
@@ -61,6 +68,10 @@ _validadores = {}
 
 def asegurar_tablas(conn):
     conn.executescript(TABLAS_AUX)
+    # Migracion (CC-005): robots creada antes de existir velocidad_cm_s.
+    cols = [f[1] for f in conn.execute("PRAGMA table_info(robots)")]
+    if "velocidad_cm_s" not in cols:
+        conn.execute("ALTER TABLE robots ADD COLUMN velocidad_cm_s REAL")
 
 
 def _validador(nombre):
@@ -91,10 +102,12 @@ def _robot(conn, robot_id):
 def procesar_mensaje(conn, topic, payload, recibido_ms):
     """Valida `payload` contra el contrato y lo persiste. Descarta (y registra
     en el log) lo invalido; en ese caso no toca la BD."""
-    if not isinstance(topic, str) or not topic.startswith(PREFIJO):
+    # SUP-031: se acepta el prefijo de cualquier robot (koleo/<robot_id>/...).
+    m = _RE_TEMA.match(topic) if isinstance(topic, str) else None
+    if m is None:
         log.warning("mensaje descartado: tema fuera del contrato %r", topic)
         return
-    sufijo = topic[len(PREFIJO):]
+    sufijo = m.group(1)
     nombre = _TEMA_A_DEF.get(sufijo)
     if nombre is None:
         log.warning("mensaje descartado: tema sin manejador %r", topic)
@@ -125,9 +138,9 @@ def _telemetria(conn, p):
     _robot(conn, p["robot_id"])
     conn.execute(
         "UPDATE robots SET estado=?, x_cm=?, y_cm=?, peso_kg=?, distancia_obstaculo_cm=?, "
-        "ultimo_ts=? WHERE robot_id=?",
+        "velocidad_cm_s=?, ultimo_ts=? WHERE robot_id=?",
         (p["estado"], p["x_cm"], p["y_cm"], p["peso_kg"], p["distancia_obstaculo_cm"],
-         p["ts"], p["robot_id"]))
+         p["velocidad_cm_s"], p["ts"], p["robot_id"]))
 
 
 def _evento(conn, p, recibido_ms):
@@ -150,11 +163,13 @@ def _evento(conn, p, recibido_ms):
     elif tipo == "SOBREPESO":
         x, y = conn.execute("SELECT x_cm, y_cm FROM robots WHERE robot_id=?",
                             (p["robot_id"],)).fetchone()[:2]
-        conn.execute(
+        cur = conn.execute(
             "INSERT INTO registro_rechazos_seguridad "
             "(id_tarima, peso_detectado_kg, motivo, coord_x_cm, coord_y_cm, fecha_hora) "
             "VALUES (?,?,?,?,?,?)",
             (id_tarima, p["peso_kg"], "SOBREPESO", x, y, _iso(ts)))
+        conn.execute("INSERT OR REPLACE INTO rechazos_robot (id_alerta, robot_id) VALUES (?,?)",
+                     (cur.lastrowid, p["robot_id"]))
         conn.execute("UPDATE tarimas SET estado='BLOQUEADA_SOBREPESO', peso_kg=?, "
                      "ultima_actualizacion=? WHERE id_tarima=?",
                      (p["peso_kg"], _iso(ts), id_tarima))

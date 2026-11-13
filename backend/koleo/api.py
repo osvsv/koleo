@@ -6,6 +6,8 @@ from flask import Flask, jsonify
 
 from .ingesta import asegurar_tablas
 
+ESTADOS_EN_RUTA = ("EN_MISION", "ELEVANDO", "EN_RUTA", "DEPOSITANDO")
+
 
 def crear_app(db_path, publicador=None):
     """`publicador(topic, payload_dict)` se conserva para el WP-5.2 (publicacion de ordenes); aqui no se usa."""
@@ -38,8 +40,19 @@ def crear_app(db_path, publicador=None):
 
     @app.get("/api/robots")
     def robots():
-        return jsonify(consulta("SELECT robot_id, estado, conexion, x_cm, y_cm, peso_kg, "
-                                "distancia_obstaculo_cm, ultimo_ts FROM robots ORDER BY robot_id"))
+        filas = consulta("SELECT robot_id, estado, conexion, x_cm, y_cm, peso_kg, "
+                         "distancia_obstaculo_cm, velocidad_cm_s, ultimo_ts FROM robots "
+                         "ORDER BY robot_id")
+        orden = consulta("SELECT ruta FROM ordenes WHERE tipo='INICIAR' AND estado='aceptada' "
+                         "ORDER BY COALESCE(ts_ack, ts) DESC, rowid DESC LIMIT 1")
+        for f in filas:
+            f["ruta_actual"] = (orden[0]["ruta"] if orden and f["estado"] in ESTADOS_EN_RUTA
+                                else None)
+            f["alertas"] = consulta(
+                "SELECT r.id_tarima, r.peso_detectado_kg, r.motivo, r.fecha_hora "
+                "FROM registro_rechazos_seguridad r JOIN rechazos_robot x ON x.id_alerta=r.id_alerta "
+                "WHERE x.robot_id=? ORDER BY r.id_alerta DESC LIMIT 5", (f["robot_id"],))
+        return jsonify(filas)
 
     @app.get("/api/indicadores")
     def indicadores():
