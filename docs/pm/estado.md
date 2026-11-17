@@ -1,6 +1,6 @@
 # Estado del proyecto
 
-> Archivo generado por gen_estado.py el 2026-11-17T08:47 sobre el commit 3d4b687. No editar a mano.
+> Archivo generado por gen_estado.py el 2026-11-17T08:51 sobre el commit b051914. No editar a mano.
 
 ## Gates
 
@@ -20,8 +20,8 @@
 | WP-2.2 | Mecanismo de elevación | alto | integracion | Pendiente | 0 | — | — |
 | WP-2.3 | Energía y energizado seguro | alto | integracion | Pendiente | 0 | — | — |
 | WP-2.4 | Sensores montados | medio | integracion | Pendiente | 0 | — | — |
-| WP-3.1 | Elevación con peso declarado y rechazo por sobrepeso | alto | entregable | Conforme@70f90d4 | 2 | CONFORME | docs/pm/auditorias/WP-3.1_it2.md |
-| WP-3.2 | Enlace de comandos Pi–ESP32 por MQTT | alto | entregable | Pendiente | 0 | — | — |
+| WP-3.1 | Elevación con peso declarado y rechazo por sobrepeso | alto | entregable | Requiere reverificación | 2 | CONFORME | docs/pm/auditorias/WP-3.1_it2.md |
+| WP-3.2 | Enlace de comandos Pi–ESP32 por MQTT | alto | entregable | Bloqueado (Desviaciones de aprendizaje en it1 (docs/pm/auditorias/WP-3.2_it1_ejecucion.md): platformio.ini sin lib_deps (cliente MQTT y parser JSON propios, sin probar), sincronización del `ts` epoch del ESP32 sin definir en el contrato y DROP sin mecánica definida. La evidencia de CA-3.2.4, 3.2.5, 3.2.7 y 3.2.8 depende además de hardware (broker accesible, PlatformIO, flasheo)) | 0 | — | — |
 | WP-3.3 | Parada continua por obstáculo | alto | entregable | Pendiente | 0 | — | — |
 | WP-4.1 | Puente MQTT | alto | entregable | Pendiente | 0 | — | — |
 | WP-4.2 | Avance por distancia con encoders | medio | entregable | Pendiente | 0 | — | — |
@@ -35,4 +35,4 @@
 
 ## Resumen
 
-Conforme: 6, En corrección: 1, Pendiente: 12
+Bloqueado: 1, Conforme: 5, En corrección: 1, Pendiente: 11, Requiere reverificación: 1
