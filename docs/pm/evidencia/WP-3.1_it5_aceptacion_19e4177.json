@@ -1,0 +1,10 @@
+{
+  "wp": "WP-3.1",
+  "iter": 5,
+  "suite": "aceptacion",
+  "commit": "19e4177a63fb9c07c881eb46cd0ac090ddc03975",
+  "comando": ".venv\\Scripts\\python.exe -m pytest tests/aceptacion -q",
+  "codigo": 1,
+  "fecha": "2026-11-17T09:35:05",
+  "arbol_limpio": true
+}
