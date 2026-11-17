@@ -1,6 +1,6 @@
 # Estado del proyecto
 
-> Archivo generado por gen_estado.py el 2026-11-17T09:12 sobre el commit 8d47f83. No editar a mano.
+> Archivo generado por gen_estado.py el 2026-11-17T09:18 sobre el commit ba9f74b. No editar a mano.
 
 ## Gates
 
@@ -20,7 +20,7 @@
 | WP-2.2 | Mecanismo de elevación | alto | integracion | Pendiente | 0 | — | — |
 | WP-2.3 | Energía y energizado seguro | alto | integracion | Pendiente | 0 | — | — |
 | WP-2.4 | Sensores montados | medio | integracion | Pendiente | 0 | — | — |
-| WP-3.1 | Elevación con peso declarado y rechazo por sobrepeso | alto | entregable | En corrección (reverificación) | 3 | NO CONFORME | docs/pm/auditorias/WP-3.1_it3.md |
+| WP-3.1 | Elevación con peso declarado y rechazo por sobrepeso | alto | entregable | Conforme@ba9f74b | 4 | CONFORME CON OBSERVACIONES | docs/pm/auditorias/WP-3.1_it4.md |
 | WP-3.2 | Enlace de comandos Pi–ESP32 por MQTT | alto | entregable | Pendiente | 0 | — | — |
 | WP-3.3 | Parada continua por obstáculo | alto | entregable | Pendiente | 0 | — | — |
 | WP-4.1 | Puente MQTT | alto | entregable | Pendiente | 0 | — | — |
@@ -35,4 +35,4 @@
 
 ## Resumen
 
-Conforme: 5, En corrección: 2, Pendiente: 12
+Conforme: 6, En corrección: 1, Pendiente: 12
