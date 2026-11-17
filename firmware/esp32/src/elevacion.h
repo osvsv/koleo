@@ -15,7 +15,9 @@ bool excedeLimite(float kg);
 CodigoLift evaluarLift(const char* pesoTexto);
 
 // Evalua y, solo si LIFT_OK, inicia la elevacion. Devuelve el codigo de respuesta.
+// Un LIFT valido con la elevacion ya activa devuelve LIFT_OK pero NO reinicia el limite de 8 s.
 CodigoLift elevacionSolicitar(const char* pesoTexto);
+CodigoLift elevacionSolicitarEn(const char* pesoTexto, uint32_t ahoraMs);  // reloj inyectado
 // Version con reloj inyectado (sin delay): llamar desde loop().
 void elevacionActualizarEn(uint32_t ahoraMs);
 void elevacionActualizar();  // usa millis()

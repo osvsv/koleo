@@ -20,9 +20,10 @@ CodigoLift evaluarLift(const char* pesoTexto) {
   double v = strtod(pesoTexto, &fin);
   while (fin && (*fin == ' ' || *fin == '\t' || *fin == '\r' || *fin == '\n')) fin++;
   if (fin == pesoTexto || (fin && *fin != '\0')) return PESO_INVALIDO;  // no numerico
+  if (!isfinite(v) || v <= 0.0) return PESO_INVALIDO;
+  if (v > (double)PESO_LIMITE_KG) return OVERWEIGHT;  // comparar en double antes de convertir a float
   float kg = (float)v;
-  if (!pesoValido(kg)) return PESO_INVALIDO;
-  if (excedeLimite(kg)) return OVERWEIGHT;
+  if (!pesoValido(kg)) return PESO_INVALIDO;  // p. ej. subdesbordamiento a 0
   return LIFT_OK;
 }
 
@@ -61,15 +62,17 @@ static uint32_t ahoraMs() {
 #endif
 }
 
-CodigoLift elevacionSolicitar(const char* pesoTexto) {
+CodigoLift elevacionSolicitarEn(const char* pesoTexto, uint32_t ahora) {
   CodigoLift c = evaluarLift(pesoTexto);
-  if (c == LIFT_OK) {  // el actuador solo se energiza con LIFT_OK
+  if (c == LIFT_OK && !g_activa) {  // solo se energiza con LIFT_OK; si ya esta activa no reinicia el limite
     g_activa = true;
-    g_inicioMs = ahoraMs();
+    g_inicioMs = ahora;
     actuadorSube(true);
   }
   return c;
 }
+
+CodigoLift elevacionSolicitar(const char* pesoTexto) { return elevacionSolicitarEn(pesoTexto, ahoraMs()); }
 
 void elevacionActualizarEn(uint32_t ahora) {
   if (g_activa && (uint32_t)(ahora - g_inicioMs) >= ELEVACION_MAX_MS) {

@@ -17,5 +17,12 @@ int main() {
   assert(elevacionSolicitar("0.1") == LIFT_OK && elevacionActiva());
   elevacionActualizarEn(7999); assert(elevacionActiva());
   elevacionActualizarEn(8000); assert(!elevacionActiva());
+  // H-3: un LIFT valido con elevacion activa no reinicia el limite de 8 s
+  assert(elevacionSolicitarEn("5", 1000) == LIFT_OK && elevacionActiva());
+  assert(elevacionSolicitarEn("5", 5000) == LIFT_OK);
+  elevacionActualizarEn(8999); assert(elevacionActiva());
+  elevacionActualizarEn(9000); assert(!elevacionActiva());
+  // H-4: valor > 10 que redondea a 10.0f en float sigue siendo OVERWEIGHT
+  assert(evaluarLift("10.0000000001") == OVERWEIGHT);
   puts("OK");
 }

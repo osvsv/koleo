@@ -12,7 +12,7 @@ void setup() {
 void loop() {
   while (Serial.available()) {
     char c = Serial.read();
-    if (c != '\n') { linea += c; continue; }
+    if (c != '\n') { if (linea.length() < 64) linea += c; continue; }  // buffer acotado
     linea.trim();
     if (linea.startsWith("LIFT")) {
       String arg = linea.substring(4);
