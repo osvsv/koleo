@@ -1,6 +1,6 @@
 # Estado del proyecto
 
-> Archivo generado por gen_estado.py el 2026-11-17T09:01 sobre el commit ef9603a. No editar a mano.
+> Archivo generado por gen_estado.py el 2026-11-17T09:02 sobre el commit 3bc66f5. No editar a mano.
 
 ## Gates
 
@@ -21,7 +21,7 @@
 | WP-2.3 | Energía y energizado seguro | alto | integracion | Pendiente | 0 | — | — |
 | WP-2.4 | Sensores montados | medio | integracion | Pendiente | 0 | — | — |
 | WP-3.1 | Elevación con peso declarado y rechazo por sobrepeso | alto | entregable | Requiere reverificación | 2 | CONFORME | docs/pm/auditorias/WP-3.1_it2.md |
-| WP-3.2 | Enlace de comandos Pi–ESP32 por MQTT | alto | entregable | Bloqueado (Quedan dos desviaciones de aprendizaje de it1 (docs/pm/auditorias/WP-3.2_it1_ejecucion.md): sincronización del `ts` epoch del ESP32 sin definir en el contrato y DROP sin mecánica definida. La de platformio.ini y las librerías se resolvió en CC-011) | 0 | — | — |
+| WP-3.2 | Enlace de comandos Pi–ESP32 por MQTT | alto | entregable | Pendiente | 0 | — | — |
 | WP-3.3 | Parada continua por obstáculo | alto | entregable | Pendiente | 0 | — | — |
 | WP-4.1 | Puente MQTT | alto | entregable | Pendiente | 0 | — | — |
 | WP-4.2 | Avance por distancia con encoders | medio | entregable | Pendiente | 0 | — | — |
@@ -35,4 +35,4 @@
 
 ## Resumen
 
-Bloqueado: 1, Conforme: 5, En corrección: 1, Pendiente: 11, Requiere reverificación: 1
+Conforme: 5, En corrección: 1, Pendiente: 12, Requiere reverificación: 1
