@@ -34,3 +34,4 @@ Actualizado en G1 (2026-11-11). Estados: Pendiente · Confirmado · Corregido. O
 | SUP-025 | El ESP32 sigue alimentado por un cable USB desde la Pi, solo como energía (sin datos) | WP-2.3, WP-3.2 | 2 | Pendiente | — |
 | SUP-026 | Retirado por CC-004: ya no hay báscula, calibración ni detección de "sin carga" | WP-3.1 | 0 | Corregido | Osvaldo, CC-004 (2026-11-13) |
 | SUP-028 | Si falta tiempo, el orden de recorte es WP-5.2 (control y gestión), WP-4.4 (QR) y rutas 2 y 3 | WP-5.2, WP-4.4 | 2 | Pendiente | — |
+| SUP-032 | El ESP32 se flashea por USB una sola vez (sin OTA) y en operación solo se observa y controla por MQTT; la Pi corre el broker (Mosquitto) | WP-2.4, WP-3.1, WP-3.2, WP-3.3, WP-6.1 | 5 | Confirmado | Osvaldo, CC-010 (2026-11-17) |
