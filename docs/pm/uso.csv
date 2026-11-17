@@ -10,3 +10,5 @@ fecha,sesion,fase,wp,rol,modelo,entrada,salida,cache_escritura,cache_lectura,usd
 2026-11-12 10:58,3da6302f-3382-4066-96ba-8e2fc97dc11c,pm-estado+pm-ejecutar+pm-cambio+pm-validar,WP-1.2+WP-1.3,redactor-aceptacion,claude-sonnet-5-5,40,10255,42197,380179,0.4262,187.0
 2026-11-13 09:24,c96ddc9a-c26d-48cb-b9ef-70b5db129265,pm-estado+pm-ejecutar,WP-1.3,auditor-conformidad,claude-opus-5-5,14,5215,27695,119458,0.3633,18.5
 2026-11-13 09:24,c96ddc9a-c26d-48cb-b9ef-70b5db129265,pm-estado+pm-ejecutar,WP-1.3,principal,claude-sonnet-5-5,100,21462,114323,3914392,2.1825,18.5
+2026-11-16 18:31,08f0c330-7dfc-424b-9e44-088b691e4f24,pm-estado+pm-ejecutar,WP-3.1,auditor-conformidad,claude-opus-5-5,42,16335,88533,883321,1.4036,15.0
+2026-11-16 18:31,08f0c330-7dfc-424b-9e44-088b691e4f24,pm-estado+pm-ejecutar,WP-3.1,principal,claude-sonnet-5-5,52,14945,110730,1613220,1.3727,15.0
