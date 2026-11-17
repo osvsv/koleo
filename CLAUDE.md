@@ -13,4 +13,4 @@ Este proyecto se gestiona con el Método PM. La línea base está en `docs/pm/`.
 - `docs/pm/estado.md` es generado; no lo edites a mano.
 - Las credenciales (contraseña de Wi-Fi, etc.) van en variables de entorno, nunca en el repositorio.
 - Si algo contradice la línea base, detente y propón una solicitud de cambio.
-- Los WP de tipo `integracion` son físicos: los hacen personas y su evidencia va a `docs/pm/evidencia/hw/<WP>/`.
+- Los WP de tipo `integracion` son físicos. Las personas hacen WP-2.1, 2.2 y 2.3; WP-2.4, 6.1, 6.2 y 6.3 los ejecuta el agente desde la Raspberry Pi con una persona presente (DP-09, CC-009). Su evidencia va a `docs/pm/evidencia/hw/<WP>/`.

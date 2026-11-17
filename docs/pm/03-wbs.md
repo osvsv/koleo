@@ -1,7 +1,7 @@
 # WBS — KOLEO
-Versión: 1.8 (G1, respuestas de Osvaldo aplicadas; CC-002, CC-003, CC-004, CC-005, CC-006, CC-007, CC-008)
+Versión: 1.9 (G1, respuestas de Osvaldo aplicadas; CC-002, CC-003, CC-004, CC-005, CC-006, CC-007, CC-008, CC-009)
 
-Convenciones: los WP de software los ejecuta `/pm-ejecutar`. Los WP **físicos** (tipo `integracion`) los hacen personas; su evidencia va a `docs/pm/evidencia/hw/<WP>/` y el auditor la inspecciona (DP-09). Los WP de firmware combinan código (lo escribe el ejecutor) y pruebas de banco (las aportan personas). Los criterios llevan procedencia [S] salvo los marcados [D] por DP-04.
+Convenciones: los WP de software los ejecuta `/pm-ejecutar`. Los WP **físicos** (tipo `integracion`): las personas hacen WP-2.1, 2.2 y 2.3 (montaje y energizado); WP-2.4, 6.1, 6.2 y 6.3 los ejecuta el agente desde la Raspberry Pi (DP-09, CC-009) con una persona presente, y la evidencia que pide cámara, multímetro o cinta la aporta una persona. La evidencia va a `docs/pm/evidencia/hw/<WP>/` y el auditor la inspecciona. Los WP de firmware combinan código (lo escribe el ejecutor) y pruebas de banco (las aportan personas). Los criterios llevan procedencia [S] salvo los marcados [D] por DP-04.
 
 ## Árbol
 

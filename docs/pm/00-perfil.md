@@ -1,5 +1,5 @@
 # Perfil del proyecto — KOLEO
-Versión: 1.1 (G1, respuestas de Osvaldo aplicadas)
+Versión: 1.2 (G1, respuestas de Osvaldo aplicadas; CC-009)
 
 ## Contexto (seis dimensiones)
 
@@ -89,7 +89,7 @@ IDs definitivos de `03-wbs.md` (la tabla del borrador aprobado en G0 usaba IDs p
 | DP-06 | Tablero con React + Vite + Tailwind | [D] | Osvaldo, Fase 0 de /pm-planificar, 2026-11-11 |
 | DP-07 | Validan los 5 del equipo, en sesión semanal con el robot | [D] | Osvaldo, Fase 0 de /pm-planificar, 2026-11-11 |
 | DP-08 | No se segmenta el proyecto | [S] | Propuesta de /pm-planificar; se confirma en G1 |
-| DP-09 | WP físicos los hacen personas, con evidencia en `evidencia/hw/` que audita el agente | [S] | Propuesta de /pm-planificar; se confirma en G1 |
+| DP-09 | Claude Code corre en la Raspberry Pi del robot. Las personas montan y energizan (WP-2.1, 2.2, 2.3); el agente ejecuta desde la Pi los WP-2.4, 6.1, 6.2 y 6.3 (comandos, mediciones y logs) con una persona presente y el STOP por software a mano. La evidencia que exige cámara, multímetro o cinta (fotos, videos, medidas) la sigue aportando una persona; todo queda en `evidencia/hw/` y lo audita el agente | [D] | Osvaldo, CC-009, 2026-11-17 (antes [S], propuesta de /pm-planificar) |
 | DP-10 | Seguridad eléctrica: reincorporar un fusible de 10 A en la línea de batería y mantener sin paro de emergencia físico (se usa desconectar el conector T y el STOP por software) | [S] | Propuesta de /pm-planificar; Osvaldo delegó la decisión el 2026-11-11 y desconoce la decisión del 11-nov del equipo (`KOLEO_todo.md` §6). Revertirla contradice al equipo: confirmar en G1 |
 | DP-11 | Sensor de paro: solo HC-SR04 (lo lee el ESP32 directo). RPLIDAR y Google Coral quedan fuera del alcance | [D] | Osvaldo, G1 V-07, 2026-11-11 |
 | DP-12 | Los cierres de incremento son puntos internos sin fecha comprometida; solo la entrega final (tentativa 2-dic) tiene fecha | [D] | Osvaldo, G1 V-19, 2026-11-11 |
