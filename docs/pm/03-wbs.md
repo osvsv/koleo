@@ -1,5 +1,5 @@
 # WBS — KOLEO
-Versión: 1.11 (G1, respuestas de Osvaldo aplicadas; CC-002, CC-003, CC-004, CC-005, CC-006, CC-007, CC-008, CC-009, CC-010, CC-011)
+Versión: 1.12 (G1, respuestas de Osvaldo aplicadas; CC-002, CC-003, CC-004, CC-005, CC-006, CC-007, CC-008, CC-009, CC-010, CC-011, CC-012)
 
 Convenciones: los WP de software los ejecuta `/pm-ejecutar`. Los WP **físicos** (tipo `integracion`): las personas hacen WP-2.1, 2.2 y 2.3 (montaje y energizado); WP-2.4, 6.1, 6.2 y 6.3 los ejecuta el agente desde la Raspberry Pi (DP-09, CC-009) con una persona presente, y la evidencia que pide cámara, multímetro o cinta la aporta una persona. La evidencia va a `docs/pm/evidencia/hw/<WP>/` y el auditor la inspecciona. El ESP32 no se conecta por USB en operación (CC-010): se flashea por USB una sola vez, y después toda observación y control es por MQTT contra el broker de la Pi; la evidencia de banco son capturas de `koleo/robot1/esp32/#` (p. ej. con `mosquitto_sub`). Los WP de firmware combinan código (lo escribe el ejecutor) y pruebas de banco (las aportan personas). Los criterios llevan procedencia [S] salvo los marcados [D] por DP-04.
 
@@ -168,7 +168,7 @@ Convenciones: los WP de software los ejecuta `/pm-ejecutar`. Los WP **físicos**
 ### WP-3.2 — Enlace de comandos Pi–ESP32 por MQTT
 - Riesgo: alto
 - Tipo: entregable
-- Entregable: cliente Python que envía comandos al ESP32 por MQTT y espera su respuesta, y firmware del ESP32 con Wi-Fi y MQTT que los atiende (con las librerías PubSubClient y ArduinoJson declaradas en `lib_deps` de platformio.ini, CC-011), con paro por pérdida de comandos o de red
+- Entregable: cliente Python que envía comandos al ESP32 por MQTT y espera su respuesta, y firmware del ESP32 con Wi-Fi y MQTT que los atiende (con las librerías PubSubClient y ArduinoJson declaradas en `lib_deps` de platformio.ini, CC-011), con paro por pérdida de comandos o de red. `ts` del ESP32: NTP si hay Internet y, si no, milisegundos desde el arranque; la Pi no depende de él porque `consolidar_esp32` recibe el `ts_ms` del reloj de la Pi (SUP-033, CC-012). `DROP` en el firmware es solo un acuse `DROP_OK` sin mover el actuador; la mecánica de depositar pertenece a WP-2.2 y WP-6.1 (SUP-034, CC-012)
 - Alcance de archivos: pi/enlace.py, firmware/.gitignore, firmware/esp32/platformio.ini, firmware/esp32/src/main.cpp, firmware/esp32/src/red_mqtt.*, firmware/esp32/src/secrets.example.h, docs/pm/evidencia/hw/WP-3.2/**
 - Interfaz: `pi.enlace.EnlaceESP32(cliente, timeout_s: float = 1.0)` con `enviar(cmd: dict) -> dict` (publica en `koleo/robot1/esp32/cmd` y devuelve la respuesta de `esp32/resp` con el mismo `id_cmd`, o lanza `TimeoutError`), `lift(id_tarima, peso_kg)` (publica `LIFT` con el peso declarado, CC-004), `move(izq, der)`, `stop()`, `drop(id_tarima, x_cm, y_cm)`; `cliente` es un objeto con `publicar(topic, payload)` y `esperar_respuesta(id_cmd, timeout_s)` (lanza `TimeoutError` si no hay respuesta; se inyecta uno falso en pruebas)
 - Trazabilidad: REQ-F-001, REQ-F-002, REQ-F-003, REQ-F-005, REQ-NF-006, REQ-NF-009

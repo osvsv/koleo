@@ -35,3 +35,5 @@ Actualizado en G1 (2026-11-11). Estados: Pendiente · Confirmado · Corregido. O
 | SUP-026 | Retirado por CC-004: ya no hay báscula, calibración ni detección de "sin carga" | WP-3.1 | 0 | Corregido | Osvaldo, CC-004 (2026-11-13) |
 | SUP-028 | Si falta tiempo, el orden de recorte es WP-5.2 (control y gestión), WP-4.4 (QR) y rutas 2 y 3 | WP-5.2, WP-4.4 | 2 | Pendiente | — |
 | SUP-032 | El ESP32 se flashea por USB una sola vez (sin OTA) y en operación solo se observa y controla por MQTT; la Pi corre el broker (Mosquitto) | WP-2.4, WP-3.1, WP-3.2, WP-3.3, WP-6.1 | 5 | Confirmado | Osvaldo, CC-010 (2026-11-17) |
+| SUP-033 | El `ts` de los mensajes del ESP32 es NTP si hay Internet y, si no, milisegundos desde el arranque; la Pi usa su propio reloj para el `ts` de los mensajes que consolida y para medir latencias | WP-3.2, WP-4.1, WP-6.1 | 3 | Confirmado | Osvaldo, CC-012 (2026-11-17) |
+| SUP-034 | `DROP` en el firmware del ESP32 es solo un acuse `DROP_OK`; no mueve el actuador en WP-3.2 | WP-3.2, WP-2.2, WP-6.1 | 3 | Confirmado | Osvaldo, CC-012 (2026-11-17) |
