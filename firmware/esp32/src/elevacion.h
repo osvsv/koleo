@@ -20,6 +20,9 @@ CodigoLift elevacionSolicitar(const char* pesoTexto);
 CodigoLift elevacionSolicitarEn(const char* pesoTexto, uint32_t ahoraMs);  // reloj inyectado
 // Version con reloj inyectado (sin delay): llamar desde loop().
 void elevacionActualizarEn(uint32_t ahoraMs);
+// Corte de respaldo independiente de loop() y de la red: lo invoca un temporizador one-shot
+// de esp_timer armado a ELEVACION_MAX_MS al iniciar la elevacion (en host, se simula).
+void elevacionCorteTimerEn(uint32_t ahoraMs);
 void elevacionActualizar();  // usa millis()
 bool elevacionActiva();
 void elevacionIniciarPines();

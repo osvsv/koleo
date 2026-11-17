@@ -5,11 +5,20 @@
 
 #ifdef ARDUINO
 #include <Arduino.h>
+#include "esp_timer.h"
 #include "pines.h"
+static portMUX_TYPE g_mux = portMUX_INITIALIZER_UNLOCKED;
+static esp_timer_handle_t g_timerCorte = NULL;
+#define SC_ENTRAR() portENTER_CRITICAL(&g_mux)
+#define SC_SALIR() portEXIT_CRITICAL(&g_mux)
+#else
+#define SC_ENTRAR()
+#define SC_SALIR()
 #endif
 
-static bool g_activa = false;
-static uint32_t g_inicioMs = 0;
+// g_activa se comparte entre loop() y el callback del temporizador de corte.
+static volatile bool g_activa = false;
+static volatile uint32_t g_inicioMs = 0;
 
 bool pesoValido(float kg) { return isfinite(kg) && kg > 0.0f; }
 bool excedeLimite(float kg) { return kg > PESO_LIMITE_KG; }
@@ -44,8 +53,31 @@ static void actuadorSube(bool on) {
 #endif
 }
 
+// Corte independiente de loop() y de la red. Se llama desde el callback de esp_timer
+// (o desde pruebas de host). Idempotente y sin bloqueos: solo apaga el pin y marca estado.
+// Solo corta si ya transcurrio el limite, asi un callback tardio de una elevacion anterior
+// no corta una elevacion nueva.
+void elevacionCorteTimerEn(uint32_t ahora) {
+  SC_ENTRAR();
+  if (g_activa && (uint32_t)(ahora - g_inicioMs) >= ELEVACION_MAX_MS) {
+    actuadorSube(false);
+    g_activa = false;
+  }
+  SC_SALIR();
+}
+
+#ifdef ARDUINO
+static void cbCorte(void*) { elevacionCorteTimerEn((uint32_t)(esp_timer_get_time() / 1000ULL)); }
+#endif
+
 void elevacionIniciarPines() {
 #ifdef ARDUINO
+  if (g_timerCorte == NULL) {
+    esp_timer_create_args_t a = {};
+    a.callback = &cbCorte;
+    a.name = "elev_corte";
+    esp_timer_create(&a, &g_timerCorte);
+  }
   pinMode(PIN_ACT_RPWM, OUTPUT);
   pinMode(PIN_ACT_LPWM, OUTPUT);
   pinMode(PIN_MD_ENB, OUTPUT);
@@ -64,21 +96,35 @@ static uint32_t ahoraMs() {
 
 CodigoLift elevacionSolicitarEn(const char* pesoTexto, uint32_t ahora) {
   CodigoLift c = evaluarLift(pesoTexto);
-  if (c == LIFT_OK && !g_activa) {  // solo se energiza con LIFT_OK; si ya esta activa no reinicia el limite
-    g_activa = true;
-    g_inicioMs = ahora;
-    actuadorSube(true);
+  bool inicio = false;
+  if (c == LIFT_OK) {  // solo se energiza con LIFT_OK; si ya esta activa no reinicia el limite
+    SC_ENTRAR();
+    if (!g_activa) {
+      g_activa = true;
+      g_inicioMs = ahora;
+      actuadorSube(true);
+      inicio = true;
+    }
+    SC_SALIR();
   }
+#ifdef ARDUINO
+  if (inicio && g_timerCorte != NULL) {
+    esp_timer_stop(g_timerCorte);  // por si quedo armado; error ignorable si no lo estaba
+    esp_timer_start_once(g_timerCorte, (uint64_t)ELEVACION_MAX_MS * 1000ULL);
+  }
+#else
+  (void)inicio;
+#endif
   return c;
 }
 
 CodigoLift elevacionSolicitar(const char* pesoTexto) { return elevacionSolicitarEn(pesoTexto, ahoraMs()); }
 
 void elevacionActualizarEn(uint32_t ahora) {
-  if (g_activa && (uint32_t)(ahora - g_inicioMs) >= ELEVACION_MAX_MS) {
-    actuadorSube(false);
-    g_activa = false;
-  }
+  elevacionCorteTimerEn(ahora);  // mismo corte, mismo candado: sin carrera con el temporizador
+#ifdef ARDUINO
+  if (!g_activa && g_timerCorte != NULL) esp_timer_stop(g_timerCorte);  // ya termino: cancelar
+#endif
 }
 
 void elevacionActualizar() { elevacionActualizarEn(ahoraMs()); }

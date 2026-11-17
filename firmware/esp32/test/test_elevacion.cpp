@@ -24,5 +24,22 @@ int main() {
   elevacionActualizarEn(9000); assert(!elevacionActiva());
   // H-4: valor > 10 que redondea a 10.0f en float sigue siendo OVERWEIGHT
   assert(evaluarLift("10.0000000001") == OVERWEIGHT);
+  // H-1: corte por temporizador sin que nadie llame a elevacionActualizar
+  elevacionActualizarEn(100000); assert(!elevacionActiva());
+  assert(elevacionSolicitarEn("5", 20000) == LIFT_OK && elevacionActiva());
+  elevacionCorteTimerEn(27999); assert(elevacionActiva());
+  elevacionCorteTimerEn(28000); assert(!elevacionActiva());
+  // sin carrera: corte normal y luego callback tardio es idempotente
+  assert(elevacionSolicitarEn("5", 30000) == LIFT_OK);
+  elevacionActualizarEn(38000); assert(!elevacionActiva());
+  elevacionCorteTimerEn(38000); assert(!elevacionActiva());
+  // callback tardio de la elevacion anterior no corta una elevacion nueva
+  assert(elevacionSolicitarEn("5", 38100) == LIFT_OK && elevacionActiva());
+  elevacionCorteTimerEn(38200); assert(elevacionActiva());
+  elevacionCorteTimerEn(46100); assert(!elevacionActiva());
+  // envoltura de reloj uint32
+  assert(elevacionSolicitarEn("5", 0xFFFFF000u) == LIFT_OK);
+  elevacionCorteTimerEn(0xFFFFF000u + 7999u); assert(elevacionActiva());
+  elevacionCorteTimerEn(0xFFFFF000u + 8000u); assert(!elevacionActiva());
   puts("OK");
 }
