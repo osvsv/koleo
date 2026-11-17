@@ -1,6 +1,6 @@
 # Auditoría WP-3.1 — iteración 2
 Dictamen: CONFORME
-Commit: 9862af2b36d59995a08698a429b131ef4dbb64db
+Commit: 70f90d42f33c40126b4f55153ec67ae09e9fe0df
 Evidencia: docs/pm/evidencia/WP-3.1_it2_aceptacion_70f90d4.log
 Archivos auditados: firmware/esp32/platformio.ini, firmware/esp32/src/elevacion.cpp, firmware/esp32/src/elevacion.h, firmware/esp32/src/main.cpp, firmware/esp32/src/pines.h, firmware/esp32/test/test_elevacion.cpp
 
