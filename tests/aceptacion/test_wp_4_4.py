@@ -1,10 +1,13 @@
-"""WP-4.4 — Localización del destino con LIDAR (CA-4.4.1 a CA-4.4.12, CC-014, CC-019).
+"""WP-4.4 — Localización del destino con LIDAR (CA-4.4.1 a CA-4.4.14, CC-014, CC-019, CC-020).
 
 Los escaneos son sintéticos (resolución de 1°, 0° al frente y positivo a la izquierda) y se generan
 con trigonometría: un poste de 6 cm, una pared recta, y una tarima de 18 cm (de frente) y 40 cm
 (de lado). CA-4.4.8 es física (Pi con el RPLIDAR A1) y no tiene prueba aquí.
 CA-4.4.7 es de inspección del repositorio.
 CA-4.4.9 a CA-4.4.12 (CC-019, EJ-035 y EJ-036) cubren `localizar_tarima` y `Tarima`.
+CA-4.4.13 y CA-4.4.14 (CC-020, SUP-042) cubren `desviacion_max_cm` de `localizar_tarima` (objeto curvo y
+ruido de ±0.5 cm) y `zona_trasera` de `localizar_poste` (actuador lineal a 25 cm y 175°). El ruido es
+determinista (patrón fijo, sin aleatoriedad).
 """
 import math
 import re
@@ -318,3 +321,76 @@ def test_ca_4_4_12_la_tarima_lejana_no_tapa_a_la_tarima_real():
     tarima = localizar_tarima(_escaneo(_tarima(150, 0, "FRENTE"), _tarima(250, -60, "FRENTE")))
     assert tarima is not None
     assert tarima.distancia_cm == pytest.approx(150, abs=3)
+
+
+# --------------------------------------------------------------------------- CA-4.4.13 y CA-4.4.14 (CC-020)
+def _objeto_curvo(distancia_cm, ancho_cm=40.0, abombamiento_cm=5.0, rumbo_grados=0):
+    """Arco circular de cuerda `ancho_cm` y flecha `abombamiento_cm` (como el torso de una persona).
+    `distancia_cm` es la distancia al punto más cercano (el centro del arco)."""
+    mitad = ancho_cm / 2
+    radio = (mitad ** 2 + abombamiento_cm ** 2) / (2 * abombamiento_cm)
+    cx = distancia_cm + radio  # centro del círculo sobre el eje del rumbo
+    golpes = {}
+    for a in range(-90, 91):
+        fi = math.radians(a - rumbo_grados)
+        b = cx * math.cos(fi)
+        disc = b ** 2 - (cx ** 2 - radio ** 2)
+        if b <= 0 or disc < 0:
+            continue
+        r = b - math.sqrt(disc)  # intersección más cercana
+        if abs(r * math.sin(fi)) <= mitad:
+            golpes[a] = r
+    return golpes
+
+
+_RUIDO_CM = (0.5, -0.5, 0.3, -0.4, 0.5, -0.2, 0.0, -0.5)  # patrón fijo, |ruido| <= 0.5 cm
+
+
+def _con_ruido(capa):
+    """Suma a cada distancia un ruido determinista de ±0.5 cm (patrón fijo por orden de ángulo)."""
+    return {a: r + _RUIDO_CM[i % len(_RUIDO_CM)] for i, (a, r) in enumerate(sorted(capa.items()))}
+
+
+def test_ca_4_4_13_objeto_curvo_de_40_cm_con_5_cm_de_abombamiento_no_es_tarima():
+    """CA-4.4.13 (CC-020): torso curvo de 40 cm con 5 cm de abombamiento a 100 cm devuelve None."""
+    from pi.lidar import localizar_tarima
+    assert localizar_tarima(_escaneo(_objeto_curvo(100))) is None
+
+
+@pytest.mark.parametrize("ancho,lado", [(18, "FRENTE"), (40, "LADO")])
+def test_ca_4_4_13_cara_plana_con_ruido_de_medio_cm_se_detecta_con_su_lado(ancho, lado):
+    """CA-4.4.13 (CC-020): cara plana de 18 o 40 cm a 100 cm con ruido de ±0.5 cm por punto."""
+    from pi.lidar import Tarima, localizar_tarima
+    tarima = localizar_tarima(_escaneo(_con_ruido(_cara_plana(100, ancho))))
+    assert isinstance(tarima, Tarima)
+    assert tarima.lado == lado
+    assert tarima.distancia_cm == pytest.approx(100, abs=3)
+    assert tarima.rumbo_grados == pytest.approx(0, abs=2)
+
+
+def test_ca_4_4_14_punto_del_actuador_a_25_cm_y_175_grados_no_es_poste():
+    """CA-4.4.14 (CC-020 / SUP-042): dos puntos adyacentes a 25 cm y 174°/176° con la zona_trasera por defecto."""
+    from pi.lidar import localizar_poste
+    actuador = [(174.0, 25.0), (176.0, 25.0)]
+    assert localizar_poste(actuador) is None
+
+
+@pytest.mark.parametrize("distancia,rumbo", [(25, 0), (100, 20)])
+def test_ca_4_4_14_poste_al_frente_o_a_100_cm_se_sigue_encontrando(distancia, rumbo):
+    """CA-4.4.14 (CC-020 / SUP-042): poste a 25 cm y 0°, y a 100 cm y 20°, con el actuador a 175° en la escena."""
+    from pi.lidar import localizar_poste
+    actuador = [(174.0, 25.0), (176.0, 25.0)]
+    poste = localizar_poste(_escaneo(_poste(distancia, rumbo)) + actuador)
+    assert poste is not None
+    assert poste.distancia_cm == pytest.approx(distancia, abs=3)
+    assert poste.rumbo_grados == pytest.approx(rumbo, abs=2)
+
+
+def test_ca_4_4_14_con_zona_trasera_none_el_punto_trasero_si_se_reporta():
+    """CA-4.4.14 (CC-020 / SUP-042): sin zona trasera el punto a 25 cm y 175° sí se reporta."""
+    from pi.lidar import Poste, localizar_poste
+    actuador = [(174.0, 25.0), (176.0, 25.0)]
+    poste = localizar_poste(actuador, zona_trasera=None)
+    assert isinstance(poste, Poste)
+    assert poste.distancia_cm == pytest.approx(25, abs=3)
+    assert poste.rumbo_grados == pytest.approx(175, abs=2)
