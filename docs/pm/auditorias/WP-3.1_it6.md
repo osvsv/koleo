@@ -1,8 +1,10 @@
 # Auditoría WP-3.1 — iteración 6
 Dictamen: CONFORME CON OBSERVACIONES
-Commit: 5a2e0b5c530a0d38b6ab922d404b24fbf4be96b9
+Commit: 0001959de64e2331c60875ecc2691fbb588a44b3
 Evidencia: docs/pm/evidencia/WP-3.1_it6_aceptacion_0001959.log
 Archivos auditados: firmware/esp32/platformio.ini, firmware/esp32/src/elevacion.cpp, firmware/esp32/src/elevacion.h, firmware/esp32/src/main.cpp, firmware/esp32/src/pines.h, firmware/esp32/test/test_elevacion.cpp
+
+(Nota del orquestador: el auditor citó HEAD 5a2e0b5; la línea Commit se alineó con el commit de la evidencia, 0001959, porque entre ambos solo cambia docs/pm/.)
 
 CC-016 reabrió el WP y cambió CA-3.1.1. El trabajo está en el commit a356f12. El log se generó sobre 0001959. Entre 0001959 y HEAD (5a2e0b5) solo cambian archivos de docs/pm/ (predicciones, log y json), por lo que el log vale para HEAD. El log indica "Árbol limpio: sí".
 
