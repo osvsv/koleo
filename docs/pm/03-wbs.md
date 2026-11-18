@@ -1,5 +1,5 @@
 # WBS — KOLEO
-Versión: 1.16 (G1, respuestas de Osvaldo aplicadas; CC-002, CC-003, CC-004, CC-005, CC-006, CC-007, CC-008, CC-009, CC-010, CC-011, CC-012, CC-013, CC-014, CC-015, CC-016)
+Versión: 1.17 (G1, respuestas de Osvaldo aplicadas; CC-002, CC-003, CC-004, CC-005, CC-006, CC-007, CC-008, CC-009, CC-010, CC-011, CC-012, CC-013, CC-014, CC-015, CC-016, CC-017)
 
 Convenciones: los WP de software los ejecuta `/pm-ejecutar`. Los WP **físicos** (tipo `integracion`): las personas hacen WP-2.1, 2.2 y 2.3 (montaje y energizado); WP-2.4, 6.1, 6.2 y 6.3 los ejecuta el agente desde la Raspberry Pi (DP-09, CC-009) con una persona presente, y la evidencia que pide cámara, multímetro o cinta la aporta una persona. La evidencia va a `docs/pm/evidencia/hw/<WP>/` y el auditor la inspecciona. El ESP32 no se conecta por USB en operación (CC-010): se flashea por USB una sola vez, y después toda observación y control es por MQTT contra el broker de la Pi; la evidencia de banco son capturas de `koleo/robot1/esp32/#` (p. ej. con `mosquitto_sub`). Los WP de firmware combinan código (lo escribe el ejecutor) y pruebas de banco (las aportan personas). Los criterios llevan procedencia [S] salvo los marcados [D] por DP-04.
 
@@ -171,7 +171,7 @@ Convenciones: los WP de software los ejecuta `/pm-ejecutar`. Los WP **físicos**
 - Riesgo: alto
 - Tipo: entregable
 - Entregable: cliente Python que envía comandos al ESP32 por MQTT y espera su respuesta, y firmware del ESP32 con Wi-Fi y MQTT que los atiende (con las librerías PubSubClient y ArduinoJson declaradas en `lib_deps` de platformio.ini, CC-011), con paro por pérdida de comandos o de red. `ts` del ESP32: NTP si hay Internet y, si no, milisegundos desde el arranque; la Pi no depende de él porque `consolidar_esp32` recibe el `ts_ms` del reloj de la Pi (SUP-033, CC-012). `DROP` en el firmware es solo un acuse `DROP_OK` sin mover el actuador; la mecánica de depositar pertenece a WP-2.2 y WP-6.1 (SUP-034, CC-012). Lo que publica el ESP32 en `esp32/resp` y el `EN_LINEA` de `esp32/conexion` sale con QoS 0 (límite de PubSubClient); el testamento `FUERA_DE_LINEA` y la suscripción a `esp32/cmd` siguen con QoS 1, y la Pi cubre la pérdida con su timeout de 1 s y el reenvío con el mismo `id_cmd` (SUP-035, CC-013)
-- Alcance de archivos: pi/enlace.py, firmware/.gitignore, firmware/esp32/platformio.ini, firmware/esp32/src/main.cpp, firmware/esp32/src/red_mqtt.*, firmware/esp32/src/secrets.example.h, docs/pm/evidencia/hw/WP-3.2/**
+- Alcance de archivos: pi/enlace.py, firmware/.gitignore, firmware/esp32/platformio.ini, firmware/esp32/src/main.cpp, firmware/esp32/src/red_mqtt.*, firmware/esp32/src/secrets.example.h
 - Interfaz: `pi.enlace.EnlaceESP32(cliente, timeout_s: float = 1.0)` con `enviar(cmd: dict) -> dict` (publica en `koleo/robot1/esp32/cmd` y devuelve la respuesta de `esp32/resp` con el mismo `id_cmd`, o lanza `TimeoutError`), `lift(id_tarima, peso_kg)` (publica `LIFT` con el peso declarado, CC-004), `move(izq, der)`, `stop()`, `drop(id_tarima, x_cm, y_cm)`; `cliente` es un objeto con `publicar(topic, payload)` y `esperar_respuesta(id_cmd, timeout_s)` (lanza `TimeoutError` si no hay respuesta; se inyecta uno falso en pruebas)
 - Trazabilidad: REQ-F-001, REQ-F-002, REQ-F-003, REQ-F-005, REQ-NF-006, REQ-NF-009
 - Dependencias: WP-1.1, WP-3.1
@@ -179,11 +179,11 @@ Convenciones: los WP de software los ejecuta `/pm-ejecutar`. Los WP **físicos**
   - CA-3.2.1 [S]: `lift("TAR-101", 8.45)` publica un `esp32_cmd` válido con `cmd` LIFT y `peso_kg` 8.45 y, contra un cliente falso que responde `{"resultado": "ACK", "codigo": "LIFT_OK"}` devuelve esa respuesta; con `OVERWEIGHT` devuelve la respuesta de error sin lanzar excepción — Evidencia: tests/aceptacion/test_wp_3_2.py
   - CA-3.2.2 [S]: sin respuesta en 1 s `enviar` lanza `TimeoutError` y el enlace intenta enviar `STOP` — Evidencia: tests/aceptacion/test_wp_3_2.py
   - CA-3.2.3 [S]: `drop("TAR-101", 150, 120)` publica en `koleo/robot1/esp32/cmd` un mensaje válido contra `esp32_cmd` con `cmd` DROP, `x_cm` 150, `y_cm` 120 y un `id_cmd` único; `move(80, -80)` publica `pwm_izq` 80 y `pwm_der` -80 — Evidencia: tests/aceptacion/test_wp_3_2.py
-  - CA-3.2.4 [S]: el firmware se conecta al Wi-Fi y al broker de la Pi, publica `esp32/conexion` EN_LINEA retenido con testamento FUERA_DE_LINEA, y responde a los cuatro comandos con el código del contrato (incluido `DROP`, hoy ausente del `loop()`) — Evidencia: docs/pm/evidencia/hw/WP-3.2/comandos_banco.txt
-  - CA-3.2.5 [S]: con `MOVE` activo, si no llegan comandos durante más de 1 s o se pierde la conexión Wi-Fi o MQTT, el ESP32 detiene la tracción — Evidencia: docs/pm/evidencia/hw/WP-3.2/watchdog.mp4
+  - CA-3.2.4 [D]: movido a WP-6.1 como CA-6.1.5 por CC-017 (la prueba de banco con el ESP32 real es de integración y bloqueaba WP-4.2 y WP-4.3)
+  - CA-3.2.5 [D]: movido a WP-6.1 como CA-6.1.6 por CC-017 (la prueba de banco con el ESP32 real es de integración y bloqueaba WP-4.2 y WP-4.3)
   - CA-3.2.6 [S]: el nombre y la contraseña del Wi-Fi y la dirección del broker están en `firmware/esp32/src/secrets.h`, ignorado por git; el repositorio solo contiene `secrets.example.h` — Evidencia: inspección de firmware/.gitignore y firmware/esp32/src/secrets.example.h
-  - CA-3.2.7 [D]: con `LIFT` sin `peso_kg` publicado por MQTT, el ESP32 responde `PESO_INVALIDO` en `esp32/resp` y no se energiza el actuador (CC-010, antes CA-3.1.3) — Evidencia: docs/pm/evidencia/hw/WP-3.2/peso_invalido.txt
-  - CA-3.2.8 [D]: por MQTT, `LIFT` con 11.8 kg y 10.1 kg responde `OVERWEIGHT`, con 10.0 kg se acepta y con 0.1 kg (la masa real de 100 g) la elevación se acepta (CC-010, antes CA-3.1.5) — Evidencia: docs/pm/evidencia/hw/WP-3.2/umbral.txt
+  - CA-3.2.7 [D]: movido a WP-6.1 como CA-6.1.7 por CC-017 (la prueba de banco con el ESP32 real es de integración y bloqueaba WP-4.2 y WP-4.3)
+  - CA-3.2.8 [D]: movido a WP-6.1 como CA-6.1.8 por CC-017 (la prueba de banco con el ESP32 real es de integración y bloqueaba WP-4.2 y WP-4.3)
 
 ### WP-3.3 — Parada continua por obstáculo
 - Riesgo: alto
@@ -301,16 +301,20 @@ Convenciones: los WP de software los ejecuta `/pm-ejecutar`. Los WP **físicos**
 ### WP-6.1 — Pruebas de elevación, rechazo, obstáculo y latencia
 - Riesgo: alto
 - Tipo: integracion
-- Entregable: resultados medidos de VAL-01, VAL-02, VAL-05 y VAL-07 con evidencia
+- Entregable: resultados medidos de VAL-01, VAL-02, VAL-05 y VAL-07 con evidencia y la prueba de banco del enlace con el ESP32 real (CC-017)
 - Alcance de archivos: docs/pm/evidencia/hw/WP-6.1/**
 - Interfaz: ninguna (físico)
-- Trazabilidad: REQ-F-001, REQ-F-002, REQ-F-004, REQ-NF-002, REQ-NF-003, REQ-NF-009, REQ-NF-011
-- Dependencias: WP-2.2, WP-2.4, WP-3.1, WP-3.3, WP-4.1
+- Trazabilidad: REQ-F-001, REQ-F-002, REQ-F-003, REQ-F-004, REQ-F-005, REQ-NF-002, REQ-NF-003, REQ-NF-009, REQ-NF-011
+- Dependencias: WP-2.2, WP-2.4, WP-3.1, WP-3.2, WP-3.3, WP-4.1
 - Criterios de aceptación:
   - CA-6.1.1 [D]: VAL-01: una masa de demostración de 100 g sube en menos de 15 s, cronometrado en video (la capacidad de diseño de 10 kg no se carga físicamente) — Evidencia: docs/pm/evidencia/hw/WP-6.1/val01.mp4
   - CA-6.1.2 [D]: VAL-02: con el peso declarado de 11.8 kg (tarima registrada en el tablero) el robot no sube y quedan el evento SOBREPESO y la fila en la BD — Evidencia: docs/pm/evidencia/hw/WP-6.1/val02.mp4 y docs/pm/evidencia/hw/WP-6.1/val02_consulta.txt
   - CA-6.1.3 [S]: VAL-05: con el robot avanzando, una caja a 15 cm detiene los motores y se publica el evento — Evidencia: docs/pm/evidencia/hw/WP-6.1/val05.mp4 y docs/pm/evidencia/hw/WP-6.1/val05_log.txt
   - CA-6.1.4 [D]: VAL-07: la latencia desde que la Pi envía el comando `DROP` hasta la fila en la BD es < 2 s, con `ts` de ambos lados, en 5 repeticiones — Evidencia: docs/pm/evidencia/hw/WP-6.1/val07.md
+  - CA-6.1.5 [S]: el firmware se conecta al Wi-Fi y al broker de la Pi, publica `esp32/conexion` EN_LINEA retenido con testamento FUERA_DE_LINEA, y responde a los cuatro comandos con el código del contrato (incluido `DROP`, hoy ausente del `loop()`) (antes CA-3.2.4, CC-017) — Evidencia: docs/pm/evidencia/hw/WP-6.1/comandos_banco.txt
+  - CA-6.1.6 [S]: con `MOVE` activo, si no llegan comandos durante más de 1 s o se pierde la conexión Wi-Fi o MQTT, el ESP32 detiene la tracción (antes CA-3.2.5, CC-017) — Evidencia: docs/pm/evidencia/hw/WP-6.1/watchdog.mp4
+  - CA-6.1.7 [D]: con `LIFT` sin `peso_kg` publicado por MQTT, el ESP32 responde `PESO_INVALIDO` en `esp32/resp` y no se energiza el actuador (CC-010) (antes CA-3.2.7, CC-017) — Evidencia: docs/pm/evidencia/hw/WP-6.1/peso_invalido.txt
+  - CA-6.1.8 [D]: por MQTT, `LIFT` con 11.8 kg y 10.1 kg responde `OVERWEIGHT`, con 10.0 kg se acepta y con 0.1 kg (la masa real de 100 g) la elevación se acepta (CC-010) (antes CA-3.2.8, CC-017) — Evidencia: docs/pm/evidencia/hw/WP-6.1/umbral.txt
 
 ### WP-6.2 — Pruebas de rutas, llegada y traslado sostenido
 - Riesgo: alto
