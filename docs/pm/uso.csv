@@ -12,3 +12,7 @@ fecha,sesion,fase,wp,rol,modelo,entrada,salida,cache_escritura,cache_lectura,usd
 2026-11-13 09:24,c96ddc9a-c26d-48cb-b9ef-70b5db129265,pm-estado+pm-ejecutar,WP-1.3,principal,claude-sonnet-5-5,100,21462,114323,3914392,2.1825,18.5
 2026-11-16 18:31,08f0c330-7dfc-424b-9e44-088b691e4f24,pm-estado+pm-ejecutar,WP-3.1,auditor-conformidad,claude-opus-5-5,42,16335,88533,883321,1.4036,15.0
 2026-11-16 18:31,08f0c330-7dfc-424b-9e44-088b691e4f24,pm-estado+pm-ejecutar,WP-3.1,principal,claude-sonnet-5-5,52,14945,110730,1613220,1.3727,15.0
+2026-11-17 08:20,a56a67ad-f176-4aa1-90a6-b3139620c312,otra,WP-3.1+WP-3.2,principal,claude-opus-5-5,88,14547,132035,4399018,3.8840,17.3
+2026-11-17 07:47,7d2d31ef-a8ef-406f-a0fd-140a9c8cbcec,pm-estado+pm-ejecutar+pm-cambio,WP-2.4+WP-3.1+WP-3.2,auditor-conformidad,claude-opus-5-5,98,57631,217099,1314315,3.4553,141.6
+2026-11-17 07:47,7d2d31ef-a8ef-406f-a0fd-140a9c8cbcec,pm-estado+pm-ejecutar+pm-cambio,WP-2.4+WP-3.1+WP-3.2,ejecutor-wbs,claude-sonnet-5-5,70,53525,190378,1090298,1.8441,141.6
+2026-11-17 07:47,7d2d31ef-a8ef-406f-a0fd-140a9c8cbcec,pm-estado+pm-ejecutar+pm-cambio,WP-2.4+WP-3.1+WP-3.2,principal,claude-sonnet-5-5,292,107418,271554,17967544,8.6317,141.6
