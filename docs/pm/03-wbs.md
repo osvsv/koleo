@@ -252,8 +252,8 @@ Convenciones: los WP de software los ejecuta `/pm-ejecutar`. Los WP **físicos**
 ### WP-4.4 — Localización del destino con LIDAR
 - Riesgo: medio
 - Tipo: entregable
-- Entregable: detección del poste de destino en un escaneo del RPLIDAR A1 por su ancho y lectura del sensor desde la Pi. Sustituye a la lectura QR (CC-014): la tarima ya no se identifica por QR sino por el `id_tarima` de la orden (REQ-F-007)
-- Alcance de archivos: pi/lidar.py, pi/rplidar.py, pi/qr.py (se elimina), pi/camara.py (se elimina), requirements.txt, docs/pm/evidencia/hw/WP-4.4/**
+- Entregable: detección del poste de destino en un escaneo del RPLIDAR A1 por su ancho y lectura del sensor desde la Pi. Sustituye a la lectura QR (CC-014; `pi/qr.py` y `pi/camara.py` están en el alcance solo para eliminarlos): la tarima ya no se identifica por QR sino por el `id_tarima` de la orden (REQ-F-007)
+- Alcance de archivos: pi/lidar.py, pi/rplidar.py, pi/qr.py, pi/camara.py, requirements.txt, docs/pm/evidencia/hw/WP-4.4/**
 - Interfaz: `pi.lidar.Poste` (dataclass con `distancia_cm: float` y `rumbo_grados: float`); `pi.lidar.localizar_poste(escaneo: list[tuple[float, float]], ancho_max_cm: float = 12, min_puntos: int = 2, alcance_max_cm: float = 200, distancia_min_cm: float = 15) -> Poste | None` (`escaneo` son pares (ángulo en grados, distancia en cm) con 0° al frente y positivo hacia la izquierda; agrupa puntos consecutivos separados menos de 5 cm, descarta los grupos con menos de `min_puntos` o con una cuerda mayor que `ancho_max_cm`, y entre los que quedan devuelve el más cercano); `pi.rplidar.RPLidarA1(puerto: str, driver=None).escanear(timeout_s: float = 2.0) -> list[tuple[float, float]]` (una vuelta completa, ángulo ya en el marco del robot; lanza `pi.rplidar.LidarSinDatos` si no hay vuelta en `timeout_s`; `driver` es un objeto falso en pruebas; el puerto sale de la variable de entorno `KOLEO_LIDAR_PUERTO`)
 - Trazabilidad: REQ-F-006, REQ-F-007
 - Dependencias: WP-2.4
