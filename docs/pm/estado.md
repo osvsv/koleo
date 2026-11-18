@@ -1,6 +1,6 @@
 # Estado del proyecto
 
-> Archivo generado por gen_estado.py el 2026-11-17T09:40 sobre el commit 5257f26. No editar a mano.
+> Archivo generado por gen_estado.py el 2026-11-18T11:33 sobre el commit 96079a2. No editar a mano.
 
 ## Gates
 
@@ -25,8 +25,8 @@
 | WP-3.3 | Parada continua por obstáculo | alto | entregable | Pendiente | 0 | — | — |
 | WP-4.1 | Puente MQTT | alto | entregable | Pendiente | 0 | — | — |
 | WP-4.2 | Avance por distancia con encoders | medio | entregable | Pendiente | 0 | — | — |
-| WP-4.3 | Planificador A* y misión | medio | entregable | Pendiente | 0 | — | — |
-| WP-4.4 | Lectura QR | medio | entregable | En corrección | 1 | NO CONFORME | docs/pm/auditorias/WP-4.4_it1.md |
+| WP-4.3 | Navegación guiada por LIDAR y misión | medio | entregable | Pendiente | 0 | — | — |
+| WP-4.4 | Localización del destino con LIDAR | medio | entregable | En corrección | 1 | NO CONFORME | docs/pm/auditorias/WP-4.4_it1.md |
 | WP-5.1 | Tablero: flotilla, monitoreo e indicadores | medio | entregable | Conforme@0dfbfae | 2 | CONFORME CON OBSERVACIONES | docs/pm/auditorias/WP-5.1_it3.md |
 | WP-5.2 | Tablero: control y gestión logística | medio | entregable | Conforme@525905a | 1 | CONFORME CON OBSERVACIONES | docs/pm/auditorias/WP-5.2_it2.md |
 | WP-6.1 | Pruebas de elevación, rechazo, obstáculo y latencia | alto | integracion | Pendiente | 0 | — | — |
