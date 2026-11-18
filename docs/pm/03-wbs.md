@@ -1,5 +1,5 @@
 # WBS — KOLEO
-Versión: 1.15 (G1, respuestas de Osvaldo aplicadas; CC-002, CC-003, CC-004, CC-005, CC-006, CC-007, CC-008, CC-009, CC-010, CC-011, CC-012, CC-013, CC-014, CC-015)
+Versión: 1.16 (G1, respuestas de Osvaldo aplicadas; CC-002, CC-003, CC-004, CC-005, CC-006, CC-007, CC-008, CC-009, CC-010, CC-011, CC-012, CC-013, CC-014, CC-015, CC-016)
 
 Convenciones: los WP de software los ejecuta `/pm-ejecutar`. Los WP **físicos** (tipo `integracion`): las personas hacen WP-2.1, 2.2 y 2.3 (montaje y energizado); WP-2.4, 6.1, 6.2 y 6.3 los ejecuta el agente desde la Raspberry Pi (DP-09, CC-009) con una persona presente, y la evidencia que pide cámara, multímetro o cinta la aporta una persona. La evidencia va a `docs/pm/evidencia/hw/<WP>/` y el auditor la inspecciona. El ESP32 no se conecta por USB en operación (CC-010): se flashea por USB una sola vez, y después toda observación y control es por MQTT contra el broker de la Pi; la evidencia de banco son capturas de `koleo/robot1/esp32/#` (p. ej. con `mosquitto_sub`). Los WP de firmware combinan código (lo escribe el ejecutor) y pruebas de banco (las aportan personas). Los criterios llevan procedencia [S] salvo los marcados [D] por DP-04.
 
@@ -158,7 +158,7 @@ Convenciones: los WP de software los ejecuta `/pm-ejecutar`. Los WP **físicos**
 - Trazabilidad: REQ-F-002, REQ-F-003, REQ-F-001, REQ-NF-009
 - Dependencias: ninguna
 - Criterios de aceptación:
-  - CA-3.1.1 [S]: `firmware/esp32/src/pines.h` coincide con el pinout final de `importado/KOLEO_todo.md` §9 (IN3 en GPIO 23, canal B de encoders en 36/39, GPIO 14 en bajo al inicio), sin los pines del VL53L1X ni del HX711 (CC-004) — Evidencia: inspección de firmware/esp32/src/pines.h
+  - CA-3.1.1 [D]: `firmware/esp32/src/pines.h` coincide con el cableado real del prototipo (CC-016): driver L293D; motor izquierdo EN=14, IN1=26, IN2=25; motor derecho EN=27, IN3=33, IN4=32; actuador BTS7960 RPWM=18 (sube) y LPWM=19 (baja); sin los pines del VL53L1X ni del HX711 (CC-004). Los pines del HC-SR04 y de los encoders quedan sin asignar hasta WP-2.4 y no pueden repetir ninguno de los anteriores (SUP-040) — Evidencia: inspección de firmware/esp32/src/pines.h
   - CA-3.1.2 [D]: `LIFT` sin `peso_kg`, o con `peso_kg` no numérico, 0 o negativo, responde `PESO_INVALIDO` y nunca se interpreta como 0 kg aceptable — Evidencia: inspección de firmware/esp32/src/elevacion.cpp
   - CA-3.1.3 [D]: movido a WP-3.2 como CA-3.2.7 por CC-010 (el ESP32 no se conecta por USB; la prueba de banco se hace por MQTT)
   - CA-3.1.4 [S]: retirado por CC-004 (calibración de la celda de carga)
