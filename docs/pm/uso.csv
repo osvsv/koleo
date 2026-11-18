@@ -17,3 +17,10 @@ fecha,sesion,fase,wp,rol,modelo,entrada,salida,cache_escritura,cache_lectura,usd
 2026-11-17 07:47,7d2d31ef-a8ef-406f-a0fd-140a9c8cbcec,pm-estado+pm-ejecutar+pm-cambio,WP-2.4+WP-3.1+WP-3.2,ejecutor-wbs,claude-sonnet-5-5,70,53525,190378,1090298,1.8441,141.6
 2026-11-17 07:47,7d2d31ef-a8ef-406f-a0fd-140a9c8cbcec,pm-estado+pm-ejecutar+pm-cambio,WP-2.4+WP-3.1+WP-3.2,principal,claude-sonnet-5-5,292,107418,271554,17967544,8.6317,141.6
 2026-11-18 11:19,0402c961-02d9-4c3b-b689-0f62a3de4af6,otra,—,principal,claude-opus-5-5,10,817,109377,323400,1.2759,0.3
+2026-11-18 12:17,55e3ed75-f1ea-4cb0-99ed-caf07915a781,pm-ejecutar,WP-1.2+WP-3.1+WP-3.2+WP-6.1,auditor-conformidad,claude-opus-5-5,132,47609,239980,2246869,3.8142,44.9
+2026-11-18 12:17,55e3ed75-f1ea-4cb0-99ed-caf07915a781,pm-ejecutar,WP-1.2+WP-3.1+WP-3.2+WP-6.1,ejecutor-wbs,claude-sonnet-5-5,30,8948,64222,313693,0.4693,44.9
+2026-11-18 12:17,55e3ed75-f1ea-4cb0-99ed-caf07915a781,pm-ejecutar,WP-1.2+WP-3.1+WP-3.2+WP-6.1,principal,claude-sonnet-5-5,194,58617,290089,9321329,4.7641,44.9
+2026-11-18 11:20,269038c4-ae3a-4a42-89cb-d4aafae653d6,pm-cambio+pm-ejecutar,WP-4.4+WP-2.4+WP-6.2+WP-1.2,auditor-conformidad,claude-opus-5-5,20,10489,63948,395584,0.8598,58.9
+2026-11-18 11:20,269038c4-ae3a-4a42-89cb-d4aafae653d6,pm-cambio+pm-ejecutar,WP-4.4+WP-2.4+WP-6.2+WP-1.2,ejecutor-wbs,claude-sonnet-5-5,20,6612,29025,222621,0.2749,58.9
+2026-11-18 11:20,269038c4-ae3a-4a42-89cb-d4aafae653d6,pm-cambio+pm-ejecutar,WP-4.4+WP-2.4+WP-6.2+WP-1.2,principal,claude-sonnet-5-5,106,52557,200293,6717937,4.0058,58.9
+2026-11-18 11:20,269038c4-ae3a-4a42-89cb-d4aafae653d6,pm-cambio+pm-ejecutar,WP-4.4+WP-2.4+WP-6.2+WP-1.2,redactor-aceptacion,claude-sonnet-5-5,24,24859,50370,425129,0.6894,58.9
