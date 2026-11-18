@@ -1,6 +1,6 @@
 # Estado del proyecto
 
-> Archivo generado por gen_estado.py el 2026-11-18T11:41 sobre el commit 4f6a690. No editar a mano.
+> Archivo generado por gen_estado.py el 2026-11-18T11:45 sobre el commit bc9f6a6. No editar a mano.
 
 ## Gates
 
@@ -14,7 +14,7 @@
 | WP | Nombre | Riesgo | Tipo | Estado | Iteraciones | Último dictamen | Informe |
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | WP-1.1 | Contratos MQTT, comandos del ESP32, estados y SQL | medio | entregable | Conforme@d17df56 | 3 | CONFORME | docs/pm/auditorias/WP-1.1_it3.md |
-| WP-1.2 | Robot simulado | bajo | entregable | Conforme@7ccd096 | 4 | CONFORME CON OBSERVACIONES | docs/pm/auditorias/WP-1.2_it5.md |
+| WP-1.2 | Robot simulado | bajo | entregable | Requiere reverificación | 4 | CONFORME CON OBSERVACIONES | docs/pm/auditorias/WP-1.2_it5.md |
 | WP-1.3 | Backend de persistencia y Web API | alto | entregable | Conforme@7528a91 | 5 | CONFORME CON OBSERVACIONES | docs/pm/auditorias/WP-1.3_it6.md |
 | WP-2.1 | Chasis y tracción | medio | integracion | Pendiente | 0 | — | — |
 | WP-2.2 | Mecanismo de elevación | alto | integracion | Pendiente | 0 | — | — |
@@ -26,7 +26,7 @@
 | WP-4.1 | Puente MQTT | alto | entregable | Pendiente | 0 | — | — |
 | WP-4.2 | Avance por distancia con encoders | medio | entregable | Pendiente | 0 | — | — |
 | WP-4.3 | Navegación guiada por LIDAR y misión | medio | entregable | Pendiente | 0 | — | — |
-| WP-4.4 | Localización del destino con LIDAR | medio | entregable | En corrección | 1 | NO CONFORME | docs/pm/auditorias/WP-4.4_it1.md |
+| WP-4.4 | Localización del destino con LIDAR | medio | entregable | Conforme@bc9f6a6 | 2 | CONFORME CON OBSERVACIONES | docs/pm/auditorias/WP-4.4_it2.md |
 | WP-5.1 | Tablero: flotilla, monitoreo e indicadores | medio | entregable | Conforme@0dfbfae | 2 | CONFORME CON OBSERVACIONES | docs/pm/auditorias/WP-5.1_it3.md |
 | WP-5.2 | Tablero: control y gestión logística | medio | entregable | Conforme@525905a | 1 | CONFORME CON OBSERVACIONES | docs/pm/auditorias/WP-5.2_it2.md |
 | WP-6.1 | Pruebas de elevación, rechazo, obstáculo y latencia | alto | integracion | Pendiente | 0 | — | — |
@@ -35,4 +35,4 @@
 
 ## Resumen
 
-Conforme: 6, En corrección: 1, Pendiente: 12
+Conforme: 6, Pendiente: 12, Requiere reverificación: 1
