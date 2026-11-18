@@ -80,8 +80,10 @@ void elevacionIniciarPines() {
   }
   pinMode(PIN_ACT_RPWM, OUTPUT);
   pinMode(PIN_ACT_LPWM, OUTPUT);
-  pinMode(PIN_MD_ENB, OUTPUT);
-  digitalWrite(PIN_MD_ENB, LOW);  // GPIO 14 en bajo al inicio
+  pinMode(PIN_MD_EN, OUTPUT);
+  pinMode(PIN_MI_EN, OUTPUT);
+  digitalWrite(PIN_MI_EN, LOW);  // enables de ambos motores en bajo al inicio
+  digitalWrite(PIN_MD_EN, LOW);
   actuadorSube(false);
 #endif
 }

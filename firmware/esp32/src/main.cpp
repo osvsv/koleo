@@ -33,22 +33,22 @@ static void pwmEscribir(int pin, int canal, int duty) {
 static void pwmPrepara() {
   if (pwmListo) return;
 #if defined(ESP_ARDUINO_VERSION_MAJOR) && ESP_ARDUINO_VERSION_MAJOR >= 3
-  ledcAttach(PIN_MI_ENA, PWM_HZ, PWM_BITS);
-  ledcAttach(PIN_MD_ENB, PWM_HZ, PWM_BITS);
+  ledcAttach(PIN_MI_EN, PWM_HZ, PWM_BITS);
+  ledcAttach(PIN_MD_EN, PWM_HZ, PWM_BITS);
 #else
-  ledcSetup(0, PWM_HZ, PWM_BITS); ledcAttachPin(PIN_MI_ENA, 0);
-  ledcSetup(1, PWM_HZ, PWM_BITS); ledcAttachPin(PIN_MD_ENB, 1);
+  ledcSetup(0, PWM_HZ, PWM_BITS); ledcAttachPin(PIN_MI_EN, 0);
+  ledcSetup(1, PWM_HZ, PWM_BITS); ledcAttachPin(PIN_MD_EN, 1);
 #endif
   pwmListo = true;
 }
 
 static void detenerTraccion() {
   if (pwmListo) {
-    pwmEscribir(PIN_MI_ENA, 0, 0);
-    pwmEscribir(PIN_MD_ENB, 1, 0);
+    pwmEscribir(PIN_MI_EN, 0, 0);
+    pwmEscribir(PIN_MD_EN, 1, 0);
   } else {
-    digitalWrite(PIN_MD_ENB, LOW);
-    digitalWrite(PIN_MI_ENA, LOW);
+    digitalWrite(PIN_MD_EN, LOW);
+    digitalWrite(PIN_MI_EN, LOW);
   }
   digitalWrite(PIN_MI_IN1, LOW); digitalWrite(PIN_MI_IN2, LOW);
   digitalWrite(PIN_MD_IN3, LOW); digitalWrite(PIN_MD_IN4, LOW);
@@ -64,8 +64,8 @@ static void ruedas(double izq, double der) {
     pwmEscribir(pin, canal, (int)(v < 0 ? -v : v));
   };
   pwmPrepara();
-  lado(izq, PIN_MI_IN1, PIN_MI_IN2, PIN_MI_ENA, 0);
-  lado(der, PIN_MD_IN3, PIN_MD_IN4, PIN_MD_ENB, 1);
+  lado(izq, PIN_MI_IN1, PIN_MI_IN2, PIN_MI_EN, 0);
+  lado(der, PIN_MD_IN3, PIN_MD_IN4, PIN_MD_EN, 1);
   moveActivo = (izq != 0 || der != 0);
 }
 
@@ -127,8 +127,8 @@ static void vigilante() {
 
 void setup() {
   Serial.begin(115200);
-  elevacionIniciarPines();  // deja GPIO 14 (ENB) en LOW
-  pinMode(PIN_MI_ENA, OUTPUT); digitalWrite(PIN_MI_ENA, LOW);
+  elevacionIniciarPines();  // deja GPIO 14 (EN izq) y 27 (EN der) en LOW
+  pinMode(PIN_MI_EN, OUTPUT); digitalWrite(PIN_MI_EN, LOW);
   pinMode(PIN_MI_IN1, OUTPUT); pinMode(PIN_MI_IN2, OUTPUT);
   pinMode(PIN_MD_IN3, OUTPUT); pinMode(PIN_MD_IN4, OUTPUT);
   digitalWrite(PIN_MI_IN1, LOW); digitalWrite(PIN_MI_IN2, LOW);
