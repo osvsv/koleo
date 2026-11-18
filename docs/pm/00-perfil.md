@@ -1,5 +1,5 @@
 # Perfil del proyecto — KOLEO
-Versión: 1.2 (G1, respuestas de Osvaldo aplicadas; CC-009)
+Versión: 1.3 (G1, respuestas de Osvaldo aplicadas; CC-009, CC-014)
 
 ## Contexto (seis dimensiones)
 
@@ -28,7 +28,7 @@ Versión: 1.2 (G1, respuestas de Osvaldo aplicadas; CC-009)
 
 Las de Estándar: procedencia y registro de supuestos; tabla de decisiones del perfil; paquete de validación en G1 (interno, externo, revisión externa); ejemplos de aceptación para todos los requisitos funcionales; suite de aceptación del redactor para lo automatizable; demos en el primer incremento y al cierre (aquí en cada incremento por la sesión semanal); auditoría ciega en dos fases para riesgo medio y alto; regresión acumulativa; hooks, `pm_check` y estado derivado; reverificación sin ejecutor; métricas de calidad y costo. Sin auditor en sombra.
 
-**Adaptación a hardware.** Los WP de ensamble, electrónica y pruebas físicas los hacen personas; su "ejecución" no la hace un agente. Su evidencia (foto, video, log, medición, bitácora) se guarda en `docs/pm/evidencia/hw/<WP>/` y el auditor la inspecciona. Los WP de software (contratos, simulador, backend, UI, A*, puente MQTT, firmware con simulación) se ejecutan con `/pm-ejecutar` y llevan pruebas de aceptación cuando son automatizables.
+**Adaptación a hardware.** Los WP de ensamble, electrónica y pruebas físicas los hacen personas; su "ejecución" no la hace un agente. Su evidencia (foto, video, log, medición, bitácora) se guarda en `docs/pm/evidencia/hw/<WP>/` y el auditor la inspecciona. Los WP de software (contratos, simulador, backend, UI, detección del poste con LIDAR, puente MQTT, firmware con simulación) se ejecutan con `/pm-ejecutar` y llevan pruebas de aceptación cuando son automatizables.
 
 ## Artefactos
 
@@ -69,13 +69,13 @@ Las de Estándar: procedencia y registro de supuestos; tabla de decisiones del p
 
 ## Incrementos
 
-IDs definitivos de `03-wbs.md` (la tabla del borrador aprobado en G0 usaba IDs provisionales; el cambio es solo de numeración y agrupación: el QR pasó a WP-4.4, los indicadores se fundieron en WP-5.1 y las pruebas VAL se separaron en WP-6.1 a 6.3).
+IDs definitivos de `03-wbs.md` (la tabla del borrador aprobado en G0 usaba IDs provisionales; el cambio es solo de numeración y agrupación: el QR pasó a WP-4.4 (que CC-014 reemplazó por la localización del destino con LIDAR), los indicadores se fundieron en WP-5.1 y las pruebas VAL se separaron en WP-6.1 a 6.3).
 
 | Incremento | WP que lo cierran | Demo |
 | --- | --- | --- |
 | Inc. 1 — contratos, ensamble y esqueleto (sin fecha comprometida) | WP-1.1 contratos; WP-1.2 robot simulado; WP-1.3 backend (MQTT → SQLite → API); WP-2.1 chasis y tracción; WP-2.2 elevación; WP-2.3 energía y energizado seguro; WP-3.1 elevación con peso declarado y rechazo por sobrepeso | Robot simulado completa 2 traslados y 1 rechazo en la BD (VAL-08); robot armado energizado levanta sin carga |
 | Inc. 2 — robot real y seguridad (sin fecha comprometida) | WP-2.4 sensores montados; WP-3.2 enlace de comandos por MQTT; WP-3.3 parada continua por obstáculo; WP-4.1 puente MQTT real; WP-4.2 avance por encoders; WP-5.1 tablero: flotilla, monitoreo e indicadores; WP-6.1 VAL-01, 02, 05 y 07 | Elevación de la carga de demostración (100 g), rechazo con peso simulado de 11.8 kg, paro por obstáculo y latencia, con evidencia |
-| Inc. 3 — navegación, interfaz y validación (antes de la entrega final) | WP-4.3 A* y misión; WP-4.4 QR; WP-5.2 tablero: control y logística; WP-6.2 VAL-03, 04 y 06; WP-6.3 ensayo y reporte | Tres rutas, error de llegada, 3 minutos y demo completa grabada |
+| Inc. 3 — navegación, interfaz y validación (antes de la entrega final) | WP-4.3 navegación guiada por LIDAR y misión; WP-4.4 localización del destino con LIDAR; WP-5.2 tablero: control y logística; WP-6.2 VAL-03, 04 y 06; WP-6.3 ensayo y reporte | Llegada al poste desde tres posiciones de inicio, error de llegada, 3 minutos y demo completa grabada |
 
 ## Decisiones del perfil
 
@@ -91,7 +91,7 @@ IDs definitivos de `03-wbs.md` (la tabla del borrador aprobado en G0 usaba IDs p
 | DP-08 | No se segmenta el proyecto | [S] | Propuesta de /pm-planificar; se confirma en G1 |
 | DP-09 | Claude Code corre en la Raspberry Pi del robot. Las personas montan y energizan (WP-2.1, 2.2, 2.3); el agente ejecuta desde la Pi los WP-2.4, 6.1, 6.2 y 6.3 (comandos, mediciones y logs) con una persona presente y el STOP por software a mano. La evidencia que exige cámara, multímetro o cinta (fotos, videos, medidas) la sigue aportando una persona; todo queda en `evidencia/hw/` y lo audita el agente | [D] | Osvaldo, CC-009, 2026-11-17 (antes [S], propuesta de /pm-planificar) |
 | DP-10 | Seguridad eléctrica: reincorporar un fusible de 10 A en la línea de batería y mantener sin paro de emergencia físico (se usa desconectar el conector T y el STOP por software) | [S] | Propuesta de /pm-planificar; Osvaldo delegó la decisión el 2026-11-11 y desconoce la decisión del 11-nov del equipo (`KOLEO_todo.md` §6). Revertirla contradice al equipo: confirmar en G1 |
-| DP-11 | Sensor de paro: solo HC-SR04 (lo lee el ESP32 directo). RPLIDAR y Google Coral quedan fuera del alcance | [D] | Osvaldo, G1 V-07, 2026-11-11 |
+| DP-11 | Sensor de paro: solo HC-SR04 (lo lee el ESP32 directo). El RPLIDAR A1 entra como sensor de localización del destino (un poste largo, detectado por su ancho), conectado por USB a la Pi y sin hacer de sensor de paro; no hay mapa, SLAM ni A*. Google Coral queda fuera del alcance. La tarima se identifica por el `id_tarima` de la orden, sin QR | [D] | Osvaldo, CC-014, 2026-11-18 (antes G1 V-07: RPLIDAR fuera) |
 | DP-12 | Los cierres de incremento son puntos internos sin fecha comprometida; solo la entrega final (tentativa 2-dic) tiene fecha | [D] | Osvaldo, G1 V-19, 2026-11-11 |
 | DP-13 | Se acepta reportar la medición real si una meta no se alcanza (en vez de demostrar algo que falla) | [S] | `KOLEO_Metodologia_y_plan.md` (propuesta); confirmar en G1 |
 | DP-14 | Sin cable de datos entre ESP32 y Pi: ambos se conectan a la red; el ESP32 publica sensores y eventos y recibe comandos por MQTT, y la Pi los consolida en los temas del contrato | [D] | Osvaldo, G1 V-06, 2026-11-11 |
@@ -105,7 +105,7 @@ IDs definitivos de `03-wbs.md` (la tabla del borrador aprobado en G0 usaba IDs p
 
 - **Reto IoT: "microcontroladores en red".** Resuelto en G1 (V-06): el ESP32 se conecta él mismo a la red por MQTT.
 - **Calendario.** `KOLEO_Metodologia_y_plan.md` supone lunes 18-nov; el 18-nov de 2026 es miércoles. Fechas del plan importado no se heredan sin revisión.
-- **Estado físico del robot.** "Muy básico y nada ha funcionado bien": el Inc. 1 puede no cerrar mecánica. Regla de puerta: si no se cumple, se recorta alcance (p. ej. RPLIDAR, QR) y no se acumula atraso.
+- **Estado físico del robot.** "Muy básico y nada ha funcionado bien": el Inc. 1 puede no cerrar mecánica. Regla de puerta: si no se cumple, se recorta alcance (p. ej. WP-5.2) y no se acumula atraso; la navegación guiada por LIDAR es el núcleo de la demo y no se recorta (CC-014).
 - **Fusible.** Es una pieza nueva fuera del BOM; costo mínimo pero contradice una decisión del equipo.
 - **Python y entorno.** No hay archivos de requisitos aún; el WP-1.1 o 1.3 debe fijar versiones (pytest, Flask/FastAPI, paho-mqtt).
 

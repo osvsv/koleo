@@ -1,5 +1,5 @@
 # WBS — KOLEO
-Versión: 1.13 (G1, respuestas de Osvaldo aplicadas; CC-002, CC-003, CC-004, CC-005, CC-006, CC-007, CC-008, CC-009, CC-010, CC-011, CC-012, CC-013)
+Versión: 1.14 (G1, respuestas de Osvaldo aplicadas; CC-002, CC-003, CC-004, CC-005, CC-006, CC-007, CC-008, CC-009, CC-010, CC-011, CC-012, CC-013, CC-014)
 
 Convenciones: los WP de software los ejecuta `/pm-ejecutar`. Los WP **físicos** (tipo `integracion`): las personas hacen WP-2.1, 2.2 y 2.3 (montaje y energizado); WP-2.4, 6.1, 6.2 y 6.3 los ejecuta el agente desde la Raspberry Pi (DP-09, CC-009) con una persona presente, y la evidencia que pide cámara, multímetro o cinta la aporta una persona. La evidencia va a `docs/pm/evidencia/hw/<WP>/` y el auditor la inspecciona. El ESP32 no se conecta por USB en operación (CC-010): se flashea por USB una sola vez, y después toda observación y control es por MQTT contra el broker de la Pi; la evidencia de banco son capturas de `koleo/robot1/esp32/#` (p. ej. con `mosquitto_sub`). Los WP de firmware combinan código (lo escribe el ejecutor) y pruebas de banco (las aportan personas). Los criterios llevan procedencia [S] salvo los marcados [D] por DP-04.
 
@@ -21,8 +21,8 @@ Convenciones: los WP de software los ejecuta `/pm-ejecutar`. Los WP **físicos**
 4. Raspberry Pi
    4.1 WP-4.1 Puente MQTT
    4.2 WP-4.2 Avance por distancia con encoders
-   4.3 WP-4.3 Planificador A* y misión
-   4.4 WP-4.4 Lectura QR
+   4.3 WP-4.3 Navegación guiada por LIDAR y misión
+   4.4 WP-4.4 Localización del destino con LIDAR
 5. Tablero
    5.1 WP-5.1 Tablero: flotilla, monitoreo e indicadores
    5.2 WP-5.2 Tablero: control y gestión logística
@@ -136,7 +136,7 @@ Convenciones: los WP de software los ejecuta `/pm-ejecutar`. Los WP **físicos**
 ### WP-2.4 — Sensores montados
 - Riesgo: medio
 - Tipo: integracion
-- Entregable: HC-SR04 y encoders montados y leyendo en el robot armado (VL53L1X y celda de carga con HX711 retirados por CC-004)
+- Entregable: HC-SR04, encoders y RPLIDAR A1 montados y leyendo en el robot armado (VL53L1X y celda de carga con HX711 retirados por CC-004; RPLIDAR A1 incorporado por CC-014, conectado por USB a la Pi y alimentado por ella, con el plano de barrido a la altura del poste de destino)
 - Alcance de archivos: docs/pm/evidencia/hw/WP-2.4/**
 - Interfaz: ninguna (físico)
 - Trazabilidad: REQ-F-004, REQ-F-006, REQ-NF-006
@@ -146,6 +146,8 @@ Convenciones: los WP de software los ejecuta `/pm-ejecutar`. Los WP **físicos**
   - CA-2.4.2 [S]: el ECHO del HC-SR04 llega al ESP32 con ≤ 3.3 V medidos — Evidencia: docs/pm/evidencia/hw/WP-2.4/echo_voltaje.jpg
   - CA-2.4.3 [S]: los contadores de encoder suben al girar la rueda hacia adelante y bajan hacia atrás, en ambas ruedas — Evidencia: docs/pm/evidencia/hw/WP-2.4/encoders.txt
   - CA-2.4.4 [S]: quedan registrados qué integrante conectó y programó cada sensor y actuador (Etapa 2 del Reto) — Evidencia: docs/pm/evidencia/hw/WP-2.4/reparto_etapa2.md
+  - CA-2.4.5 [D]: con el RPLIDAR A1 montado y la Pi leyéndolo por USB, 5 vueltas consecutivas entregan al menos 300 puntos válidos cada una y el sensor gira sin rozar la estructura (CC-014) — Evidencia: docs/pm/evidencia/hw/WP-2.4/lidar_vueltas.txt
+  - CA-2.4.6 [D]: el plano de barrido del RPLIDAR queda a una altura que corta el poste de destino y sin que el chasis, la plataforma elevada ni los cables bloqueen más de 30° del frente (CC-014) — Evidencia: docs/pm/evidencia/hw/WP-2.4/lidar_montaje.jpg y docs/pm/evidencia/hw/WP-2.4/lidar_sector_libre.txt
 
 ### WP-3.1 — Elevación con peso declarado y rechazo por sobrepeso
 - Riesgo: alto
@@ -229,36 +231,41 @@ Convenciones: los WP de software los ejecuta `/pm-ejecutar`. Los WP **físicos**
   - CA-4.2.4 [S]: una celda (30 cm) avanza con error < 3 cm en 5 repeticiones, con y sin carga — Evidencia: docs/pm/evidencia/hw/WP-4.2/celda_30cm.md
   - CA-4.2.5 [S]: si hay PWM y los encoders no cambian durante 1 s, el firmware detiene la tracción y reporta error — Evidencia: docs/pm/evidencia/hw/WP-4.2/atasco.txt
 
-### WP-4.3 — Planificador A* y misión
+### WP-4.3 — Navegación guiada por LIDAR y misión
 - Riesgo: medio
 - Tipo: entregable
-- Entregable: mapa 5×6, planificador A* y orquestación de la misión sobre el enlace de comandos por MQTT
-- Alcance de archivos: pi/mapa.py, pi/planificador.py, pi/mision.py
-- Interfaz: `pi.mapa.MAPA`, `pi.mapa.RUTAS`; `pi.planificador.PlanificadorAStar(mapa).planificar(inicio, meta) -> list[tuple[int, int]] | None`; `pi.mision.celda_a_cm(fila, col) -> tuple[float, float]`; `pi.mision.ejecutar_mision(ruta: str, id_tarima: str, peso_kg: float, enlace, odometria) -> dict` (`peso_kg` es el peso declarado, CC-004) con la clave `estado` ∈ {`completada`, `rechazada`, `error`}
+- Entregable: control de acercamiento al poste de destino con la posición que entrega WP-4.4 y orquestación de la misión sobre el enlace de comandos por MQTT. Sustituye al mapa 5×6, al planificador A* y a las rutas fijas (CC-014); no hay mapa: el robot gira hacia el poste y avanza hasta quedar a la distancia de depósito
+- Alcance de archivos: pi/navegacion.py, pi/mision.py
+- Interfaz: constantes `DISTANCIA_DEPOSITO_CM = 30`, `DISTANCIA_MAX_CM = 35`, `DISTANCIA_MIN_CM = 20`, `TOLERANCIA_RUMBO_GRADOS = 5`, `PWM_GIRO = 70`, `PWM_AVANCE = 80`, `MAX_PASOS = 200`; `pi.navegacion.siguiente_accion(poste: Poste | None) -> str` (`Poste` de `pi.lidar`: `distancia_cm`, `rumbo_grados`, con 0° al frente y positivo hacia la izquierda) devuelve `"PERDIDO"` si `poste` es `None`, `"DEMASIADO_CERCA"` si `distancia_cm` < `DISTANCIA_MIN_CM`, `"GIRAR_IZQ"` o `"GIRAR_DER"` si `abs(rumbo_grados)` > `TOLERANCIA_RUMBO_GRADOS`, `"LLEGO"` si `distancia_cm` ≤ `DISTANCIA_MAX_CM` y, si no, `"AVANZAR"`; `pi.navegacion.destino_cm(poste: Poste) -> tuple[float, float]` (posición del poste en el marco del robot al iniciar: x al frente, y a la izquierda); `pi.mision.ejecutar_mision(id_tarima: str, peso_kg: float, enlace, lidar, max_pasos: int = MAX_PASOS) -> dict` (`peso_kg` es el peso declarado, CC-004; `lidar` es un objeto con `escanear() -> list[tuple[float, float]]`, pares (ángulo en grados, distancia en cm); se inyecta uno falso en pruebas) con la clave `estado` ∈ {`completada`, `rechazada`, `error`}, y `codigo` (`DESTINO_NO_ENCONTRADO`, `POSTE_PERDIDO`, `DEMASIADO_CERCA`, `TIEMPO_AGOTADO`, `ENLACE`) cuando `estado` es `error`
 - Trazabilidad: REQ-F-006, REQ-F-007, REQ-F-002
 - Dependencias: WP-3.2, WP-4.2, WP-4.4
 - Criterios de aceptación:
-  - CA-4.3.1 [S]: `planificar` resuelve RUTA_1, RUTA_2 y RUTA_3 con caminos de 10, 6 y 8 celdas (incluyendo inicio y meta) sin pasar por celdas con 1 — Evidencia: tests/aceptacion/test_wp_4_3.py
-  - CA-4.3.2 [S]: una meta en obstáculo (0,3) devuelve `None`; con inicio igual a meta devuelve solo esa celda — Evidencia: tests/aceptacion/test_wp_4_3.py
-  - CA-4.3.3 [S]: `celda_a_cm(4, 5)` = (150, 120) — Evidencia: tests/aceptacion/test_wp_4_3.py
-  - CA-4.3.4 [S]: con un enlace falso, `ejecutar_mision("RUTA_1", "TAR-101", 8.45, ...)` envía `LIFT` con `peso_kg` 8.45, luego movimientos y `DROP` con las coordenadas del destino — Evidencia: tests/aceptacion/test_wp_4_3.py
+  - CA-4.3.1 [D]: `siguiente_accion` devuelve `"GIRAR_IZQ"` con el poste a +30° y 150 cm, `"GIRAR_DER"` a −30°, `"AVANZAR"` a 2° y 150 cm, `"LLEGO"` a 0° y 30 cm, y `"PERDIDO"` con `None` — Evidencia: tests/aceptacion/test_wp_4_3.py
+  - CA-4.3.2 [D] (caso límite): `siguiente_accion` devuelve `"LLEGO"` con el poste a 35 cm y a 20 cm, `"AVANZAR"` a 36 cm y `"DEMASIADO_CERCA"` a 19 cm (límites inclusivos de 20 a 35 cm) — Evidencia: tests/aceptacion/test_wp_4_3.py
+  - CA-4.3.3 [D]: `destino_cm` de un poste a 150 cm y 0° da (150, 0) y a 100 cm y 90° da (0, 100), con ±0.5 cm — Evidencia: tests/aceptacion/test_wp_4_3.py
+  - CA-4.3.4 [D]: con un enlace y un lidar falsos (poste a 120 cm y 20° que se aproxima hasta 30 cm), `ejecutar_mision("TAR-101", 8.45, ...)` escanea antes de enviar `LIFT`, envía `LIFT` con `peso_kg` 8.45, luego `MOVE` de giro (`move(-PWM_GIRO, PWM_GIRO)` para girar a la izquierda) y de avance, `STOP` y `DROP` con las coordenadas de `destino_cm` del primer escaneo, y devuelve `estado` `completada` — Evidencia: tests/aceptacion/test_wp_4_3.py
   - CA-4.3.5 [S]: si `LIFT` responde `{"resultado": "ERR", "codigo": "OVERWEIGHT"}` o con código `PESO_INVALIDO`, no se envía `MOVE` ni `DROP` y el `estado` del resultado es `rechazada` — Evidencia: tests/aceptacion/test_wp_4_3.py
-  - CA-4.3.6 [S]: si el enlace lanza `TimeoutError`, la misión se aborta con `STOP` y el `estado` del resultado es `error` — Evidencia: tests/aceptacion/test_wp_4_3.py
+  - CA-4.3.6 [S]: si el enlace lanza `TimeoutError`, la misión se aborta con `STOP` y el `estado` del resultado es `error` con `codigo` `ENLACE` — Evidencia: tests/aceptacion/test_wp_4_3.py
+  - CA-4.3.7 [D] (caso límite): si el primer escaneo no trae poste (o `escanear` lanza `LidarSinDatos`), no se envía `LIFT`, `MOVE` ni `DROP` y el resultado es `error` con `codigo` `DESTINO_NO_ENCONTRADO`; la misión no usa un destino por defecto (antes EJ-014) — Evidencia: tests/aceptacion/test_wp_4_3.py
+  - CA-4.3.8 [D]: si durante el avance el poste falta en 3 escaneos consecutivos, o `siguiente_accion` da `"DEMASIADO_CERCA"`, o se llega a `max_pasos`, se envía `STOP` y el resultado es `error` con `codigo` `POSTE_PERDIDO`, `DEMASIADO_CERCA` o `TIEMPO_AGOTADO` respectivamente, sin enviar `DROP` — Evidencia: tests/aceptacion/test_wp_4_3.py
 
-### WP-4.4 — Lectura QR
+### WP-4.4 — Localización del destino con LIDAR
 - Riesgo: medio
 - Tipo: entregable
-- Entregable: lectura de QR con Picamera2 y validación del formato `TAR-NNN`
-- Alcance de archivos: pi/qr.py, pi/camara.py, docs/pm/evidencia/hw/WP-4.4/**
-- Interfaz: `pi.qr.identificar_tarima(camara, timeout_s: float = 2.5) -> str` (lanza `TarimaNoIdentificada`); `camara` es un objeto con `capturar() -> numpy.ndarray` (se inyecta una falsa en pruebas); `pi/camara.py` implementa `capturar` con Picamera2
-- Trazabilidad: REQ-F-007
-- Dependencias: ninguna
+- Entregable: detección del poste de destino en un escaneo del RPLIDAR A1 por su ancho y lectura del sensor desde la Pi. Sustituye a la lectura QR (CC-014): la tarima ya no se identifica por QR sino por el `id_tarima` de la orden (REQ-F-007)
+- Alcance de archivos: pi/lidar.py, pi/rplidar.py, pi/qr.py (se elimina), pi/camara.py (se elimina), requirements.txt, docs/pm/evidencia/hw/WP-4.4/**
+- Interfaz: `pi.lidar.Poste` (dataclass con `distancia_cm: float` y `rumbo_grados: float`); `pi.lidar.localizar_poste(escaneo: list[tuple[float, float]], ancho_max_cm: float = 12, min_puntos: int = 2, alcance_max_cm: float = 200, distancia_min_cm: float = 15) -> Poste | None` (`escaneo` son pares (ángulo en grados, distancia en cm) con 0° al frente y positivo hacia la izquierda; agrupa puntos consecutivos separados menos de 5 cm, descarta los grupos con menos de `min_puntos` o con una cuerda mayor que `ancho_max_cm`, y entre los que quedan devuelve el más cercano); `pi.rplidar.RPLidarA1(puerto: str, driver=None).escanear(timeout_s: float = 2.0) -> list[tuple[float, float]]` (una vuelta completa, ángulo ya en el marco del robot; lanza `pi.rplidar.LidarSinDatos` si no hay vuelta en `timeout_s`; `driver` es un objeto falso en pruebas; el puerto sale de la variable de entorno `KOLEO_LIDAR_PUERTO`)
+- Trazabilidad: REQ-F-006, REQ-F-007
+- Dependencias: WP-2.4
 - Criterios de aceptación:
-  - CA-4.4.1 [S]: una imagen con QR "TAR-101" devuelve `"TAR-101"` — Evidencia: tests/aceptacion/test_wp_4_4.py
-  - CA-4.4.2 [S]: sin QR durante 2.5 s lanza `TarimaNoIdentificada` — Evidencia: tests/aceptacion/test_wp_4_4.py
-  - CA-4.4.3 [S]: un QR con contenido que no cumple `TAR-\d{3}` (por ejemplo "XYZ") lanza `TarimaNoIdentificada` — Evidencia: tests/aceptacion/test_wp_4_4.py
-  - CA-4.4.4 [S]: `pi/camara.py` usa Picamera2 y no `cv2.VideoCapture` — Evidencia: inspección de pi/camara.py
-  - CA-4.4.5 [S]: en la Pi con el Camera Module 3, TAR-101 se lee en menos de 2.5 s en 5 de 5 intentos — Evidencia: docs/pm/evidencia/hw/WP-4.4/lectura_5_de_5.md
+  - CA-4.4.1 [D]: un escaneo sintético con un poste de 6 cm de diámetro a 100 cm y 20° sobre un fondo vacío devuelve un `Poste` con `distancia_cm` 100 ± 3 y `rumbo_grados` 20 ± 2 — Evidencia: tests/aceptacion/test_wp_4_4.py
+  - CA-4.4.2 [D] (caso límite): un escaneo sin poste (solo una pared recta, vacío, o puntos sueltos de uno en uno) devuelve `None` — Evidencia: tests/aceptacion/test_wp_4_4.py
+  - CA-4.4.3 [D]: un objeto ancho a 100 cm (una tarima de frente, 18 cm, y de lado, 40 cm) no se reporta como poste — Evidencia: tests/aceptacion/test_wp_4_4.py
+  - CA-4.4.4 [D]: con una pared a 120 cm y un poste de 6 cm a 100 cm frente a ella, devuelve el poste y no la pared; con dos postes devuelve el más cercano — Evidencia: tests/aceptacion/test_wp_4_4.py
+  - CA-4.4.5 [D]: los puntos a menos de `distancia_min_cm` (el propio robot) y a más de `alcance_max_cm` se ignoran — Evidencia: tests/aceptacion/test_wp_4_4.py
+  - CA-4.4.6 [D]: `RPLidarA1.escanear` con un driver falso que entrega una vuelta devuelve sus puntos como pares (ángulo, distancia en cm), y sin vuelta dentro de `timeout_s` lanza `LidarSinDatos`; el puerto se lee de `KOLEO_LIDAR_PUERTO` y no hay valores fijos en el repositorio — Evidencia: tests/aceptacion/test_wp_4_4.py
+  - CA-4.4.7 [D]: `pi/qr.py` y `pi/camara.py` ya no existen y `requirements.txt` no incluye `opencv-python-headless` (CC-014) — Evidencia: inspección del repositorio
+  - CA-4.4.8 [D]: en la Pi con el RPLIDAR A1 y un poste a 100 cm medido con cinta, `localizar_poste` lo encuentra en 5 de 5 escaneos con `distancia_cm` 100 ± 5 — Evidencia: docs/pm/evidencia/hw/WP-4.4/poste_5_de_5.md
 
 ### WP-5.1 — Tablero: flotilla, monitoreo e indicadores
 - Riesgo: medio
@@ -314,8 +321,8 @@ Convenciones: los WP de software los ejecuta `/pm-ejecutar`. Los WP **físicos**
 - Trazabilidad: REQ-F-006, REQ-NF-001, REQ-NF-004
 - Dependencias: WP-4.3, WP-4.2, WP-6.1
 - Criterios de aceptación:
-  - CA-6.2.1 [S]: VAL-03: RUTA_1, RUTA_2 y RUTA_3 se completan sin colisión — Evidencia: docs/pm/evidencia/hw/WP-6.2/val03_ruta1.mp4, docs/pm/evidencia/hw/WP-6.2/val03_ruta2.mp4 y docs/pm/evidencia/hw/WP-6.2/val03_ruta3.mp4
-  - CA-6.2.2 [D]: VAL-04: el error final es < 10 cm medido con cinta en cada ruta — Evidencia: docs/pm/evidencia/hw/WP-6.2/val04.md
+  - CA-6.2.1 [D]: VAL-03: desde tres posiciones de inicio distintas (de frente al poste, con el poste a unos 30° a la izquierda y con el poste a unos 30° a la derecha, a 100 cm o más) el robot localiza el poste con el LIDAR y llega sin colisión (CC-014) — Evidencia: docs/pm/evidencia/hw/WP-6.2/val03_inicio1.mp4, docs/pm/evidencia/hw/WP-6.2/val03_inicio2.mp4 y docs/pm/evidencia/hw/WP-6.2/val03_inicio3.mp4
+  - CA-6.2.2 [D]: VAL-04: en cada una de las tres posiciones de inicio, la distancia final del LIDAR al poste queda entre 20 y 40 cm (30 cm ± 10 cm, OBJ-02) medida con cinta (CC-014) — Evidencia: docs/pm/evidencia/hw/WP-6.2/val04.md
   - CA-6.2.3 [S]: VAL-06: traslado de 3 min sin reinicio ni corte de energía — Evidencia: docs/pm/evidencia/hw/WP-6.2/val06.mp4
 
 ### WP-6.3 — Ensayo general y reporte

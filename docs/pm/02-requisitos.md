@@ -1,5 +1,5 @@
 # Requisitos — KOLEO
-Versión: 1.2 (G1, respuestas de Osvaldo aplicadas; CC-004)
+Versión: 1.3 (G1, respuestas de Osvaldo aplicadas; CC-004, CC-014)
 
 Requisitos de sistema. Procedencia: [D] decidido por Osvaldo (Fase 0 o G1, ver `validacion/G1/respuestas.md`), [N] Reto IoT del curso, [S] supuesto del modelo. Fuentes de lo importado: `importado/KOLEO_Documentacion_General.md` (DG), `importado/KOLEO_todo.md` (TODO), `importado/KOLEO_Metodologia_y_plan.md` (MP).
 
@@ -10,8 +10,8 @@ Requisitos de sistema. Procedencia: [D] decidido por Osvaldo (Fase 0 o G1, ver `
 | REQ-F-003 | Si el comando `LIFT` llega sin peso declarado válido (ausente, no numérico o ≤ 0), el robot no eleva y responde error; "sin peso" nunca equivale a 0 kg ni autoriza la elevación. | [D] | Crítica | Inspección de código y evidencia física |
 | REQ-F-004 | Con el robot en movimiento, un obstáculo a 15 cm o menos detiene la tracción de forma continua e independiente de la Raspberry Pi y publica el evento OBSTACULO. Si el sensor deja de dar lectura mientras el robot avanza, también se detiene. | [D] | Crítica | Evidencia física (VAL-05) |
 | REQ-F-005 | Si el ESP32 no recibe comandos durante 1 s o pierde la red con la tracción activa, detiene la tracción; si la Pi no recibe respuesta a un comando en 1 s, lo reporta como error. | [S] | Alta | Prueba de aceptación (software) y evidencia física |
-| REQ-F-006 | El robot planea con A* y ejecuta las rutas de referencia RUTA_1, RUTA_2 y RUTA_3 del mapa 5×6 (celdas de 30 cm) sin colisión. El mapa y las rutas son referencia, no criterio de evaluación. | [D] | Media | Prueba de aceptación (planificador) y evidencia física (VAL-03) |
-| REQ-F-007 | La tarima se identifica por QR; si no hay lectura válida, la misión no inicia (no se usa un ID por defecto). | [D] | Media | Prueba de aceptación y evidencia física |
+| REQ-F-006 | El robot localiza el destino con el RPLIDAR A1, que detecta un poste largo colocado en el destino por su ancho (el poste es angosto y una tarima de 18 × 40 cm no se confunde con él), gira hacia él y avanza sin colisión hasta quedar a 30 cm del poste (CC-014). No hay mapa ni rutas fijas en el robot real. Si no se detecta un poste, la misión no inicia ni se usa un destino por defecto. | [D] | Media | Prueba de aceptación (detección y control con escaneos sintéticos) y evidencia física (VAL-03) |
+| REQ-F-007 | La tarima se identifica por el `id_tarima` de la orden, registrada en el tablero con su peso (sin lectura QR, CC-014); si la tarima no existe o no tiene peso válido, la misión no inicia (no se usa un ID por defecto). | [D] | Media | Prueba de aceptación (CA-4.1.8) |
 | REQ-F-008 | Al depositar, se actualiza la tarima (estado UBICADA_DESTINO y coordenadas) y se crea una fila en `historial_movimientos` con ruta, origen, destino, peso y latencia. | [S] | Crítica | Prueba de aceptación (VAL-08) |
 | REQ-F-009 | Los mensajes MQTT (`telemetria`, `evento`, `orden`, `orden/ack`, `conexion`) y los del ESP32 (`esp32/cmd`, `resp`, `sensores`, `evento`, `conexion`) están definidos en un contrato validable, llevan `ts` en milisegundos, las órdenes y comandos llevan id con confirmación y `conexion` es retenido con testamento. | [S] | Crítica | Prueba de aceptación |
 | REQ-F-010 | Existe una sola enumeración de estados de robot y de tarima y un solo esquema SQL canónico, usados por firmware, Pi, backend y tablero. | [S] | Alta | Prueba de aceptación |
@@ -19,9 +19,9 @@ Requisitos de sistema. Procedencia: [D] decidido por Osvaldo (Fase 0 o G1, ver `
 | REQ-F-012 | El tablero muestra los módulos Flotilla y Monitoreo con al menos 5 indicadores actualizados en tiempo real (≤ 2 s tras el cambio). | [N] | Alta | Inspección con evidencia (captura/video) |
 | REQ-F-013 | Desde el tablero se pueden INICIAR, CANCELAR y PARAR misiones; cada orden tiene id, se publica por MQTT y su confirmación se refleja. | [S] | Media | Prueba de aceptación (API) e inspección (tablero) |
 | REQ-F-014 | El tablero permite registrar tarimas, consultar sus ubicaciones, asignar rutas y revisar traslados concluidos. | [S] | Media | Prueba de aceptación (API) e inspección (tablero) |
-| REQ-F-015 | Un robot simulado publica telemetría y eventos conformes al contrato para las 3 rutas, de modo que backend y tablero se prueben sin el robot físico. | [S] | Alta | Prueba de aceptación |
+| REQ-F-015 | Un robot simulado publica telemetría y eventos conformes al contrato para las 3 rutas del simulador (etiquetas de misión que el robot real ya no usa, CC-014), de modo que backend y tablero se prueben sin el robot físico. | [S] | Alta | Prueba de aceptación |
 | REQ-F-017 | Cada entrega lleva un id único (`id_evento`); todas las entregas se registran, aunque sean de la misma tarima, y un mismo `id_evento` repetido por reenvío se descarta. | [D] | Crítica | Prueba de aceptación |
-| REQ-NF-001 | Error de llegada al destino < 10 cm. | [D] | Crítica | Evidencia física (VAL-04) |
+| REQ-NF-001 | Error de llegada al destino < 10 cm: el robot queda a 30 cm ± 10 cm del poste de destino, medido con cinta (CC-014). | [D] | Crítica | Evidencia física (VAL-04) |
 | REQ-NF-002 | Elevación de la carga de demostración (100 g) en < 15 s; la capacidad de diseño sigue siendo 10 kg. | [D] | Crítica | Evidencia física (VAL-01) |
 | REQ-NF-003 | Latencia desde que la Pi envía el comando `DROP` (SUP-011, CC-004) hasta que la fila queda en la BD < 2 s, con marcas `ts` de ambos lados. | [D] | Crítica | Evidencia física (VAL-07) y prueba de aceptación (cálculo) |
 | REQ-NF-004 | Traslado sostenido de 3 min sin reinicio ni corte de energía. | [S] | Alta | Evidencia física (VAL-06) |
@@ -58,12 +58,12 @@ Se redactan para todos los requisitos funcionales (nivel Estándar). Nacen [S] s
 - EJ-010 [S] (caso límite): Dado un `MOVE` activo y la red caída o sin comandos durante más de 1 s, entonces el ESP32 detiene la tracción.
 
 ### REQ-F-006
-- EJ-011 [S]: Dado el mapa 5×6, cuando se planea RUTA_1 de (0,0) a (4,5), entonces el camino tiene 10 celdas, ninguna es obstáculo y termina en (4,5).
-- EJ-012 [S] (caso límite): Dado una meta en una celda obstáculo (0,3), cuando se planea, entonces no hay camino y la misión no inicia.
+- EJ-011 [D]: Dado un escaneo del RPLIDAR con un poste de 6 cm a 100 cm y 20° a la izquierda, cuando se localiza el destino, entonces se obtiene una distancia de 100 ± 3 cm y un rumbo de 20 ± 2°, y el robot gira a la izquierda y avanza hasta quedar a 30 cm del poste.
+- EJ-012 [D] (caso límite): Dado un escaneo sin poste (solo una pared, o un objeto de 18 o 40 cm de ancho como una tarima), cuando se localiza el destino, entonces no se encuentra poste y la misión no inicia ni usa un destino por defecto.
 
 ### REQ-F-007
-- EJ-013 [S]: Dado un QR con "TAR-101" frente a la cámara, cuando se lee dentro de 2.5 s, entonces se devuelve `TAR-101`.
-- EJ-014 [D] (caso límite): Dado ningún QR legible, cuando pasan 2.5 s, entonces la misión no inicia y no se usa el ID por defecto de la ruta.
+- EJ-013 [D]: Dado `TAR-101` registrada en el tablero con 8.45 kg, cuando llega una orden INICIAR con ese `id_tarima`, entonces `peso_declarado` devuelve 8.45 y la misión puede iniciar.
+- EJ-014 [D] (caso límite): Dado un `id_tarima` que no existe en el tablero o sin peso válido, cuando llega la orden, entonces la misión no inicia y no se usa un ID por defecto.
 
 ### REQ-F-008
 - EJ-015 [S]: Dado un evento DROP_OK de TAR-101 con peso 8.45 y destino (150, 120), cuando el backend lo procesa, entonces `tarimas` queda UBICADA_DESTINO en (150, 120) e `historial_movimientos` tiene una fila nueva.
