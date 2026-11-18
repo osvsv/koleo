@@ -1,5 +1,5 @@
 # Requisitos — KOLEO
-Versión: 1.3 (G1, respuestas de Osvaldo aplicadas; CC-004, CC-014)
+Versión: 1.4 (G1, respuestas de Osvaldo aplicadas; CC-004, CC-014, CC-019)
 
 Requisitos de sistema. Procedencia: [D] decidido por Osvaldo (Fase 0 o G1, ver `validacion/G1/respuestas.md`), [N] Reto IoT del curso, [S] supuesto del modelo. Fuentes de lo importado: `importado/KOLEO_Documentacion_General.md` (DG), `importado/KOLEO_todo.md` (TODO), `importado/KOLEO_Metodologia_y_plan.md` (MP).
 
@@ -10,7 +10,7 @@ Requisitos de sistema. Procedencia: [D] decidido por Osvaldo (Fase 0 o G1, ver `
 | REQ-F-003 | Si el comando `LIFT` llega sin peso declarado válido (ausente, no numérico o ≤ 0), el robot no eleva y responde error; "sin peso" nunca equivale a 0 kg ni autoriza la elevación. | [D] | Crítica | Inspección de código y evidencia física |
 | REQ-F-004 | Con el robot en movimiento, un obstáculo a 15 cm o menos detiene la tracción de forma continua e independiente de la Raspberry Pi y publica el evento OBSTACULO. Si el sensor deja de dar lectura mientras el robot avanza, también se detiene. | [D] | Crítica | Evidencia física (VAL-05) |
 | REQ-F-005 | Si el ESP32 no recibe comandos durante 1 s o pierde la red con la tracción activa, detiene la tracción; si la Pi no recibe respuesta a un comando en 1 s, lo reporta como error. | [S] | Alta | Prueba de aceptación (software) y evidencia física |
-| REQ-F-006 | El robot localiza el destino con el RPLIDAR A1, que detecta un poste largo colocado en el destino por su ancho (el poste es angosto y una tarima de 18 × 40 cm no se confunde con él), gira hacia él y avanza sin colisión hasta quedar a 30 cm del poste (CC-014). No hay mapa ni rutas fijas en el robot real. Si no se detecta un poste, la misión no inicia ni se usa un destino por defecto. | [D] | Media | Prueba de aceptación (detección y control con escaneos sintéticos) y evidencia física (VAL-03) |
+| REQ-F-006 | El robot localiza el destino con el RPLIDAR A1, que detecta un poste largo colocado en el destino por su ancho (el poste es angosto y una tarima de 18 × 40 cm no se confunde con él), gira hacia él y avanza sin colisión hasta quedar a 30 cm del poste (CC-014). No hay mapa ni rutas fijas en el robot real. Si no se detecta un poste, la misión no inicia ni se usa un destino por defecto. Con el mismo escaneo, el LIDAR detecta también la tarima y reporta su distancia, su rumbo y el lado con que la ve (FRENTE, cara angosta de ≈ 18 cm, o LADO, cara larga de ≈ 40 cm) (CC-019); los postes marcan los puntos de depósito (poste A y poste B) y aún no tienen medidas. | [D] | Media | Prueba de aceptación (detección y control con escaneos sintéticos) y evidencia física (VAL-03) |
 | REQ-F-007 | La tarima se identifica por el `id_tarima` de la orden, registrada en el tablero con su peso (sin lectura QR, CC-014); si la tarima no existe o no tiene peso válido, la misión no inicia (no se usa un ID por defecto). | [D] | Media | Prueba de aceptación (CA-4.1.8) |
 | REQ-F-008 | Al depositar, se actualiza la tarima (estado UBICADA_DESTINO y coordenadas) y se crea una fila en `historial_movimientos` con ruta, origen, destino, peso y latencia. | [S] | Crítica | Prueba de aceptación (VAL-08) |
 | REQ-F-009 | Los mensajes MQTT (`telemetria`, `evento`, `orden`, `orden/ack`, `conexion`) y los del ESP32 (`esp32/cmd`, `resp`, `sensores`, `evento`, `conexion`) están definidos en un contrato validable, llevan `ts` en milisegundos, las órdenes y comandos llevan id con confirmación y `conexion` es retenido con testamento. | [S] | Crítica | Prueba de aceptación |
@@ -60,6 +60,9 @@ Se redactan para todos los requisitos funcionales (nivel Estándar). Nacen [S] s
 ### REQ-F-006
 - EJ-011 [D]: Dado un escaneo del RPLIDAR con un poste de 6 cm a 100 cm y 20° a la izquierda, cuando se localiza el destino, entonces se obtiene una distancia de 100 ± 3 cm y un rumbo de 20 ± 2°, y el robot gira a la izquierda y avanza hasta quedar a 30 cm del poste.
 - EJ-012 [D] (caso límite): Dado un escaneo sin poste (solo una pared, o un objeto de 18 o 40 cm de ancho como una tarima), cuando se localiza el destino, entonces no se encuentra poste y la misión no inicia ni usa un destino por defecto.
+
+- EJ-035 [D]: Dado un escaneo del RPLIDAR con una tarima de 18 cm de frente a 100 cm y 20° a la izquierda, cuando se localiza la tarima, entonces se obtiene una distancia de 100 ± 3 cm, un rumbo de 20 ± 2° y el lado FRENTE; con la tarima de lado (40 cm) el lado es LADO (CC-019).
+- EJ-036 [D] (caso límite): Dado un escaneo sin tarima (solo una pared o solo un poste de 6 cm), cuando se localiza la tarima, entonces no se encuentra y devuelve `None`; con tarima y poste en la misma escena, cada detección devuelve el suyo (CC-019).
 
 ### REQ-F-007
 - EJ-013 [D]: Dado `TAR-101` registrada en el tablero con 8.45 kg, cuando llega una orden INICIAR con ese `id_tarima`, entonces `peso_declarado` devuelve 8.45 y la misión puede iniciar.

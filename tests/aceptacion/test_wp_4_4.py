@@ -1,9 +1,10 @@
-"""WP-4.4 — Localización del destino con LIDAR (CA-4.4.1 a CA-4.4.7, CC-014).
+"""WP-4.4 — Localización del destino con LIDAR (CA-4.4.1 a CA-4.4.12, CC-014, CC-019).
 
 Los escaneos son sintéticos (resolución de 1°, 0° al frente y positivo a la izquierda) y se generan
 con trigonometría: un poste de 6 cm, una pared recta, y una tarima de 18 cm (de frente) y 40 cm
 (de lado). CA-4.4.8 es física (Pi con el RPLIDAR A1) y no tiene prueba aquí.
 CA-4.4.7 es de inspección del repositorio.
+CA-4.4.9 a CA-4.4.12 (CC-019, EJ-035 y EJ-036) cubren `localizar_tarima` y `Tarima`.
 """
 import math
 import re
@@ -228,3 +229,92 @@ def test_ca_4_4_7_requirements_sin_opencv():
     requisitos = RAIZ / "requirements.txt"
     assert requisitos.exists()
     assert "opencv" not in requisitos.read_text(encoding="utf-8").lower()
+
+
+# --------------------------------------------------------------------------- CA-4.4.9 a CA-4.4.12 (CC-019)
+def _tarima(distancia_cm, rumbo_grados, lado):
+    """Tarima vista por el LIDAR: cara plana de 18 cm (FRENTE) o de 40 cm (LADO) a `rumbo_grados`."""
+    return _cara_plana(distancia_cm, 18 if lado == "FRENTE" else 40, rumbo_grados)
+
+
+def test_ca_4_4_9_tarima_de_frente_a_100_cm_y_20_grados():
+    """CA-4.4.9 / EJ-035: tarima de 18 cm de frente a 100 cm y 20° sobre fondo vacío."""
+    from pi.lidar import Tarima, localizar_tarima
+    tarima = localizar_tarima(_escaneo(_tarima(100, 20, "FRENTE")))
+    assert isinstance(tarima, Tarima)
+    assert tarima.distancia_cm == pytest.approx(100, abs=3)
+    assert tarima.rumbo_grados == pytest.approx(20, abs=2)
+    assert tarima.lado == "FRENTE"
+
+
+def test_ca_4_4_10_tarima_de_lado_a_100_cm_y_menos_30_grados():
+    """CA-4.4.10 / EJ-035: tarima de 40 cm de lado a 100 cm y -30°."""
+    from pi.lidar import localizar_tarima
+    tarima = localizar_tarima(_escaneo(_tarima(100, -30, "LADO")))
+    assert tarima is not None
+    assert tarima.lado == "LADO"
+    assert tarima.distancia_cm == pytest.approx(100, abs=3)
+    assert tarima.rumbo_grados == pytest.approx(-30, abs=2)
+
+
+@pytest.mark.parametrize("escena", ["vacio", "pared", "poste"])
+def test_ca_4_4_11_sin_tarima_devuelve_none(escena):
+    """CA-4.4.11 / EJ-036: escaneo vacío, solo una pared recta o solo un poste de 6 cm."""
+    from pi.lidar import localizar_tarima
+    escaneo = {"vacio": [], "pared": _escaneo(_pared(120)), "poste": _escaneo(_poste(100, 20))}[escena]
+    assert localizar_tarima(escaneo) is None
+
+
+def test_ca_4_4_11_tarima_y_poste_en_la_misma_escena_cada_detector_devuelve_el_suyo():
+    """CA-4.4.11 / EJ-036: tarima a 150 cm y -30°, poste a 100 cm y 20° (el poste es el más cercano)."""
+    from pi.lidar import localizar_poste, localizar_tarima
+    escaneo = _escaneo(_tarima(150, -30, "FRENTE"), _poste(100, 20))
+    tarima = localizar_tarima(escaneo)
+    assert tarima is not None
+    assert tarima.distancia_cm == pytest.approx(150, abs=3)
+    assert tarima.rumbo_grados == pytest.approx(-30, abs=2)
+    assert tarima.lado == "FRENTE"
+    poste = localizar_poste(escaneo)
+    assert poste is not None
+    assert poste.distancia_cm == pytest.approx(100, abs=3)
+    assert poste.rumbo_grados == pytest.approx(20, abs=2)
+
+
+def test_ca_4_4_12_con_dos_tarimas_devuelve_la_mas_cercana():
+    """CA-4.4.12 / EJ-035: tarimas a 150 cm y -30° y a 100 cm y 20°."""
+    from pi.lidar import localizar_tarima
+    tarima = localizar_tarima(_escaneo(_tarima(150, -30, "FRENTE"), _tarima(100, 20, "FRENTE")))
+    assert tarima is not None
+    assert tarima.distancia_cm == pytest.approx(100, abs=3)
+    assert tarima.rumbo_grados == pytest.approx(20, abs=2)
+
+
+def test_ca_4_4_12_puntos_a_menos_de_distancia_min_se_ignoran():
+    """CA-4.4.12 / EJ-035: grupo del tamaño de una tarima a 10 cm (el propio robot) no cuenta."""
+    from pi.lidar import localizar_tarima
+    cuerpo = [(float(a), round(r, 2)) for a, r in sorted(_cara_plana(10, 18).items())]
+    assert localizar_tarima(cuerpo) is None
+
+
+def test_ca_4_4_12_el_robot_no_tapa_a_la_tarima_real():
+    """CA-4.4.12 / EJ-035: con la tarima a 100 cm y puntos del robot a 10 cm, devuelve la tarima."""
+    from pi.lidar import localizar_tarima
+    cuerpo = [(float(a), round(r, 2)) for a, r in sorted(_cara_plana(10, 18, -60).items())]
+    tarima = localizar_tarima(_escaneo(_tarima(100, 20, "FRENTE")) + cuerpo)
+    assert tarima is not None
+    assert tarima.distancia_cm == pytest.approx(100, abs=3)
+    assert tarima.rumbo_grados == pytest.approx(20, abs=2)
+
+
+def test_ca_4_4_12_puntos_a_mas_de_alcance_max_se_ignoran():
+    """CA-4.4.12 / EJ-035: grupo del tamaño de una tarima a 250 cm (más allá de 200 cm) no cuenta."""
+    from pi.lidar import localizar_tarima
+    assert localizar_tarima(_escaneo(_tarima(250, 0, "FRENTE"))) is None
+
+
+def test_ca_4_4_12_la_tarima_lejana_no_tapa_a_la_tarima_real():
+    """CA-4.4.12 / EJ-035: tarima real a 150 cm y otra a 250 cm."""
+    from pi.lidar import localizar_tarima
+    tarima = localizar_tarima(_escaneo(_tarima(150, 0, "FRENTE"), _tarima(250, -60, "FRENTE")))
+    assert tarima is not None
+    assert tarima.distancia_cm == pytest.approx(150, abs=3)

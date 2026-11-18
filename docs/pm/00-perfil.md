@@ -1,5 +1,5 @@
 # Perfil del proyecto — KOLEO
-Versión: 1.3 (G1, respuestas de Osvaldo aplicadas; CC-009, CC-014)
+Versión: 1.4 (G1, respuestas de Osvaldo aplicadas; CC-009, CC-014, CC-019)
 
 ## Contexto (seis dimensiones)
 
@@ -91,7 +91,7 @@ IDs definitivos de `03-wbs.md` (la tabla del borrador aprobado en G0 usaba IDs p
 | DP-08 | No se segmenta el proyecto | [S] | Propuesta de /pm-planificar; se confirma en G1 |
 | DP-09 | Claude Code corre en la Raspberry Pi del robot. Las personas montan y energizan (WP-2.1, 2.2, 2.3); el agente ejecuta desde la Pi los WP-2.4, 6.1, 6.2 y 6.3 (comandos, mediciones y logs) con una persona presente y el STOP por software a mano. La evidencia que exige cámara, multímetro o cinta (fotos, videos, medidas) la sigue aportando una persona; todo queda en `evidencia/hw/` y lo audita el agente | [D] | Osvaldo, CC-009, 2026-11-17 (antes [S], propuesta de /pm-planificar) |
 | DP-10 | Seguridad eléctrica: reincorporar un fusible de 10 A en la línea de batería y mantener sin paro de emergencia físico (se usa desconectar el conector T y el STOP por software) | [S] | Propuesta de /pm-planificar; Osvaldo delegó la decisión el 2026-11-11 y desconoce la decisión del 11-nov del equipo (`KOLEO_todo.md` §6). Revertirla contradice al equipo: confirmar en G1 |
-| DP-11 | Sensor de paro: solo HC-SR04 (lo lee el ESP32 directo). El RPLIDAR A1 entra como sensor de localización del destino (un poste largo, detectado por su ancho), conectado por USB a la Pi y sin hacer de sensor de paro; no hay mapa, SLAM ni A*. Google Coral queda fuera del alcance. La tarima se identifica por el `id_tarima` de la orden, sin QR | [D] | Osvaldo, CC-014, 2026-11-18 (antes G1 V-07: RPLIDAR fuera) |
+| DP-11 | Sensor de paro: solo HC-SR04 (lo lee el ESP32 directo). El RPLIDAR A1 entra como sensor de localización del destino (los postes de depósito, detectados por su ancho, y la tarima con el lado con que la ve, CC-019), conectado por USB a la Pi y sin hacer de sensor de paro; no hay mapa, SLAM ni A*. Google Coral queda fuera del alcance. La tarima se identifica por el `id_tarima` de la orden, sin QR | [D] | Osvaldo, CC-014 y CC-019, 2026-11-18 (antes G1 V-07: RPLIDAR fuera) |
 | DP-12 | Los cierres de incremento son puntos internos sin fecha comprometida; solo la entrega final (tentativa 2-dic) tiene fecha | [D] | Osvaldo, G1 V-19, 2026-11-11 |
 | DP-13 | Se acepta reportar la medición real si una meta no se alcanza (en vez de demostrar algo que falla) | [S] | `KOLEO_Metodologia_y_plan.md` (propuesta); confirmar en G1 |
 | DP-14 | Sin cable de datos entre ESP32 y Pi: ambos se conectan a la red; el ESP32 publica sensores y eventos y recibe comandos por MQTT, y la Pi los consolida en los temas del contrato | [D] | Osvaldo, G1 V-06, 2026-11-11 |
