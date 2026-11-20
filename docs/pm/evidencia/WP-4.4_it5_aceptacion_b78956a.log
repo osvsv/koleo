@@ -1,0 +1,966 @@
+Comando: .venv\Scripts\python.exe -m pytest tests/aceptacion -q
+Commit: b78956a7c6bba10fdc70c32824564ca6dd8fa08c
+Fecha: 2026-11-20T10:00:56
+Árbol limpio: no
+Código de salida: 1
+============================================================
+STDOUT
+........................................................................ [ 37%]
+.........FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF.............. [ 75%]
+...............................................                          [100%]
+================================== FAILURES ===================================
+_______ test_ca_4_1_1_obstaculo_sobrepeso_y_lift_ok_son_eventos_validos _______
+
+    def test_ca_4_1_1_obstaculo_sobrepeso_y_lift_ok_son_eventos_validos():
+        """CA-4.1.1"""
+        entradas = [
+            ("esp32/evento", {"ts": TS, "codigo": "OBSTACULO_CERCANO"}, TS + 1, "OBSTACULO"),
+            ("esp32/evento", {"ts": TS + 5, "codigo": "OVERWEIGHT", "id_tarima": "TAR-101",
+                              "peso_kg": 11.8}, TS + 6, "SOBREPESO"),
+            ("esp32/resp", {"ts": TS + 9, "id_cmd": "CMD-9", "resultado": "ACK", "codigo": "LIFT_OK"}, TS + 10, "LIFT_OK"),
+        ]
+        ids = []
+        for topic, payload, ts_ms, tipo in entradas:
+            assert not errores(def_de_tema(PREFIJO + topic), payload), "entrada fuera de contrato"
+>           salida = _consolidar(topic, payload, ts_ms)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\aceptacion\test_wp_4_1.py:45: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+topic = 'esp32/evento'
+payload = {'ts': 1700000000000, 'codigo': 'OBSTACULO_CERCANO'}
+ts_ms = 1700000000001
+
+    def _consolidar(topic, payload, ts_ms):
+>       from pi.puente_mqtt import consolidar_esp32
+E       ModuleNotFoundError: No module named 'pi.puente_mqtt'
+
+tests\aceptacion\test_wp_4_1.py:20: ModuleNotFoundError
+______________ test_ca_4_1_1_sensores_produce_telemetria_valida _______________
+
+    def test_ca_4_1_1_sensores_produce_telemetria_valida():
+        """CA-4.1.1"""
+        payload = {"ts": TS, "distancia_obstaculo_cm": 40.0, "enc_izq": 100, "enc_der": 100}
+        assert not errores("esp32_sensores", payload)
+>       salida = _consolidar("esp32/sensores", payload, TS + 2)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\aceptacion\test_wp_4_1.py:57: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+topic = 'esp32/sensores'
+payload = {'ts': 1700000000000, 'distancia_obstaculo_cm': 40.0, 'enc_izq': 100, 'enc_der': 100}
+ts_ms = 1700000000002
+
+    def _consolidar(topic, payload, ts_ms):
+>       from pi.puente_mqtt import consolidar_esp32
+E       ModuleNotFoundError: No module named 'pi.puente_mqtt'
+
+tests\aceptacion\test_wp_4_1.py:20: ModuleNotFoundError
+______________ test_ca_4_1_7_drop_ok_usa_ts_drop_ms_del_contexto ______________
+
+    def test_ca_4_1_7_drop_ok_usa_ts_drop_ms_del_contexto():
+        """CA-4.1.7 [D] (CC-004): el ts del evento DROP_OK es contexto['ts_drop_ms']."""
+>       from pi.puente_mqtt import consolidar_esp32
+E       ModuleNotFoundError: No module named 'pi.puente_mqtt'
+
+tests\aceptacion\test_wp_4_1.py:66: ModuleNotFoundError
+___________ test_ca_4_1_8_peso_declarado_devuelve_peso_de_la_tarima ___________
+
+    def test_ca_4_1_8_peso_declarado_devuelve_peso_de_la_tarima():
+        """CA-4.1.8"""
+>       from pi.ordenes import peso_declarado
+E       ModuleNotFoundError: No module named 'pi.ordenes'
+
+tests\aceptacion\test_wp_4_1.py:101: ModuleNotFoundError
+______ test_ca_4_1_8_tarima_inexistente_o_sin_peso_valido_lanza[TAR-999] ______
+
+id_tarima = 'TAR-999'
+
+    @pytest.mark.parametrize("id_tarima", ["TAR-999", "TAR-102", "TAR-103", "TAR-104"])
+    def test_ca_4_1_8_tarima_inexistente_o_sin_peso_valido_lanza(id_tarima):
+        """CA-4.1.8: inexistente, sin peso, cero o negativo."""
+>       from pi.ordenes import PesoNoDeclarado, peso_declarado
+E       ModuleNotFoundError: No module named 'pi.ordenes'
+
+tests\aceptacion\test_wp_4_1.py:108: ModuleNotFoundError
+______ test_ca_4_1_8_tarima_inexistente_o_sin_peso_valido_lanza[TAR-102] ______
+
+id_tarima = 'TAR-102'
+
+    @pytest.mark.parametrize("id_tarima", ["TAR-999", "TAR-102", "TAR-103", "TAR-104"])
+    def test_ca_4_1_8_tarima_inexistente_o_sin_peso_valido_lanza(id_tarima):
+        """CA-4.1.8: inexistente, sin peso, cero o negativo."""
+>       from pi.ordenes import PesoNoDeclarado, peso_declarado
+E       ModuleNotFoundError: No module named 'pi.ordenes'
+
+tests\aceptacion\test_wp_4_1.py:108: ModuleNotFoundError
+______ test_ca_4_1_8_tarima_inexistente_o_sin_peso_valido_lanza[TAR-103] ______
+
+id_tarima = 'TAR-103'
+
+    @pytest.mark.parametrize("id_tarima", ["TAR-999", "TAR-102", "TAR-103", "TAR-104"])
+    def test_ca_4_1_8_tarima_inexistente_o_sin_peso_valido_lanza(id_tarima):
+        """CA-4.1.8: inexistente, sin peso, cero o negativo."""
+>       from pi.ordenes import PesoNoDeclarado, peso_declarado
+E       ModuleNotFoundError: No module named 'pi.ordenes'
+
+tests\aceptacion\test_wp_4_1.py:108: ModuleNotFoundError
+______ test_ca_4_1_8_tarima_inexistente_o_sin_peso_valido_lanza[TAR-104] ______
+
+id_tarima = 'TAR-104'
+
+    @pytest.mark.parametrize("id_tarima", ["TAR-999", "TAR-102", "TAR-103", "TAR-104"])
+    def test_ca_4_1_8_tarima_inexistente_o_sin_peso_valido_lanza(id_tarima):
+        """CA-4.1.8: inexistente, sin peso, cero o negativo."""
+>       from pi.ordenes import PesoNoDeclarado, peso_declarado
+E       ModuleNotFoundError: No module named 'pi.ordenes'
+
+tests\aceptacion\test_wp_4_1.py:108: ModuleNotFoundError
+_____________ test_ca_4_1_2_iniciar_con_robot_inactivo_se_acepta ______________
+
+    def test_ca_4_1_2_iniciar_con_robot_inactivo_se_acepta():
+        """CA-4.1.2"""
+>       ack = _procesar(_orden(), "INACTIVO", set())
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\aceptacion\test_wp_4_1.py:127: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+payload = {'ts': 1700000000000, 'id_orden': 'ORD-1', 'tipo': 'INICIAR', 'ruta': 'RUTA_1', ...}
+estado = 'INACTIVO', vistas = set()
+
+    def _procesar(payload, estado, vistas):
+>       from pi.ordenes import procesar_orden
+E       ModuleNotFoundError: No module named 'pi.ordenes'
+
+tests\aceptacion\test_wp_4_1.py:121: ModuleNotFoundError
+____________ test_ca_4_1_2_id_orden_repetido_produce_el_mismo_ack _____________
+
+    def test_ca_4_1_2_id_orden_repetido_produce_el_mismo_ack():
+        """CA-4.1.2: la repetición no se reevalúa (mismo ack)."""
+        vistas = set()
+>       primero = _procesar(_orden(), "INACTIVO", vistas)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\aceptacion\test_wp_4_1.py:136: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+payload = {'ts': 1700000000000, 'id_orden': 'ORD-1', 'tipo': 'INICIAR', 'ruta': 'RUTA_1', ...}
+estado = 'INACTIVO', vistas = set()
+
+    def _procesar(payload, estado, vistas):
+>       from pi.ordenes import procesar_orden
+E       ModuleNotFoundError: No module named 'pi.ordenes'
+
+tests\aceptacion\test_wp_4_1.py:121: ModuleNotFoundError
+_________________ test_ca_4_1_3_iniciar_en_mision_se_rechaza __________________
+
+    def test_ca_4_1_3_iniciar_en_mision_se_rechaza():
+        """CA-4.1.3"""
+>       ack = _procesar(_orden(id_orden="ORD-2"), "EN_MISION", set())
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\aceptacion\test_wp_4_1.py:144: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+payload = {'ts': 1700000000000, 'id_orden': 'ORD-2', 'tipo': 'INICIAR', 'ruta': 'RUTA_1', ...}
+estado = 'EN_MISION', vistas = set()
+
+    def _procesar(payload, estado, vistas):
+>       from pi.ordenes import procesar_orden
+E       ModuleNotFoundError: No module named 'pi.ordenes'
+
+tests\aceptacion\test_wp_4_1.py:121: ModuleNotFoundError
+_________ test_ca_4_1_3_paro_se_acepta_en_cualquier_estado[INACTIVO] __________
+
+estado = 'INACTIVO'
+
+    @pytest.mark.parametrize("estado", ESTADOS_ROBOT)
+    def test_ca_4_1_3_paro_se_acepta_en_cualquier_estado(estado):
+        """CA-4.1.3"""
+>       ack = _procesar(_orden("PARO", id_orden="ORD-P"), estado, set())
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\aceptacion\test_wp_4_1.py:153: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+payload = {'ts': 1700000000000, 'id_orden': 'ORD-P', 'tipo': 'PARO'}
+estado = 'INACTIVO', vistas = set()
+
+    def _procesar(payload, estado, vistas):
+>       from pi.ordenes import procesar_orden
+E       ModuleNotFoundError: No module named 'pi.ordenes'
+
+tests\aceptacion\test_wp_4_1.py:121: ModuleNotFoundError
+_________ test_ca_4_1_3_paro_se_acepta_en_cualquier_estado[EN_MISION] _________
+
+estado = 'EN_MISION'
+
+    @pytest.mark.parametrize("estado", ESTADOS_ROBOT)
+    def test_ca_4_1_3_paro_se_acepta_en_cualquier_estado(estado):
+        """CA-4.1.3"""
+>       ack = _procesar(_orden("PARO", id_orden="ORD-P"), estado, set())
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\aceptacion\test_wp_4_1.py:153: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+payload = {'ts': 1700000000000, 'id_orden': 'ORD-P', 'tipo': 'PARO'}
+estado = 'EN_MISION', vistas = set()
+
+    def _procesar(payload, estado, vistas):
+>       from pi.ordenes import procesar_orden
+E       ModuleNotFoundError: No module named 'pi.ordenes'
+
+tests\aceptacion\test_wp_4_1.py:121: ModuleNotFoundError
+_________ test_ca_4_1_3_paro_se_acepta_en_cualquier_estado[ELEVANDO] __________
+
+estado = 'ELEVANDO'
+
+    @pytest.mark.parametrize("estado", ESTADOS_ROBOT)
+    def test_ca_4_1_3_paro_se_acepta_en_cualquier_estado(estado):
+        """CA-4.1.3"""
+>       ack = _procesar(_orden("PARO", id_orden="ORD-P"), estado, set())
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\aceptacion\test_wp_4_1.py:153: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+payload = {'ts': 1700000000000, 'id_orden': 'ORD-P', 'tipo': 'PARO'}
+estado = 'ELEVANDO', vistas = set()
+
+    def _procesar(payload, estado, vistas):
+>       from pi.ordenes import procesar_orden
+E       ModuleNotFoundError: No module named 'pi.ordenes'
+
+tests\aceptacion\test_wp_4_1.py:121: ModuleNotFoundError
+__________ test_ca_4_1_3_paro_se_acepta_en_cualquier_estado[EN_RUTA] __________
+
+estado = 'EN_RUTA'
+
+    @pytest.mark.parametrize("estado", ESTADOS_ROBOT)
+    def test_ca_4_1_3_paro_se_acepta_en_cualquier_estado(estado):
+        """CA-4.1.3"""
+>       ack = _procesar(_orden("PARO", id_orden="ORD-P"), estado, set())
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\aceptacion\test_wp_4_1.py:153: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+payload = {'ts': 1700000000000, 'id_orden': 'ORD-P', 'tipo': 'PARO'}
+estado = 'EN_RUTA', vistas = set()
+
+    def _procesar(payload, estado, vistas):
+>       from pi.ordenes import procesar_orden
+E       ModuleNotFoundError: No module named 'pi.ordenes'
+
+tests\aceptacion\test_wp_4_1.py:121: ModuleNotFoundError
+________ test_ca_4_1_3_paro_se_acepta_en_cualquier_estado[DEPOSITANDO] ________
+
+estado = 'DEPOSITANDO'
+
+    @pytest.mark.parametrize("estado", ESTADOS_ROBOT)
+    def test_ca_4_1_3_paro_se_acepta_en_cualquier_estado(estado):
+        """CA-4.1.3"""
+>       ack = _procesar(_orden("PARO", id_orden="ORD-P"), estado, set())
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\aceptacion\test_wp_4_1.py:153: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+payload = {'ts': 1700000000000, 'id_orden': 'ORD-P', 'tipo': 'PARO'}
+estado = 'DEPOSITANDO', vistas = set()
+
+    def _procesar(payload, estado, vistas):
+>       from pi.ordenes import procesar_orden
+E       ModuleNotFoundError: No module named 'pi.ordenes'
+
+tests\aceptacion\test_wp_4_1.py:121: ModuleNotFoundError
+____ test_ca_4_1_3_paro_se_acepta_en_cualquier_estado[DETENIDO_OBSTACULO] _____
+
+estado = 'DETENIDO_OBSTACULO'
+
+    @pytest.mark.parametrize("estado", ESTADOS_ROBOT)
+    def test_ca_4_1_3_paro_se_acepta_en_cualquier_estado(estado):
+        """CA-4.1.3"""
+>       ack = _procesar(_orden("PARO", id_orden="ORD-P"), estado, set())
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\aceptacion\test_wp_4_1.py:153: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+payload = {'ts': 1700000000000, 'id_orden': 'ORD-P', 'tipo': 'PARO'}
+estado = 'DETENIDO_OBSTACULO', vistas = set()
+
+    def _procesar(payload, estado, vistas):
+>       from pi.ordenes import procesar_orden
+E       ModuleNotFoundError: No module named 'pi.ordenes'
+
+tests\aceptacion\test_wp_4_1.py:121: ModuleNotFoundError
+___________ test_ca_4_1_3_paro_se_acepta_en_cualquier_estado[ERROR] ___________
+
+estado = 'ERROR'
+
+    @pytest.mark.parametrize("estado", ESTADOS_ROBOT)
+    def test_ca_4_1_3_paro_se_acepta_en_cualquier_estado(estado):
+        """CA-4.1.3"""
+>       ack = _procesar(_orden("PARO", id_orden="ORD-P"), estado, set())
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\aceptacion\test_wp_4_1.py:153: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+payload = {'ts': 1700000000000, 'id_orden': 'ORD-P', 'tipo': 'PARO'}
+estado = 'ERROR', vistas = set()
+
+    def _procesar(payload, estado, vistas):
+>       from pi.ordenes import procesar_orden
+E       ModuleNotFoundError: No module named 'pi.ordenes'
+
+tests\aceptacion\test_wp_4_1.py:121: ModuleNotFoundError
+__________________ test_ca_4_2_1_una_vuelta_es_pi_por_6_5_cm __________________
+
+    def test_ca_4_2_1_una_vuelta_es_pi_por_6_5_cm():
+        """CA-4.2.1"""
+>       od = _od()
+             ^^^^^
+
+tests\aceptacion\test_wp_4_2.py:14: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+    def _od():
+>       from pi import odometria
+E       ImportError: cannot import name 'odometria' from 'pi' (C:\Users\osval\koleo\pi\__init__.py)
+
+tests\aceptacion\test_wp_4_2.py:8: ImportError
+_______________________ test_ca_4_2_2_ida_y_vuelta[100] _______________________
+
+n = 100
+
+    @pytest.mark.parametrize("n", [100, 515, 1000])
+    def test_ca_4_2_2_ida_y_vuelta(n):
+        """CA-4.2.2"""
+>       od = _od()
+             ^^^^^
+
+tests\aceptacion\test_wp_4_2.py:23: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+    def _od():
+>       from pi import odometria
+E       ImportError: cannot import name 'odometria' from 'pi' (C:\Users\osval\koleo\pi\__init__.py)
+
+tests\aceptacion\test_wp_4_2.py:8: ImportError
+_______________________ test_ca_4_2_2_ida_y_vuelta[515] _______________________
+
+n = 515
+
+    @pytest.mark.parametrize("n", [100, 515, 1000])
+    def test_ca_4_2_2_ida_y_vuelta(n):
+        """CA-4.2.2"""
+>       od = _od()
+             ^^^^^
+
+tests\aceptacion\test_wp_4_2.py:23: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+    def _od():
+>       from pi import odometria
+E       ImportError: cannot import name 'odometria' from 'pi' (C:\Users\osval\koleo\pi\__init__.py)
+
+tests\aceptacion\test_wp_4_2.py:8: ImportError
+______________________ test_ca_4_2_2_ida_y_vuelta[1000] _______________________
+
+n = 1000
+
+    @pytest.mark.parametrize("n", [100, 515, 1000])
+    def test_ca_4_2_2_ida_y_vuelta(n):
+        """CA-4.2.2"""
+>       od = _od()
+             ^^^^^
+
+tests\aceptacion\test_wp_4_2.py:23: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+    def _od():
+>       from pi import odometria
+E       ImportError: cannot import name 'odometria' from 'pi' (C:\Users\osval\koleo\pi\__init__.py)
+
+tests\aceptacion\test_wp_4_2.py:8: ImportError
+_____________________ test_ca_4_2_2_30_cm_son_757_pulsos ______________________
+
+    def test_ca_4_2_2_30_cm_son_757_pulsos():
+        """CA-4.2.2"""
+>       assert _od().cm_a_pulsos(30) == pytest.approx(757, abs=1)
+               ^^^^^
+
+tests\aceptacion\test_wp_4_2.py:29: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+    def _od():
+>       from pi import odometria
+E       ImportError: cannot import name 'odometria' from 'pi' (C:\Users\osval\koleo\pi\__init__.py)
+
+tests\aceptacion\test_wp_4_2.py:8: ImportError
+____________ test_ca_4_2_3_pulsos_negativos_distancia_negativa[-1] ____________
+
+pulsos = -1
+
+    @pytest.mark.parametrize("pulsos", [-1, -515, -1000])
+    def test_ca_4_2_3_pulsos_negativos_distancia_negativa(pulsos):
+        """CA-4.2.3"""
+>       od = _od()
+             ^^^^^
+
+tests\aceptacion\test_wp_4_2.py:35: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+    def _od():
+>       from pi import odometria
+E       ImportError: cannot import name 'odometria' from 'pi' (C:\Users\osval\koleo\pi\__init__.py)
+
+tests\aceptacion\test_wp_4_2.py:8: ImportError
+___________ test_ca_4_2_3_pulsos_negativos_distancia_negativa[-515] ___________
+
+pulsos = -515
+
+    @pytest.mark.parametrize("pulsos", [-1, -515, -1000])
+    def test_ca_4_2_3_pulsos_negativos_distancia_negativa(pulsos):
+        """CA-4.2.3"""
+>       od = _od()
+             ^^^^^
+
+tests\aceptacion\test_wp_4_2.py:35: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+    def _od():
+>       from pi import odometria
+E       ImportError: cannot import name 'odometria' from 'pi' (C:\Users\osval\koleo\pi\__init__.py)
+
+tests\aceptacion\test_wp_4_2.py:8: ImportError
+__________ test_ca_4_2_3_pulsos_negativos_distancia_negativa[-1000] ___________
+
+pulsos = -1000
+
+    @pytest.mark.parametrize("pulsos", [-1, -515, -1000])
+    def test_ca_4_2_3_pulsos_negativos_distancia_negativa(pulsos):
+        """CA-4.2.3"""
+>       od = _od()
+             ^^^^^
+
+tests\aceptacion\test_wp_4_2.py:35: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+    def _od():
+>       from pi import odometria
+E       ImportError: cannot import name 'odometria' from 'pi' (C:\Users\osval\koleo\pi\__init__.py)
+
+tests\aceptacion\test_wp_4_2.py:8: ImportError
+__________________________ test_interfaz_constantes ___________________________
+
+    def test_interfaz_constantes():
+        """Constantes de la interfaz de WP-4.3 (valores exactos de la WBS)."""
+        esperadas = {
+            "DISTANCIA_DEPOSITO_CM": 30, "DISTANCIA_MAX_CM": 35, "DISTANCIA_MIN_CM": 20,
+            "TOLERANCIA_RUMBO_GRADOS": 5, "PWM_GIRO": 70, "PWM_AVANCE": 80, "MAX_PASOS": 200,
+        }
+        for nombre, valor in esperadas.items():
+>           assert _const(nombre) == valor, nombre
+                   ^^^^^^^^^^^^^^
+
+tests\aceptacion\test_wp_4_3.py:154: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+nombre = 'DISTANCIA_DEPOSITO_CM'
+
+    def _const(nombre):
+>       import pi.mision
+E       ModuleNotFoundError: No module named 'pi.mision'
+
+tests\aceptacion\test_wp_4_3.py:138: ModuleNotFoundError
+______________ test_ca_4_3_1_siguiente_accion[150-30-GIRAR_IZQ] _______________
+
+distancia = 150, rumbo = 30, esperada = 'GIRAR_IZQ'
+
+    @pytest.mark.parametrize("distancia,rumbo,esperada", [
+        (150, 30, "GIRAR_IZQ"),
+        (150, -30, "GIRAR_DER"),
+        (150, 2, "AVANZAR"),
+        (30, 0, "LLEGO"),
+    ])
+    def test_ca_4_3_1_siguiente_accion(distancia, rumbo, esperada):
+        """CA-4.3.1"""
+        from pi.lidar import Poste
+>       from pi.navegacion import siguiente_accion
+E       ModuleNotFoundError: No module named 'pi.navegacion'
+
+tests\aceptacion\test_wp_4_3.py:168: ModuleNotFoundError
+______________ test_ca_4_3_1_siguiente_accion[150--30-GIRAR_DER] ______________
+
+distancia = 150, rumbo = -30, esperada = 'GIRAR_DER'
+
+    @pytest.mark.parametrize("distancia,rumbo,esperada", [
+        (150, 30, "GIRAR_IZQ"),
+        (150, -30, "GIRAR_DER"),
+        (150, 2, "AVANZAR"),
+        (30, 0, "LLEGO"),
+    ])
+    def test_ca_4_3_1_siguiente_accion(distancia, rumbo, esperada):
+        """CA-4.3.1"""
+        from pi.lidar import Poste
+>       from pi.navegacion import siguiente_accion
+E       ModuleNotFoundError: No module named 'pi.navegacion'
+
+tests\aceptacion\test_wp_4_3.py:168: ModuleNotFoundError
+________________ test_ca_4_3_1_siguiente_accion[150-2-AVANZAR] ________________
+
+distancia = 150, rumbo = 2, esperada = 'AVANZAR'
+
+    @pytest.mark.parametrize("distancia,rumbo,esperada", [
+        (150, 30, "GIRAR_IZQ"),
+        (150, -30, "GIRAR_DER"),
+        (150, 2, "AVANZAR"),
+        (30, 0, "LLEGO"),
+    ])
+    def test_ca_4_3_1_siguiente_accion(distancia, rumbo, esperada):
+        """CA-4.3.1"""
+        from pi.lidar import Poste
+>       from pi.navegacion import siguiente_accion
+E       ModuleNotFoundError: No module named 'pi.navegacion'
+
+tests\aceptacion\test_wp_4_3.py:168: ModuleNotFoundError
+_________________ test_ca_4_3_1_siguiente_accion[30-0-LLEGO] __________________
+
+distancia = 30, rumbo = 0, esperada = 'LLEGO'
+
+    @pytest.mark.parametrize("distancia,rumbo,esperada", [
+        (150, 30, "GIRAR_IZQ"),
+        (150, -30, "GIRAR_DER"),
+        (150, 2, "AVANZAR"),
+        (30, 0, "LLEGO"),
+    ])
+    def test_ca_4_3_1_siguiente_accion(distancia, rumbo, esperada):
+        """CA-4.3.1"""
+        from pi.lidar import Poste
+>       from pi.navegacion import siguiente_accion
+E       ModuleNotFoundError: No module named 'pi.navegacion'
+
+tests\aceptacion\test_wp_4_3.py:168: ModuleNotFoundError
+_____________________ test_ca_4_3_1_poste_none_es_perdido _____________________
+
+    def test_ca_4_3_1_poste_none_es_perdido():
+        """CA-4.3.1"""
+>       from pi.navegacion import siguiente_accion
+E       ModuleNotFoundError: No module named 'pi.navegacion'
+
+tests\aceptacion\test_wp_4_3.py:174: ModuleNotFoundError
+__________ test_ca_4_3_2_limites_inclusivos_de_20_a_35_cm[35-LLEGO] ___________
+
+distancia = 35, esperada = 'LLEGO'
+
+    @pytest.mark.parametrize("distancia,esperada", [
+        (35, "LLEGO"),
+        (20, "LLEGO"),
+        (36, "AVANZAR"),
+        (19, "DEMASIADO_CERCA"),
+    ])
+    def test_ca_4_3_2_limites_inclusivos_de_20_a_35_cm(distancia, esperada):
+        """CA-4.3.2 (caso límite)"""
+        from pi.lidar import Poste
+>       from pi.navegacion import siguiente_accion
+E       ModuleNotFoundError: No module named 'pi.navegacion'
+
+tests\aceptacion\test_wp_4_3.py:187: ModuleNotFoundError
+__________ test_ca_4_3_2_limites_inclusivos_de_20_a_35_cm[20-LLEGO] ___________
+
+distancia = 20, esperada = 'LLEGO'
+
+    @pytest.mark.parametrize("distancia,esperada", [
+        (35, "LLEGO"),
+        (20, "LLEGO"),
+        (36, "AVANZAR"),
+        (19, "DEMASIADO_CERCA"),
+    ])
+    def test_ca_4_3_2_limites_inclusivos_de_20_a_35_cm(distancia, esperada):
+        """CA-4.3.2 (caso límite)"""
+        from pi.lidar import Poste
+>       from pi.navegacion import siguiente_accion
+E       ModuleNotFoundError: No module named 'pi.navegacion'
+
+tests\aceptacion\test_wp_4_3.py:187: ModuleNotFoundError
+_________ test_ca_4_3_2_limites_inclusivos_de_20_a_35_cm[36-AVANZAR] __________
+
+distancia = 36, esperada = 'AVANZAR'
+
+    @pytest.mark.parametrize("distancia,esperada", [
+        (35, "LLEGO"),
+        (20, "LLEGO"),
+        (36, "AVANZAR"),
+        (19, "DEMASIADO_CERCA"),
+    ])
+    def test_ca_4_3_2_limites_inclusivos_de_20_a_35_cm(distancia, esperada):
+        """CA-4.3.2 (caso límite)"""
+        from pi.lidar import Poste
+>       from pi.navegacion import siguiente_accion
+E       ModuleNotFoundError: No module named 'pi.navegacion'
+
+tests\aceptacion\test_wp_4_3.py:187: ModuleNotFoundError
+_____ test_ca_4_3_2_limites_inclusivos_de_20_a_35_cm[19-DEMASIADO_CERCA] ______
+
+distancia = 19, esperada = 'DEMASIADO_CERCA'
+
+    @pytest.mark.parametrize("distancia,esperada", [
+        (35, "LLEGO"),
+        (20, "LLEGO"),
+        (36, "AVANZAR"),
+        (19, "DEMASIADO_CERCA"),
+    ])
+    def test_ca_4_3_2_limites_inclusivos_de_20_a_35_cm(distancia, esperada):
+        """CA-4.3.2 (caso límite)"""
+        from pi.lidar import Poste
+>       from pi.navegacion import siguiente_accion
+E       ModuleNotFoundError: No module named 'pi.navegacion'
+
+tests\aceptacion\test_wp_4_3.py:187: ModuleNotFoundError
+__________________ test_ca_4_3_3_destino_cm[150-0-esperado0] __________________
+
+distancia = 150, rumbo = 0, esperado = (150, 0)
+
+    @pytest.mark.parametrize("distancia,rumbo,esperado", [
+        (150, 0, (150, 0)),
+        (100, 90, (0, 100)),
+    ])
+    def test_ca_4_3_3_destino_cm(distancia, rumbo, esperado):
+        """CA-4.3.3"""
+        from pi.lidar import Poste
+>       from pi.navegacion import destino_cm
+E       ModuleNotFoundError: No module named 'pi.navegacion'
+
+tests\aceptacion\test_wp_4_3.py:199: ModuleNotFoundError
+_________________ test_ca_4_3_3_destino_cm[100-90-esperado1] __________________
+
+distancia = 100, rumbo = 90, esperado = (0, 100)
+
+    @pytest.mark.parametrize("distancia,rumbo,esperado", [
+        (150, 0, (150, 0)),
+        (100, 90, (0, 100)),
+    ])
+    def test_ca_4_3_3_destino_cm(distancia, rumbo, esperado):
+        """CA-4.3.3"""
+        from pi.lidar import Poste
+>       from pi.navegacion import destino_cm
+E       ModuleNotFoundError: No module named 'pi.navegacion'
+
+tests\aceptacion\test_wp_4_3.py:199: ModuleNotFoundError
+___________ test_ca_4_3_4_mision_completa_con_lidar_y_enlace_falsos ___________
+
+    def test_ca_4_3_4_mision_completa_con_lidar_y_enlace_falsos():
+        """CA-4.3.4: poste a 120 cm y 20° que se aproxima hasta 30 cm."""
+        mundo, enlace, lidar = _armar(120.0, 20.0)
+>       resultado = _ejecutar(enlace, lidar)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\aceptacion\test_wp_4_3.py:209: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+enlace = <test_wp_4_3.EnlaceFalso object at 0x0000024FF71C0EC0>
+lidar = <test_wp_4_3.LidarFalso object at 0x0000024FF71C17F0>, kw = {}
+
+    def _ejecutar(enlace, lidar, **kw):
+>       from pi.mision import ejecutar_mision
+E       ModuleNotFoundError: No module named 'pi.mision'
+
+tests\aceptacion\test_wp_4_3.py:133: ModuleNotFoundError
+________ test_ca_4_3_5_lift_rechazado_no_mueve_ni_deposita[OVERWEIGHT] ________
+
+codigo = 'OVERWEIGHT'
+
+    @pytest.mark.parametrize("codigo", ["OVERWEIGHT", "PESO_INVALIDO"])
+    def test_ca_4_3_5_lift_rechazado_no_mueve_ni_deposita(codigo):
+        """CA-4.3.5"""
+        mundo, enlace, lidar = _armar(lift={"resultado": "ERR", "codigo": codigo})
+>       resultado = _ejecutar(enlace, lidar)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\aceptacion\test_wp_4_3.py:246: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+enlace = <test_wp_4_3.EnlaceFalso object at 0x0000024FF718B9D0>
+lidar = <test_wp_4_3.LidarFalso object at 0x0000024FF718B110>, kw = {}
+
+    def _ejecutar(enlace, lidar, **kw):
+>       from pi.mision import ejecutar_mision
+E       ModuleNotFoundError: No module named 'pi.mision'
+
+tests\aceptacion\test_wp_4_3.py:133: ModuleNotFoundError
+______ test_ca_4_3_5_lift_rechazado_no_mueve_ni_deposita[PESO_INVALIDO] _______
+
+codigo = 'PESO_INVALIDO'
+
+    @pytest.mark.parametrize("codigo", ["OVERWEIGHT", "PESO_INVALIDO"])
+    def test_ca_4_3_5_lift_rechazado_no_mueve_ni_deposita(codigo):
+        """CA-4.3.5"""
+        mundo, enlace, lidar = _armar(lift={"resultado": "ERR", "codigo": codigo})
+>       resultado = _ejecutar(enlace, lidar)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\aceptacion\test_wp_4_3.py:246: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+enlace = <test_wp_4_3.EnlaceFalso object at 0x0000024FF7189F90>
+lidar = <test_wp_4_3.LidarFalso object at 0x0000024FF718A0D0>, kw = {}
+
+    def _ejecutar(enlace, lidar, **kw):
+>       from pi.mision import ejecutar_mision
+E       ModuleNotFoundError: No module named 'pi.mision'
+
+tests\aceptacion\test_wp_4_3.py:133: ModuleNotFoundError
+_________________ test_ca_4_3_6_timeout_aborta_con_stop[lift] _________________
+
+falla_en = 'lift'
+
+    @pytest.mark.parametrize("falla_en", ["lift", "move"])
+    def test_ca_4_3_6_timeout_aborta_con_stop(falla_en):
+        """CA-4.3.6"""
+        mundo, enlace, lidar = _armar(falla_en=falla_en)
+>       resultado = _ejecutar(enlace, lidar)  # no debe propagar la excepción
+                    ^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\aceptacion\test_wp_4_3.py:256: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+enlace = <test_wp_4_3.EnlaceFalso object at 0x0000024FF7159810>
+lidar = <test_wp_4_3.LidarFalso object at 0x0000024FF7159940>, kw = {}
+
+    def _ejecutar(enlace, lidar, **kw):
+>       from pi.mision import ejecutar_mision
+E       ModuleNotFoundError: No module named 'pi.mision'
+
+tests\aceptacion\test_wp_4_3.py:133: ModuleNotFoundError
+_________________ test_ca_4_3_6_timeout_aborta_con_stop[move] _________________
+
+falla_en = 'move'
+
+    @pytest.mark.parametrize("falla_en", ["lift", "move"])
+    def test_ca_4_3_6_timeout_aborta_con_stop(falla_en):
+        """CA-4.3.6"""
+        mundo, enlace, lidar = _armar(falla_en=falla_en)
+>       resultado = _ejecutar(enlace, lidar)  # no debe propagar la excepción
+                    ^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\aceptacion\test_wp_4_3.py:256: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+enlace = <test_wp_4_3.EnlaceFalso object at 0x0000024FF7159480>
+lidar = <test_wp_4_3.LidarFalso object at 0x0000024FF7159350>, kw = {}
+
+    def _ejecutar(enlace, lidar, **kw):
+>       from pi.mision import ejecutar_mision
+E       ModuleNotFoundError: No module named 'pi.mision'
+
+tests\aceptacion\test_wp_4_3.py:133: ModuleNotFoundError
+_____ test_ca_4_3_7_sin_poste_no_inicia_ni_usa_destino_por_defecto[pared] _____
+
+variante = 'pared'
+
+    @pytest.mark.parametrize("variante", ["pared", "vacio", "lidar_sin_datos"])
+    def test_ca_4_3_7_sin_poste_no_inicia_ni_usa_destino_por_defecto(variante):
+        """CA-4.3.7 (caso límite, antes EJ-014)"""
+        if variante == "lidar_sin_datos":
+            from pi.rplidar import LidarSinDatos
+            mundo, enlace, lidar = _armar(lanza=LidarSinDatos("sin vuelta"))
+        elif variante == "vacio":
+            mundo, enlace, lidar = _armar(guion=lambda n, m: [])
+        else:
+            mundo, enlace, lidar = _armar(guion=_sin_poste)
+>       resultado = _ejecutar(enlace, lidar)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\aceptacion\test_wp_4_3.py:278: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+enlace = <test_wp_4_3.EnlaceFalso object at 0x0000024FF7256D50>
+lidar = <test_wp_4_3.LidarFalso object at 0x0000024FF7256330>, kw = {}
+
+    def _ejecutar(enlace, lidar, **kw):
+>       from pi.mision import ejecutar_mision
+E       ModuleNotFoundError: No module named 'pi.mision'
+
+tests\aceptacion\test_wp_4_3.py:133: ModuleNotFoundError
+_____ test_ca_4_3_7_sin_poste_no_inicia_ni_usa_destino_por_defecto[vacio] _____
+
+variante = 'vacio'
+
+    @pytest.mark.parametrize("variante", ["pared", "vacio", "lidar_sin_datos"])
+    def test_ca_4_3_7_sin_poste_no_inicia_ni_usa_destino_por_defecto(variante):
+        """CA-4.3.7 (caso límite, antes EJ-014)"""
+        if variante == "lidar_sin_datos":
+            from pi.rplidar import LidarSinDatos
+            mundo, enlace, lidar = _armar(lanza=LidarSinDatos("sin vuelta"))
+        elif variante == "vacio":
+            mundo, enlace, lidar = _armar(guion=lambda n, m: [])
+        else:
+            mundo, enlace, lidar = _armar(guion=_sin_poste)
+>       resultado = _ejecutar(enlace, lidar)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\aceptacion\test_wp_4_3.py:278: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+enlace = <test_wp_4_3.EnlaceFalso object at 0x0000024FF724C5A0>
+lidar = <test_wp_4_3.LidarFalso object at 0x0000024FF724C490>, kw = {}
+
+    def _ejecutar(enlace, lidar, **kw):
+>       from pi.mision import ejecutar_mision
+E       ModuleNotFoundError: No module named 'pi.mision'
+
+tests\aceptacion\test_wp_4_3.py:133: ModuleNotFoundError
+_ test_ca_4_3_7_sin_poste_no_inicia_ni_usa_destino_por_defecto[lidar_sin_datos] _
+
+variante = 'lidar_sin_datos'
+
+    @pytest.mark.parametrize("variante", ["pared", "vacio", "lidar_sin_datos"])
+    def test_ca_4_3_7_sin_poste_no_inicia_ni_usa_destino_por_defecto(variante):
+        """CA-4.3.7 (caso límite, antes EJ-014)"""
+        if variante == "lidar_sin_datos":
+            from pi.rplidar import LidarSinDatos
+            mundo, enlace, lidar = _armar(lanza=LidarSinDatos("sin vuelta"))
+        elif variante == "vacio":
+            mundo, enlace, lidar = _armar(guion=lambda n, m: [])
+        else:
+            mundo, enlace, lidar = _armar(guion=_sin_poste)
+>       resultado = _ejecutar(enlace, lidar)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\aceptacion\test_wp_4_3.py:278: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+enlace = <test_wp_4_3.EnlaceFalso object at 0x0000024FF724C7C0>
+lidar = <test_wp_4_3.LidarFalso object at 0x0000024FF724C8D0>, kw = {}
+
+    def _ejecutar(enlace, lidar, **kw):
+>       from pi.mision import ejecutar_mision
+E       ModuleNotFoundError: No module named 'pi.mision'
+
+tests\aceptacion\test_wp_4_3.py:133: ModuleNotFoundError
+___________ test_ca_4_3_8_poste_perdido_tres_escaneos_consecutivos ____________
+
+    def test_ca_4_3_8_poste_perdido_tres_escaneos_consecutivos():
+        """CA-4.3.8: el poste desaparece durante el avance."""
+        def guion(n, mundo):
+            return _escaneo_poste(120.0, 0.0) if n <= 2 else _escaneo_pared(120.0)
+    
+        mundo, enlace, lidar = _armar(120.0, 0.0, guion=guion)
+>       resultado = _ejecutar(enlace, lidar)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\aceptacion\test_wp_4_3.py:293: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+enlace = <test_wp_4_3.EnlaceFalso object at 0x0000024FF722D350>
+lidar = <test_wp_4_3.LidarFalso object at 0x0000024FF735C150>, kw = {}
+
+    def _ejecutar(enlace, lidar, **kw):
+>       from pi.mision import ejecutar_mision
+E       ModuleNotFoundError: No module named 'pi.mision'
+
+tests\aceptacion\test_wp_4_3.py:133: ModuleNotFoundError
+_______________ test_ca_4_3_8_demasiado_cerca_durante_el_avance _______________
+
+    def test_ca_4_3_8_demasiado_cerca_durante_el_avance():
+        """CA-4.3.8: el poste aparece a menos de DISTANCIA_MIN_CM tras comenzar el avance."""
+        def guion(n, mundo):
+            return _escaneo_poste(120.0, 0.0) if n <= 2 else _escaneo_poste(18.0, 0.0)
+    
+        mundo, enlace, lidar = _armar(120.0, 0.0, guion=guion)
+>       resultado = _ejecutar(enlace, lidar)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\aceptacion\test_wp_4_3.py:306: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+enlace = <test_wp_4_3.EnlaceFalso object at 0x0000024FF735C550>
+lidar = <test_wp_4_3.LidarFalso object at 0x0000024FF735C650>, kw = {}
+
+    def _ejecutar(enlace, lidar, **kw):
+>       from pi.mision import ejecutar_mision
+E       ModuleNotFoundError: No module named 'pi.mision'
+
+tests\aceptacion\test_wp_4_3.py:133: ModuleNotFoundError
+_____________ test_ca_4_3_8_tiempo_agotado_al_llegar_a_max_pasos ______________
+
+    def test_ca_4_3_8_tiempo_agotado_al_llegar_a_max_pasos():
+        """CA-4.3.8: el poste nunca se acerca; la misión se corta en max_pasos."""
+        mundo, enlace, lidar = _armar(120.0, 0.0, guion=lambda n, m: _escaneo_poste(120.0, 0.0))
+>       resultado = _ejecutar(enlace, lidar, max_pasos=5)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\aceptacion\test_wp_4_3.py:316: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+enlace = <test_wp_4_3.EnlaceFalso object at 0x0000024FF7309310>
+lidar = <test_wp_4_3.LidarFalso object at 0x0000024FF7309220>
+kw = {'max_pasos': 5}
+
+    def _ejecutar(enlace, lidar, **kw):
+>       from pi.mision import ejecutar_mision
+E       ModuleNotFoundError: No module named 'pi.mision'
+
+tests\aceptacion\test_wp_4_3.py:133: ModuleNotFoundError
+=========================== short test summary info ===========================
+FAILED tests/aceptacion/test_wp_4_1.py::test_ca_4_1_1_obstaculo_sobrepeso_y_lift_ok_son_eventos_validos
+FAILED tests/aceptacion/test_wp_4_1.py::test_ca_4_1_1_sensores_produce_telemetria_valida
+FAILED tests/aceptacion/test_wp_4_1.py::test_ca_4_1_7_drop_ok_usa_ts_drop_ms_del_contexto
+FAILED tests/aceptacion/test_wp_4_1.py::test_ca_4_1_8_peso_declarado_devuelve_peso_de_la_tarima
+FAILED tests/aceptacion/test_wp_4_1.py::test_ca_4_1_8_tarima_inexistente_o_sin_peso_valido_lanza[TAR-999]
+FAILED tests/aceptacion/test_wp_4_1.py::test_ca_4_1_8_tarima_inexistente_o_sin_peso_valido_lanza[TAR-102]
+FAILED tests/aceptacion/test_wp_4_1.py::test_ca_4_1_8_tarima_inexistente_o_sin_peso_valido_lanza[TAR-103]
+FAILED tests/aceptacion/test_wp_4_1.py::test_ca_4_1_8_tarima_inexistente_o_sin_peso_valido_lanza[TAR-104]
+FAILED tests/aceptacion/test_wp_4_1.py::test_ca_4_1_2_iniciar_con_robot_inactivo_se_acepta
+FAILED tests/aceptacion/test_wp_4_1.py::test_ca_4_1_2_id_orden_repetido_produce_el_mismo_ack
+FAILED tests/aceptacion/test_wp_4_1.py::test_ca_4_1_3_iniciar_en_mision_se_rechaza
+FAILED tests/aceptacion/test_wp_4_1.py::test_ca_4_1_3_paro_se_acepta_en_cualquier_estado[INACTIVO]
+FAILED tests/aceptacion/test_wp_4_1.py::test_ca_4_1_3_paro_se_acepta_en_cualquier_estado[EN_MISION]
+FAILED tests/aceptacion/test_wp_4_1.py::test_ca_4_1_3_paro_se_acepta_en_cualquier_estado[ELEVANDO]
+FAILED tests/aceptacion/test_wp_4_1.py::test_ca_4_1_3_paro_se_acepta_en_cualquier_estado[EN_RUTA]
+FAILED tests/aceptacion/test_wp_4_1.py::test_ca_4_1_3_paro_se_acepta_en_cualquier_estado[DEPOSITANDO]
+FAILED tests/aceptacion/test_wp_4_1.py::test_ca_4_1_3_paro_se_acepta_en_cualquier_estado[DETENIDO_OBSTACULO]
+FAILED tests/aceptacion/test_wp_4_1.py::test_ca_4_1_3_paro_se_acepta_en_cualquier_estado[ERROR]
+FAILED tests/aceptacion/test_wp_4_2.py::test_ca_4_2_1_una_vuelta_es_pi_por_6_5_cm
+FAILED tests/aceptacion/test_wp_4_2.py::test_ca_4_2_2_ida_y_vuelta[100] - Imp...
+FAILED tests/aceptacion/test_wp_4_2.py::test_ca_4_2_2_ida_y_vuelta[515] - Imp...
+FAILED tests/aceptacion/test_wp_4_2.py::test_ca_4_2_2_ida_y_vuelta[1000] - Im...
+FAILED tests/aceptacion/test_wp_4_2.py::test_ca_4_2_2_30_cm_son_757_pulsos - ...
+FAILED tests/aceptacion/test_wp_4_2.py::test_ca_4_2_3_pulsos_negativos_distancia_negativa[-1]
+FAILED tests/aceptacion/test_wp_4_2.py::test_ca_4_2_3_pulsos_negativos_distancia_negativa[-515]
+FAILED tests/aceptacion/test_wp_4_2.py::test_ca_4_2_3_pulsos_negativos_distancia_negativa[-1000]
+FAILED tests/aceptacion/test_wp_4_3.py::test_interfaz_constantes - ModuleNotF...
+FAILED tests/aceptacion/test_wp_4_3.py::test_ca_4_3_1_siguiente_accion[150-30-GIRAR_IZQ]
+FAILED tests/aceptacion/test_wp_4_3.py::test_ca_4_3_1_siguiente_accion[150--30-GIRAR_DER]
+FAILED tests/aceptacion/test_wp_4_3.py::test_ca_4_3_1_siguiente_accion[150-2-AVANZAR]
+FAILED tests/aceptacion/test_wp_4_3.py::test_ca_4_3_1_siguiente_accion[30-0-LLEGO]
+FAILED tests/aceptacion/test_wp_4_3.py::test_ca_4_3_1_poste_none_es_perdido
+FAILED tests/aceptacion/test_wp_4_3.py::test_ca_4_3_2_limites_inclusivos_de_20_a_35_cm[35-LLEGO]
+FAILED tests/aceptacion/test_wp_4_3.py::test_ca_4_3_2_limites_inclusivos_de_20_a_35_cm[20-LLEGO]
+FAILED tests/aceptacion/test_wp_4_3.py::test_ca_4_3_2_limites_inclusivos_de_20_a_35_cm[36-AVANZAR]
+FAILED tests/aceptacion/test_wp_4_3.py::test_ca_4_3_2_limites_inclusivos_de_20_a_35_cm[19-DEMASIADO_CERCA]
+FAILED tests/aceptacion/test_wp_4_3.py::test_ca_4_3_3_destino_cm[150-0-esperado0]
+FAILED tests/aceptacion/test_wp_4_3.py::test_ca_4_3_3_destino_cm[100-90-esperado1]
+FAILED tests/aceptacion/test_wp_4_3.py::test_ca_4_3_4_mision_completa_con_lidar_y_enlace_falsos
+FAILED tests/aceptacion/test_wp_4_3.py::test_ca_4_3_5_lift_rechazado_no_mueve_ni_deposita[OVERWEIGHT]
+FAILED tests/aceptacion/test_wp_4_3.py::test_ca_4_3_5_lift_rechazado_no_mueve_ni_deposita[PESO_INVALIDO]
+FAILED tests/aceptacion/test_wp_4_3.py::test_ca_4_3_6_timeout_aborta_con_stop[lift]
+FAILED tests/aceptacion/test_wp_4_3.py::test_ca_4_3_6_timeout_aborta_con_stop[move]
+FAILED tests/aceptacion/test_wp_4_3.py::test_ca_4_3_7_sin_poste_no_inicia_ni_usa_destino_por_defecto[pared]
+FAILED tests/aceptacion/test_wp_4_3.py::test_ca_4_3_7_sin_poste_no_inicia_ni_usa_destino_por_defecto[vacio]
+FAILED tests/aceptacion/test_wp_4_3.py::test_ca_4_3_7_sin_poste_no_inicia_ni_usa_destino_por_defecto[lidar_sin_datos]
+FAILED tests/aceptacion/test_wp_4_3.py::test_ca_4_3_8_poste_perdido_tres_escaneos_consecutivos
+FAILED tests/aceptacion/test_wp_4_3.py::test_ca_4_3_8_demasiado_cerca_durante_el_avance
+FAILED tests/aceptacion/test_wp_4_3.py::test_ca_4_3_8_tiempo_agotado_al_llegar_a_max_pasos
+49 failed, 142 passed in 1.87s
+
+============================================================
+STDERR
+
