@@ -1,6 +1,6 @@
 # Estado del proyecto
 
-> Archivo generado por gen_estado.py el 2026-11-18T13:57 sobre el commit a32dce2. No editar a mano.
+> Archivo generado por gen_estado.py el 2026-11-20T09:56 sobre el commit 8d93d53. No editar a mano.
 
 ## Gates
 
@@ -26,7 +26,7 @@
 | WP-4.1 | Puente MQTT | alto | entregable | Pendiente | 0 | — | — |
 | WP-4.2 | Avance por distancia con encoders | medio | entregable | Pendiente | 0 | — | — |
 | WP-4.3 | Navegación guiada por LIDAR y misión | medio | entregable | Pendiente | 0 | — | — |
-| WP-4.4 | Localización del destino con LIDAR | medio | entregable | Conforme@a32dce2 | 4 | CONFORME CON OBSERVACIONES | docs/pm/auditorias/WP-4.4_it4.md |
+| WP-4.4 | Localización del destino con LIDAR | medio | entregable | Requiere reverificación (CC-021) | 4 | CONFORME CON OBSERVACIONES | docs/pm/auditorias/WP-4.4_it4.md |
 | WP-5.1 | Tablero: flotilla, monitoreo e indicadores | medio | entregable | Conforme@0dfbfae | 2 | CONFORME CON OBSERVACIONES | docs/pm/auditorias/WP-5.1_it3.md |
 | WP-5.2 | Tablero: control y gestión logística | medio | entregable | Conforme@525905a | 1 | CONFORME CON OBSERVACIONES | docs/pm/auditorias/WP-5.2_it2.md |
 | WP-6.1 | Pruebas de elevación, rechazo, obstáculo y latencia | alto | integracion | Pendiente | 0 | — | — |
@@ -35,4 +35,4 @@
 
 ## Resumen
 
-Conforme: 8, Pendiente: 11
+Conforme: 7, Pendiente: 11, Requiere reverificación: 1
